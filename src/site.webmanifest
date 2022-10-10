@@ -1,0 +1,22 @@
+{
+  "name": "Sun Golf",
+  "short_name": "Sun Golf",
+  "icons": [
+      {
+          "src": "./assets/android-chrome-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+      },
+      {
+          "src": "./assets/maskable_icon_x512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
+      }
+  ],
+  "theme_color": "#b8860b",
+  "background_color": "#b8860b",
+  "start_url": "https://redgem.games/sungolf/",
+  "display": "standalone",
+  "orientation": "landscape-primary"
+}

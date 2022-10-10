@@ -1,0 +1,33 @@
+.hide {
+  visibility: hidden;
+}
+.fadeOut {
+  opacity: 1;
+  animation: fadeOutAnim 0.4s 1 0s linear forwards;
+}
+@keyframes fadeOutAnim {
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.fadeIn {
+  opacity: 0;
+  visibility: hidden;
+  animation: fadeInAnim 0.4s 1 0s linear forwards;
+}
+@keyframes fadeInAnim {
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+.flexRow {
+  display: flex;
+  flex-direction: row;
+  gap: 0.2rem;
+  align-items: center;
+}
+.flushRight {
+  margin-left: auto;
+}

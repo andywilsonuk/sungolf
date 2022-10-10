@@ -1,0 +1,44 @@
+#titleText {
+  position: absolute;
+  top: 30vmin;
+  left: 0;
+  width: 100%;
+  min-height: 15vmin;
+  text-align: center;
+  font-size: 15vmin;
+  text-transform: uppercase;
+  letter-spacing: 0.5rem;
+  background-color: hsla(0, 0%, 98%, 0.8);
+  border-top: 0.2rem solid var(--black);
+  border-bottom: 0.2rem solid var(--black);
+  white-space: nowrap;
+}
+#scoreOuter {
+  position: absolute;
+  top: 1.6rem;
+  width: 100%;
+  font-size: 1.4rem;
+  display: grid;
+  grid-template-columns: 50% min-content min-content;
+  grid-template-areas: "score stroke skip";
+  gap: 1rem;
+  align-items: center;
+}
+#score {
+  grid-area: score;
+  justify-self: flex-end;
+}
+#stroke {
+  grid-area: stroke;
+  display: flex;
+  gap: 0.5rem;
+}
+#skip {
+  grid-area: skip;
+  border: 0.1rem solid var(--dialogBorder);
+  border-radius: 0.2rem;
+  padding: 0.1rem 0.8rem;
+  cursor: pointer;
+  text-transform: lowercase;
+  user-select: none;
+}

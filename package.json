@@ -1,0 +1,32 @@
+{
+    "name": "sungolf",
+    "version": "1.0.0",
+    "private": false,
+    "description": "Sun Golf",
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/andywilsonuk/sungolf"
+    },
+    "type": "module",
+    "scripts": {
+        "start": "(if exist dist rmdir dist /S /Q) && parcel serve ./src/index.html --open Chrome",
+        "build": "(if exist dist rmdir dist /S /Q) && parcel build ./src/index.html --no-source-maps --public-url .",
+        "terraincheck": "node xtools/terrainCheck.js"
+    },
+    "author": "andywilsonuk",
+    "devDependencies": {
+        "@parcel/packager-raw-url": "^2.7.0",
+        "@parcel/transformer-webmanifest": "^2.7.0",
+        "@parcel/service-worker": "^2.7.0",
+        "parcel": "^2.7.0",
+        "standard": "^17.0.0-2"
+    },
+    "dependencies": {
+        "alea": "^1.0.1",
+        "mainloop.js": "^1.0.4",
+        "planck-js": "^0.3.31",
+        "poly-decomp": "^0.3.0"
+    },
+    "browserslist": "> 0.5%, not IE 11"
+}

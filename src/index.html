@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sun Golf</title>
+    <meta name="description" content="Golf your way through the sunny desert with the Sun Golf game">
+    <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+    <link rel="icon" type="image/png" href="./assets/favicon.png">
+    <link rel="alternate icon" href="./assets/favicon.ico">
+    <link rel="mask-icon" href="./assets/safari-pinned-tab.svg" color="#b8860b">
+    <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+    <link rel="manifest" href="./site.webmanifest">
+    <meta name="theme-color" content="#fefefe">
+</head>
+<body>
+    <script>
+        window.onerror = function (message, url, lineNo, columnNo, error) {
+            var appElement = document.getElementById("app");
+            var errorText = message.toLowerCase().indexOf("script error") > -1
+                ? "Script error"
+                : message + " @ " + url + ", line " + lineNo + ", column " + columnNo + ". Error object: " + JSON.stringify(error);
+            appElement.innerText = errorText;
+            return false;
+        }
+    </script>
+    <script type="module" src="./index.js"></script>
+    <noscript>Sun Golf requires JavaScript and a modern browser</noscript>
+    <div id="gameArea">
+        <div id="background" class="layer inert"></div>
+        <canvas id="topography" class="layer inert"></canvas>
+        <canvas id="dynamics" class="layer inert"></canvas>
+        <canvas id="pullback" class="layer"></canvas>
+        <div id="scoreOuter">
+            <div id="score" class="inert"></div>
+            <div id="stroke" class="inert"></div>
+            <div id="skip">Skip</div>
+        </div>
+        <div id="title" class="layer"><div id="titleText" class="inert">Sun Golf</div></div>
+    </div>
+    <div id="devtools" class="dialog"></div>
+    <div id="optionsButton"></div>
+    <div id="options" class="dialog hide">
+        <div class="flexRow"><span id="soundToggle" class="toggleButton"></span><span>Sound</span></div>
+        <div class="flexRow"><span id="fullscreenToggle" class="toggleButton"></span><span>Fullscreen</span></div>
+        <div class="flexRow"><span id="install" class="button">Install to play offline</span></div>
+        <div class="flexRow">
+            <span>v1.2.1</span>
+            <span id="startOverConfirm" class="button flushRight hide">Confirm</span>
+            <span id="startOver" class="button">Start over</span></div>
+        <hr />
+        <div>Code and design by Andy Wilson <a href="https://redgem.games">redgem.games</a></div>
+        <div>Source code on <a href="https://github.com/andywilsonuk/sungolf">github.com</a></div>
+        <div>Audio from <a href="https://www.zapsplat.com">zapsplat.com</a></div>
+    </div>
+</body>
+</html>

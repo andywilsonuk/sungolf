@@ -1,0 +1,20 @@
+#devtools {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  width: 10rem;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-transform: lowercase;
+}
+#devlog {
+  position: absolute;
+  right: 13rem;
+  top: 1rem;
+  width: 25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
