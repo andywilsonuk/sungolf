@@ -3,7 +3,7 @@ import { zoneColors } from '../orchestration'
 const debug = false
 
 export default class PaletteEntity {
-  renderOnCanvas (ctx) {
+  renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     if (!debug) { return }
 
     const size = 15

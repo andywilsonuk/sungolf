@@ -11,29 +11,45 @@ const optionsToggleIcon = 'M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'
 const checkedIcon = 'M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-9 14-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'
 const uncheckedIcon = 'M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'
 
-const assignToggleState = (element, toggledOn) => {
-  element.children[0].children[0].setAttribute('d', toggledOn ? checkedIcon : uncheckedIcon)
+const assignToggleState = (element: HTMLElement, toggledOn: boolean): void => {
+  const svgElement = element.children[0]?.children[0] as SVGPathElement
+  if (svgElement) {
+    svgElement.setAttribute('d', toggledOn ? checkedIcon : uncheckedIcon)
+  }
 }
 
-const bindToggleButton = (id, onClick) => {
-  const element = document.getElementById(id)
+const bindToggleButton = (id: string, onClick: () => void): HTMLElement => {
+  const element = document.getElementById(id)!
   element.appendChild(svgIcon(checkedIcon))
   element.addEventListener('click', onClick)
   addClass(element, 'iconContainer')
   return element
 }
-const bindButton = (id, onClick) => {
-  const element = document.getElementById(id)
+
+const bindButton = (id: string, onClick: () => void): HTMLElement => {
+  const element = document.getElementById(id)!
   element.addEventListener('click', onClick)
   return element
 }
 
 export default class OptionsEntity {
-  constructor () {
+  public tags = new Set([optionsTag])
+  private soundOn!: boolean
+  private fullscreenOn!: boolean
+  private hidden!: boolean
+  private stateEntity!: any
+  private optionsButton!: HTMLElement
+  private optionsElement!: HTMLElement
+  private soundToggleElement!: HTMLElement
+  private fullscreenToggleElement!: HTMLElement
+  private startOverElement!: HTMLElement
+  private startOverConfirmElement!: HTMLElement
+
+  constructor() {
     this.tags = new Set([optionsTag])
   }
 
-  init () {
+  init(): void {
     const { sound, fullscreen } = loadState()
     this.soundOn = sound
     this.fullscreenOn = fullscreen
@@ -43,14 +59,14 @@ export default class OptionsEntity {
     subscribe(ballStrokeSignal, this.hide.bind(this))
   }
 
-  renderInitial () {
-    this.optionsButton = document.getElementById('optionsButton')
+  renderInitial(): void {
+    this.optionsButton = document.getElementById('optionsButton')!
     addClass(this.optionsButton, 'iconContainer')
     const button = svgIcon(optionsToggleIcon)
     this.optionsButton.appendChild(button)
     this.optionsButton.addEventListener('click', this.toggleOptionsPane.bind(this), true)
 
-    this.optionsElement = document.getElementById('options')
+    this.optionsElement = document.getElementById('options')!
     this.soundToggleElement = bindToggleButton('soundToggle', this.toggleSound.bind(this, undefined))
     this.fullscreenToggleElement = bindToggleButton('fullscreenToggle', this.toggleFullscreen.bind(this, undefined))
     this.startOverElement = bindButton('startOver', this.showStartOverConfirm.bind(this))
@@ -60,7 +76,7 @@ export default class OptionsEntity {
     this.toggleFullscreen(this.fullscreenOn)
   }
 
-  show () {
+  show(): void {
     addClass(this.optionsElement, 'fadeIn')
     removeClass(this.optionsElement, 'fadeOut')
     removeClass(this.optionsElement, 'hide')
@@ -69,13 +85,13 @@ export default class OptionsEntity {
     this.hidden = false
   }
 
-  hide () {
+  hide(): void {
     removeClass(this.optionsElement, 'fadeIn')
     addClass(this.optionsElement, 'fadeOut')
     this.hidden = true
   }
 
-  toggleOptionsPane () {
+  toggleOptionsPane(): void {
     if (this.hidden) {
       this.show()
     } else {
@@ -83,11 +99,11 @@ export default class OptionsEntity {
     }
   }
 
-  save () {
+  save(): void {
     saveState(this.soundOn, this.fullscreenOn)
   }
 
-  toggleSound (state) {
+  toggleSound(state?: boolean): void {
     this.soundOn = state ?? !this.soundOn
     if (state === undefined) { this.save() }
     assignToggleState(this.soundToggleElement, this.soundOn)
@@ -98,7 +114,7 @@ export default class OptionsEntity {
     }
   }
 
-  async toggleFullscreen (state) {
+  async toggleFullscreen(state?: boolean): Promise<void> {
     this.fullscreenOn = state ?? !this.fullscreenOn
     const stateForced = state !== undefined
     if (!stateForced) { this.save() }
@@ -111,12 +127,12 @@ export default class OptionsEntity {
     }
   }
 
-  showStartOverConfirm () {
+  showStartOverConfirm(): void {
     deferRemoveClass(this.startOverConfirmElement, 'hide')
     deferAddClass(this.startOverElement, 'disabled')
   }
 
-  startOverConfirmed () {
+  startOverConfirmed(): void {
     this.hide()
     this.stateEntity.reset.bind(this.stateEntity)
   }
