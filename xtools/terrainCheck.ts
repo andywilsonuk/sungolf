@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer'
+import puppeteer, { type Browser, type Page } from 'puppeteer'
 import { finalStageId } from '../src/entities/constants.js'
 import { randomGenerator, randomInt } from '../src/shared/random.js'
 import { createFolder, folderExists, removeReservedCharacters } from './fileUtils.js'
@@ -20,27 +20,32 @@ const puppeteerSettings = {
   headless: !watchMode,
   slowMo: watchMode ? 25 : 0
 }
-const browser = await puppeteer.launch(puppeteerSettings)
+const browser: Browser = await puppeteer.launch(puppeteerSettings)
 let currentId = 0
 let errorCount = 0
-let browserTab
+let browserTab: Page
 
-const init = async () => {
+interface StageIterator {
+  initialId: number
+  getNext: () => Promise<number | undefined>
+}
+
+const init = async (): Promise<void> => {
   if (takeScreenshots && !await folderExists(outputFolder)) {
     await createFolder(outputFolder)
   }
   browserTab = await browser.newPage()
 
   browserTab.setDefaultTimeout(waitTimeout)
-  browserTab.on('console', msg => {
+  browserTab.on('console', (msg) => {
     console.log(msg.text())
   })
-  browserTab.on('pageerror', function (err) {
+  browserTab.on('pageerror', (err) => {
     const errorMessage = err.toString()
     console.log(`Stage ${currentId}: ${errorMessage}`)
     errorCount += 1
   })
-  browserTab.on('error', function (err) {
+  browserTab.on('error', (err) => {
     const errorMessage = err.toString()
     console.log(`Stage ${currentId}: ${errorMessage}`)
     errorCount += 1
@@ -48,22 +53,25 @@ const init = async () => {
 
   await loadPage()
 }
-const loadPage = async () => {
+
+const loadPage = async (): Promise<void> => {
   await browserTab.goto('http://localhost:5173/#devtools', { waitUntil: ['networkidle0', 'domcontentloaded'] })
   if (showWireframes) {
     await browserTab.click('#wireframes')
   }
 }
-const moveToStage = async (id) => {
+
+const moveToStage = async (id: number): Promise<void> => {
   await browserTab.click('#title')
   await browserTab.click('#moveTo', { clickCount: 3 })
   await browserTab.type('#moveTo', id + '\n')
 }
-const linearStages = (startId, count) => {
+
+const linearStages = (startId: number, count: number): StageIterator => {
   const endId = startId + count - 1
   currentId = startId
 
-  const getNext = async () => {
+  const getNext = async (): Promise<number | undefined> => {
     if (currentId === endId) { return undefined }
     currentId += 1
     await browserTab.keyboard.press('ArrowRight')
@@ -71,12 +79,13 @@ const linearStages = (startId, count) => {
   }
   return { initialId: currentId, getNext }
 }
-const randomStages = (count) => {
+
+const randomStages = (count: number): StageIterator => {
   const rand = randomGenerator(Math.random())
   let c = 0
   currentId = randomInt(rand, 0, finalStageId)
 
-  const getNext = async () => {
+  const getNext = async (): Promise<number | undefined> => {
     if (c === count) { return undefined }
     c += 1
     currentId = randomInt(rand, 0, finalStageId)

@@ -4,18 +4,24 @@ import Hsl from '../shared/hsl'
 import { stageReadySignal } from './constants'
 
 export default class BackgroundEntity {
-  constructor () {
+  stage: number | null
+  dirty: boolean
+  backgroundColor: Hsl | null
+  backgroundColorStop: number | null
+  backgroundElement!: HTMLElement
+
+  constructor() {
     this.stage = null
     this.dirty = false
     this.backgroundColor = null
     this.backgroundColorStop = null
   }
 
-  init () {
+  init(): void {
     subscribe(stageReadySignal, this.stageReady.bind(this))
   }
 
-  stageReady ({ stageId }) {
+  stageReady({ stageId }: { stageId: number }): void {
     const orchestrated = orchestration(stageId)
     this.stage = stageId
     this.backgroundColor = orchestrated.backgroundColor
@@ -23,12 +29,16 @@ export default class BackgroundEntity {
     this.dirty = true
   }
 
-  renderInitial () {
-    this.backgroundElement = document.getElementById('background')
+  renderInitial(): void {
+    const element = document.getElementById('background')
+    if (!element) {
+      throw new Error('Background element not found')
+    }
+    this.backgroundElement = element
   }
 
-  render () {
-    if (!this.dirty) { return }
+  render(): void {
+    if (!this.dirty || !this.backgroundColor || this.backgroundColorStop === null) { return }
 
     const initialStopColorString = new Hsl(0, 0, 90).asString()
 

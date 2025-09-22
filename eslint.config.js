@@ -6,7 +6,7 @@ import globals from 'globals'
 export default tseslint.config({
   files: ['src/**/*.ts', 'src/**/*.tsx'],
   // TODO: Remove the following ignores as JS files are converted to TS
-  ignores: ['src/entities/*.js', 'xtools/*.js'], // Temporarily ignore remaining JS files during conversion process
+  ignores: ['src/entities/*.js'], // Temporarily ignore remaining JS files during conversion process
   extends: [
     js.configs.recommended,
     stylistic.configs.recommended,
