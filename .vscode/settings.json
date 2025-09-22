@@ -1,4 +1,19 @@
 {
+    "editor.insertSpaces": true,
+    "editor.indentSize": 2,
     "editor.tabSize": 2,
-    "javascript.preferences.quoteStyle": "single"
+    "typescript.preferences.quoteStyle": "single",
+    "typescript.format.semicolons": "remove",
+    "typescript.preferences.preferTypeOnlyAutoImports": true,
+    "search.exclude": {
+        "**/package-lock.json": true,
+    },
+    "chat.tools.terminal.autoApprove": {
+        "/^npm run .*$/": true,
+        "npm run lint": true,
+        "/^npx eslint .*$/": true,
+        "/^npx playwright test .*$/": true,
+        "cd /workspaces/sungolf": true,
+        "/^npx tsc .*$/": true,
+    },
 }

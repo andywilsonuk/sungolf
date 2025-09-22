@@ -1,7 +1,20 @@
+import type { Body } from 'planck-js'
 import { Vec2 } from 'planck-js'
 
+interface SpecialObject {
+  hide?(): void
+  disable?(): void
+  enable?(offset: Vec2): void
+}
+
 export class TerrainData {
-  constructor (path, startY, distance, body, specialObject) {
+  renderPath: Path2D
+  startY: number
+  distance: number
+  body: Body
+  specialObject?: SpecialObject
+
+  constructor(path: string, startY: number, distance: number, body: Body, specialObject?: SpecialObject) {
     this.renderPath = new window.Path2D(path)
     this.startY = startY
     this.distance = distance
@@ -11,69 +24,70 @@ export class TerrainData {
 }
 
 export default class TerrainManager {
-  constructor () {
+  definitions: TerrainData[]
+  offsetX: number
+
+  constructor() {
     this.definitions = []
     this.offsetX = 0
   }
 
-  add (newData) {
+  add(newData: TerrainData): void {
     this.definitions.push(newData)
   }
 
-  removeHead () {
+  removeHead(): void {
     const discard = this.definitions.shift()
     if (discard === undefined) { return }
     const world = discard.body.getWorld()
     world.destroyBody(discard.body)
-    discard.specialObject?.hide()
+    discard.specialObject?.hide?.()
     this.offsetX += discard.distance - 0.01
   }
 
-  get previous () {
+  get previous(): TerrainData {
     return this.definitions[0]
   }
 
-  get current () {
+  get current(): TerrainData {
     return this.definitions[1]
   }
 
-  get next () {
+  get next(): TerrainData {
     return this.definitions[2]
   }
 
-  setInitialOffset (offset) {
+  setInitialOffset(offset: number): void {
     this.offsetX = -this.previous.distance + offset
   }
 
-  setOffset (offsetX) {
+  setOffset(offsetX: number): void {
     this.offsetX = offsetX
   }
 
-  disable () {
-    for (let i = 0; i < this.definitions.length; i++) {
-      const { body, specialObject } = this.definitions[i]
+  disable(): void {
+    for (const { body, specialObject } of this.definitions) {
       body.setActive(false)
-      specialObject?.disable()
+      specialObject?.disable?.()
     }
   }
 
-  enable () {
+  enable(): void {
     if (this.definitions.length > 3) {
       this.removeHead()
     }
 
     let currentOffset = this.offsetX
-    for (let i = 0; i < this.definitions.length; i++) {
-      const { body, specialObject, distance } = this.definitions[i]
+    for (const { body, specialObject, distance } of this.definitions) {
       const offset = Vec2(currentOffset, 0)
       body.setPosition(offset)
       body.setActive(true)
-      specialObject?.enable(offset)
+      specialObject?.enable?.(offset)
       currentOffset += distance
     }
   }
 
-  clear () {
+  clear(): void {
     while (this.definitions.length !== 0) {
       this.removeHead()
     }

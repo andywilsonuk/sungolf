@@ -7,15 +7,24 @@ import { absoluteFloorDepth } from '../terrain/constants'
 // References:
 // https://github.com/liabru/matter-js/blob/master/src/factory/Bodies.js
 // https://github.com/wout/svg.topoly.js/blob/master/svg.topoly.js
+
+interface PathCommand {
+  command: string
+  x: number
+  y: number
+}
+
+type Point = [number, number]
+
 const svgNS = 'http://www.w3.org/2000/svg'
 const curved = new Set(['C', 'T', 'S', 'Q', 'A'])
 const lineSampleLength = 50
 const curveSampleLength = 19
 const minimumArea = 45
 
-const commandsToPoints = (commands) => {
+const commandsToPoints = (commands: PathCommand[]): Point[] => {
   const element = document.createElementNS(svgNS, 'path')
-  const points = []
+  const points: Point[] = []
   let previousLength = 0
   let currentPath = ''
 
@@ -42,7 +51,8 @@ const commandsToPoints = (commands) => {
 
   return points
 }
-const area = (vertices) => {
+
+const area = (vertices: Point[]): number => {
   let area = 0
   let j = vertices.length - 1
 
@@ -53,38 +63,42 @@ const area = (vertices) => {
 
   return Math.abs(area) * 0.5
 }
-const filterMinArea = (chunk, minimumArea) => area(chunk) >= minimumArea
-const filter3PointsMin = (chunk) => chunk.length > 2
-const roundPoints = (chunk) => {
-  chunk.forEach(point => {
+
+const filterMinArea = (chunk: Point[], minimumArea: number): boolean => area(chunk) >= minimumArea
+
+const filter3PointsMin = (chunk: Point[]): boolean => chunk.length > 2
+
+const roundPoints = (chunk: Point[]): void => {
+  chunk.forEach((point) => {
     point[0] = Math.round(point[0])
     point[1] = Math.round(point[1])
   })
 }
 
-const validateParts = (parts, stageId) => {
+const validateParts = (parts: Point[][], stageId: number): void => {
   const roundingGrace = 1
   const maxY = absoluteFloorDepth + roundingGrace
-  parts.forEach(chunkVertices => {
+  parts.forEach((chunkVertices) => {
     if (chunkVertices.some(([_x, y]) => y > maxY)) {
-      debugLog(`Stage ${stageId}: Bad y`, chunkVertices)
+      debugLog(`Stage ${stageId}: Bad y: ${JSON.stringify(chunkVertices)}`)
     }
     if (chunkVertices.length > Settings.maxPolygonVertices) {
-      debugLog(`Stage ${stageId}: Vertex count ${chunkVertices.length} exceeded ${Settings.maxPolygonVertices}`, chunkVertices)
+      debugLog(`Stage ${stageId}: Vertex count ${chunkVertices.length} exceeded ${Settings.maxPolygonVertices}: ${JSON.stringify(chunkVertices)}`)
     }
   })
 }
-export default (commands, stageId) => {
+
+export default (commands: PathCommand[], stageId: number) => {
   const concave = commandsToPoints(commands)
   let chunks = quickDecomp(concave)
-  chunks.forEach(chunk => {
+  chunks.forEach((chunk) => {
     roundPoints(chunk)
     removeCollinearPoints(chunk, 0)
   })
-  chunks = chunks.filter(chunk => filter3PointsMin(chunk))
-  chunks = chunks.filter(chunk => filterMinArea(chunk, minimumArea))
+  chunks = chunks.filter((chunk) => filter3PointsMin(chunk))
+  chunks = chunks.filter((chunk) => filterMinArea(chunk, minimumArea))
   validateParts(chunks, stageId)
 
-  const result = chunks.map(chunkVertices => chunkVertices.map(([x, y]) => Vec2(x * physicsScale, y * physicsScale)))
+  const result = chunks.map((chunkVertices) => chunkVertices.map(([x, y]) => Vec2(x * physicsScale, y * physicsScale)))
   return result
 }
