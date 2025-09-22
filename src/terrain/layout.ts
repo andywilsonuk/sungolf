@@ -1,19 +1,30 @@
 import { absoluteFloorDepth } from './constants'
 
+interface Command {
+  command: string
+  x: number
+  y: number
+}
+
 export class Layout {
-  constructor (initialDepth) {
+  commands: Command[]
+  initialDepth: number
+  currentDistance: number = 0
+  currentDepth: number = 0
+
+  constructor(initialDepth: number) {
     this.commands = []
     this.initialDepth = initialDepth
     this.add(`M0 ${initialDepth}`, 0, initialDepth)
   }
 
-  line (distance, depth) {
+  line(distance: number, depth: number): void {
     const x = this.currentDistance + distance
     const y = this.currentDepth + depth
     this.add(`L${x} ${y}`, x, y)
   }
 
-  cubic (distance, depth, peak1X, peak1Y, peak2X, peak2Y) {
+  cubic(distance: number, depth: number, peak1X: number, peak1Y: number, peak2X: number, peak2Y: number): void {
     const x = this.currentDistance + distance
     const y = this.currentDepth + depth
     const x1 = this.currentDistance + peak1X
@@ -23,7 +34,7 @@ export class Layout {
     this.add(`C${x1} ${y1},${x2},${y2},${x} ${y}`, x, y)
   }
 
-  quadratic (distance, depth, peakX, peakY) {
+  quadratic(distance: number, depth: number, peakX: number, peakY: number): void {
     const x = this.currentDistance + distance
     const y = this.currentDepth + depth
     const x1 = this.currentDistance + peakX
@@ -31,17 +42,17 @@ export class Layout {
     this.add(`Q${x1} ${y1},${x} ${y}`, x, y)
   }
 
-  spacer (distance) {
+  spacer(distance: number): void {
     this.currentDistance += distance
   }
 
-  add (command, x, y) {
+  add(command: string, x: number, y: number): void {
     this.commands.push({ command, x, y })
     this.currentDistance = x
     this.currentDepth = y
   }
 
-  finalise () {
+  finalise(): void {
     const distance = this.currentDistance
     const initialDepth = this.initialDepth
     this.add(`L${distance} ${absoluteFloorDepth}`, distance, absoluteFloorDepth)

@@ -26,6 +26,7 @@ declare module 'planck-js' {
     setLinearVelocity(velocity: Vec2): void
     getLinearVelocity(): Vec2
     setActive(active: boolean): void
+    isActive(): boolean
     setAwake(awake: boolean): void
     getWorld(): World
     createFixture(shape: Shape, density?: number): Fixture
@@ -33,6 +34,7 @@ declare module 'planck-js' {
     setUserData(data: unknown): void
     getUserData(): unknown
     applyLinearImpulse(impulse: Vec2, point?: Vec2, wake?: boolean): void
+    getFixtureList(): Fixture | null
   }
 
   export interface Fixture {
@@ -40,6 +42,8 @@ declare module 'planck-js' {
     getShape(): Shape
     setUserData(data: unknown): void
     getUserData(): unknown
+    getNext(): Fixture | null
+    getType(): string
     _reset?(): void
   }
 
