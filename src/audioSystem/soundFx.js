@@ -80,7 +80,7 @@ export default class SoundFx {
   }
 
   async load () {
-    const response = await global.fetch(this.filepath)
+    const response = await window.fetch(this.filepath)
     this.audioBufferRaw = await response.arrayBuffer()
     if (this.initRequested) {
       await this.init()

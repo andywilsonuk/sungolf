@@ -49,7 +49,7 @@ const init = async () => {
   await loadPage()
 }
 const loadPage = async () => {
-  await browserTab.goto('http://localhost:1234/#devtools', { waitUntil: ['networkidle0', 'domcontentloaded'] })
+  await browserTab.goto('http://localhost:5173/#devtools', { waitUntil: ['networkidle0', 'domcontentloaded'] })
   if (showWireframes) {
     await browserTab.click('#wireframes')
   }
