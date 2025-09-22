@@ -1,14 +1,15 @@
 import { ceilingDepth } from '../constants'
 import { mesaName } from './names'
+import type { TerrainFeature } from './types'
 
-export default {
-  get name () {
+const mesa: TerrainFeature = {
+  get name() {
     return mesaName
   },
-  allowed () {
+  allowed() {
     throw new Error('Not implemented')
   },
-  apply (layout, { relativeX, relativeY, startY }, _rand) {
+  apply(layout, { relativeX, relativeY, startY }, _rand) {
     const slope = 6
     const forcedY = startY - 200 < ceilingDepth ? ceilingDepth - startY : 200 - startY
     const endY = (forcedY * -1) + relativeY
@@ -16,5 +17,7 @@ export default {
     layout.line(slope, forcedY)
     layout.line(relativeX - slope * 2, 0)
     layout.line(slope, endY)
-  }
+  },
 }
+
+export default mesa

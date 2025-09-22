@@ -1,14 +1,15 @@
 import { absoluteFloorDepth } from '../constants'
 import { sinkholeName } from './names'
+import type { TerrainFeature } from './types'
 
-export default {
-  get name () {
+const sinkhole: TerrainFeature = {
+  get name() {
     return sinkholeName
   },
-  allowed () {
+  allowed() {
     throw new Error('Not implemented')
   },
-  apply (layout, { relativeX, relativeY, startY }, _rand) {
+  apply(layout, { relativeX, relativeY, startY }, _rand) {
     const slope = 6
     const forcedY = absoluteFloorDepth - startY - 0.01
     const endY = -forcedY + relativeY
@@ -16,5 +17,7 @@ export default {
     layout.line(slope, forcedY)
     layout.line(relativeX - slope * 2, 0)
     layout.line(slope, endY)
-  }
+  },
 }
+
+export default sinkhole

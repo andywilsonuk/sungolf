@@ -2,15 +2,16 @@ import { randomInt } from '../../shared/random'
 import { clamp } from '../../shared/utils'
 import { ceilingDepth, floorDepth } from '../constants'
 import { cragName } from './names'
+import type { TerrainFeature } from './types'
 
-export default {
-  get name () {
+const crag: TerrainFeature = {
+  get name() {
     return cragName
   },
-  allowed ({ relativeY, y }) {
+  allowed({ relativeY, y }) {
     return relativeY > 30 && relativeY < 100 && y + 50 < floorDepth
   },
-  apply (layout, { relativeX, relativeY, startY }, rand) {
+  apply(layout, { relativeX, relativeY, startY }, rand) {
     const halfX = relativeX * 0.5
     const halfY = relativeY * 0.5
     const depth1X = randomInt(rand, 0, halfX)
@@ -24,5 +25,7 @@ export default {
     const depth = randomInt(rand, 0, halfX)
     const thickness = clamp(0, floorDepth - startY, randomInt(rand, 0, 30))
     layout.cubic(halfX, halfY, overhangX, slope, depth, thickness)
-  }
+  },
 }
+
+export default crag
