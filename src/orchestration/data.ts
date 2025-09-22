@@ -3,6 +3,29 @@ import { clamp, oneIn, scaleInt, sinWave } from '../shared/utils'
 import { ceilingDepth, floorDepth, specialFeatureDistanceMax, specialFeatureDistanceMin, sinkholeWidthMin, mesaWidth, sinkholeWidthMax, specialWidth } from '../terrain/constants'
 import { cactusName, cloudName, earlyFeatures, endingName, greenFeatures, greenFeaturesPlus, mesaName, sinkholeName, skullName, standardFeatures, towerName, trainingFeatures } from '../terrain/features/names'
 
+interface SpecialFeature {
+  feature: string
+  distanceMinMax: [number, number] | number[]
+  widthMinMax: [number, number] | number[]
+}
+
+interface ZoneData {
+  name: string
+  duration: number
+  start?: number
+  end?: number
+  color?: Hsl
+  backgroundColor?: Hsl
+  backgroundColorStop?: number
+  depthMinMax?: [number, number] | number[] | ((relativeStageId: number, randValue: number) => [number, number] | number[])
+  driftMinMax?: [number, number] | number[] | ((relativeStageId: number, randValue: number) => [number, number] | number[])
+  holeMinDistanceBias?: number
+  allowedFeatures?: string[] | ((relativeStageId: number) => string[])
+  specialFeature?: SpecialFeature | ((relativeStageId: number, randValue?: number) => SpecialFeature | undefined) | undefined
+  preferCrags?: boolean | ((relativeStageId: number, randValue: number) => boolean)
+  water?: boolean | ((relativeStageId: number, randValue: number) => boolean)
+}
+
 const defaultColor = new Hsl(43, 89, 38)
 const maxDrift = 800
 const midDrift = Math.floor(maxDrift * 0.5)
@@ -17,7 +40,7 @@ const grayBackgroundColorStop = 0.6
 const endingBackgroundColor = new Hsl(34, 51, 9)
 const endingBackgroundColorStop = 0
 
-const defaultValues = {
+const defaultValues: Partial<ZoneData> = {
   color: defaultColor,
   backgroundColor: defaultBackgroundColor,
   backgroundColorStop: defaultBackgroundColorStop,
@@ -28,7 +51,7 @@ const defaultValues = {
   water: false
 }
 
-const trainingZone = {
+const trainingZone: ZoneData = {
   name: 'Training',
   duration: 2,
   depthMinMax: (relativeStageId) => relativeStageId <= 0 ? [floorDepth - 200, floorDepth - 200] : [floorDepth - 205, floorDepth - 205],
@@ -36,10 +59,10 @@ const trainingZone = {
   holeMinDistanceBias: 1,
   allowedFeatures: trainingFeatures
 }
-const initialZone = {
+const initialZone: ZoneData = {
   name: 'Initial',
   duration: 310,
-  depthMinMax: (relativeStageId, randValue) => {
+  depthMinMax: (relativeStageId: number, randValue: number) => {
     if (relativeStageId > 20 && oneIn(randValue, 10)) {
       return [ceilingDepth, ceilingDepth + 100]
     }
@@ -48,14 +71,14 @@ const initialZone = {
     const sin = sinWave(relativeStageId, 30, mid, max)
     return [sin - 30, sin]
   },
-  driftMinMax: (relativeStageId, randValue) =>
+  driftMinMax: (relativeStageId: number, randValue: number) =>
     relativeStageId > 10 && oneIn(randValue, 5)
       ? [300, 300]
       : [100, clamp(100, maxDrift, relativeStageId * 4)],
   holeMinDistanceBias: 1,
   allowedFeatures: (relativeStageId) => relativeStageId <= 5 ? earlyFeatures : standardFeatures
 }
-const cactusZone = {
+const cactusZone: ZoneData = {
   name: 'Cactus',
   duration: 5,
   depthMinMax: [floorDepth - 50, floorDepth - 50],
@@ -331,7 +354,7 @@ const yellow3Zone = {
     }
   },
   preferCrags: (_, randValue) => oneIn(randValue, 3),
-  water: (_, randValue) => oneIn(randValue, 40) === 0
+  water: (_, randValue) => oneIn(randValue, 40)
 }
 const endAZone = {
   ...yellow3Zone,
@@ -357,9 +380,9 @@ const endBZone = {
 }
 
 const transitionZoneName = 'transition'
-const transitionZone = (duration) => ({ name: transitionZoneName, duration })
+const transitionZone = (duration: number): ZoneData => ({ name: transitionZoneName, duration })
 
-const zones = [
+const zones: ZoneData[] = [
   trainingZone,
   initialZone,
   cactusZone,
@@ -401,12 +424,12 @@ const zones = [
   endAZone,
   endBZone
 ]
-const allData = () => {
+const allData = (): ZoneData[] => {
   let start = 0
-  let previous
+  let previous: ZoneData | undefined
   return zones.map(d => {
     const end = start + d.duration - 1
-    const result = d.name === transitionZoneName ? { ...previous, ...d, start, end } : { ...defaultValues, ...d, start, end }
+    const result: ZoneData = d.name === transitionZoneName ? { ...previous, ...d, start, end } : { ...defaultValues, ...d, start, end }
     start = end + 1
     previous = result
     return result
