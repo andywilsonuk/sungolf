@@ -10,9 +10,11 @@
     },
     "type": "module",
     "scripts": {
-        "start": "vite dev",
+        "dev": "vite",
         "build": "vite build",
+        "prepreview": "npm run build",
         "preview": "vite preview",
+        "update-packages": "npx npm-check-updates -u && npm install",
         "terraincheck": "node xtools/terrainCheck.js"
     },
     "author": "andywilsonuk",
@@ -25,6 +27,5 @@
         "mainloop.js": "^1.0.4",
         "planck-js": "^0.3.31",
         "poly-decomp": "^0.3.0"
-    },
-    "browserslist": "> 0.5%, not IE 11"
+    }
 }

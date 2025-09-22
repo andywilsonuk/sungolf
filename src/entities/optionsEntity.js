@@ -55,7 +55,6 @@ export default class OptionsEntity {
     this.fullscreenToggleElement = bindToggleButton('fullscreenToggle', this.toggleFullscreen.bind(this, undefined))
     this.startOverElement = bindButton('startOver', this.showStartOverConfirm.bind(this))
     this.startOverConfirmElement = bindButton('startOverConfirm', this.startOverConfirmed.bind(this))
-    this.installElement = bindButton('install', () => {})
 
     this.toggleSound(this.soundOn)
     this.toggleFullscreen(this.fullscreenOn)
@@ -68,9 +67,6 @@ export default class OptionsEntity {
     removeClass(this.startOverElement, 'disabled')
     addClass(this.startOverConfirmElement, 'hide')
     this.hidden = false
-
-    // Hide install button since service worker functionality has been removed
-    addClass(this.installElement, 'hide')
   }
 
   hide () {

@@ -1,18 +1,17 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  root: 'src',
   build: {
-    outDir: '../dist',
-    emptyOutDir: true,
-    sourcemap: false,
-    assetsDir: 'assets'
+    outDir: 'dist',
+    assetsDir: '.'
   },
-  publicDir: '../files',
   server: {
-    open: true
+    port: 8705,
+    strictPort: true,
   },
-  define: {
-    global: 'window'
-  }
+  preview: {
+    port: 8765,
+    strictPort: true,
+  },
+  base: './'
 })

@@ -1,5 +1,3 @@
-/node_modules
-/coverage
-/dist
-/.parcel-cache
-/screenshots*
+node_modules
+dist
+screenshots*

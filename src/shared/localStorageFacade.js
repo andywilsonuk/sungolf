@@ -3,11 +3,11 @@ export default class LocalStorageFacade {
     this.key = `sungolf_1.0_${key}`
   }
 
-  write (serializedState) { global.localStorage.setItem(this.key, serializedState) }
+  write (serializedState) { window.localStorage.setItem(this.key, serializedState) }
 
-  read () { return global.localStorage.getItem(this.key) }
+  read () { return window.localStorage.getItem(this.key) }
 
-  exists () { return global.localStorage.getItem(this.key) != null }
+  exists () { return window.localStorage.getItem(this.key) != null }
 
-  remove () { global.localStorage.removeItem(this.key) }
+  remove () { window.localStorage.removeItem(this.key) }
 }
