@@ -21,5 +21,5 @@ export const initTracks = async (): Promise<void> => {
 export const playAudio = (audioId: string): SoundFxInstance | undefined => audioPlayersMap.get(audioId)?.play()
 export const stopAudio = (audioId: string): void => audioPlayersMap.get(audioId)?.stop()
 
-export const mute = (): void => setMasterVolume(0)
-export const unmute = (): void => setMasterVolume(1)
+export const mute = (): void => { setMasterVolume(0) }
+export const unmute = (): void => { setMasterVolume(1) }

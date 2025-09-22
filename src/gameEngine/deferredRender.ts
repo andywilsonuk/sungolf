@@ -9,10 +9,10 @@ export const deferUntilRender = (fn: () => void): void => {
   queue[queueLength] = fn
   queueLength += 1
 }
-export const deferAddClass = (element: Element, className: string): void => deferUntilRender(addClass.bind(undefined, element, className))
-export const deferRemoveClass = (element: Element, className: string): void => deferUntilRender(removeClass.bind(undefined, element, className))
-export const deferOpacityShow = (element: SVGElement): void => deferUntilRender(opacityShow.bind(undefined, element))
-export const deferOpacityHide = (element: SVGElement): void => deferUntilRender(opacityHide.bind(undefined, element))
+export const deferAddClass = (element: Element, className: string): void => { deferUntilRender(addClass.bind(undefined, element, className)) }
+export const deferRemoveClass = (element: Element, className: string): void => { deferUntilRender(removeClass.bind(undefined, element, className)) }
+export const deferOpacityShow = (element: SVGElement): void => { deferUntilRender(opacityShow.bind(undefined, element)) }
+export const deferOpacityHide = (element: SVGElement): void => { deferUntilRender(opacityHide.bind(undefined, element)) }
 
 const render = (): void => {
   if (queueLength === 0) { return }

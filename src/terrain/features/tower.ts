@@ -1,0 +1,24 @@
+import { towerName } from './names'
+import type { TerrainFeature } from './types'
+
+const tower: TerrainFeature = {
+  get name() {
+    return towerName
+  },
+  get isSpecial() {
+    return true
+  },
+  allowed() {
+    throw new Error('Not implemented')
+  },
+  apply(layout, { relativeX, relativeY }, _rand) {
+    const side = 1
+    layout.line(side, 0)
+    const peakX = relativeX * 0.5
+    const peakY = -20
+    layout.quadratic(relativeX - side * 2, relativeY, peakX, peakY)
+    layout.line(side, 0)
+  },
+}
+
+export default tower

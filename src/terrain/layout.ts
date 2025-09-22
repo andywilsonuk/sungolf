@@ -9,8 +9,8 @@ interface Command {
 export class Layout {
   commands: Command[]
   initialDepth: number
-  currentDistance: number = 0
-  currentDepth: number = 0
+  currentDistance = 0
+  currentDepth = 0
 
   constructor(initialDepth: number) {
     this.commands = []
@@ -56,7 +56,7 @@ export class Layout {
     const distance = this.currentDistance
     const initialDepth = this.initialDepth
     this.add(`L${distance} ${absoluteFloorDepth}`, distance, absoluteFloorDepth)
-    this.add(`L${0} ${absoluteFloorDepth}`, 0, absoluteFloorDepth)
-    this.add(`L${0} ${initialDepth}`, 0, initialDepth)
+    this.add(`L0 ${absoluteFloorDepth}`, 0, absoluteFloorDepth)
+    this.add(`L0 ${initialDepth}`, 0, initialDepth)
   }
 }

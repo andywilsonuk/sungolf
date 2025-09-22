@@ -53,18 +53,18 @@ export const getOneEntityByTag = (tag: string): Entity => tags.get(tag)![0]
 const init = (): void => {
   const spawned: Entity[] = []
 
-  let nextSpawn = entities.filter((en) => en.spawn).filter(en => spawned.indexOf(en) === -1)
+  let nextSpawn = entities.filter((en) => en.spawn).filter((en) => !spawned.includes(en))
   while (nextSpawn.length !== 0) {
-    nextSpawn.forEach(en => en.spawn!())
+    nextSpawn.forEach((en) => { en.spawn!() })
     spawned.push(...nextSpawn)
-    nextSpawn = entities.filter((en) => en.spawn).filter(en => spawned.indexOf(en) === -1)
+    nextSpawn = entities.filter((en) => en.spawn).filter((en) => !spawned.includes(en))
   }
 
-  entities.filter((en) => en.init).forEach((en) => en.init!())
+  entities.filter((en) => en.init).forEach((en) => { en.init!() })
 }
 
 const renderInitial = (): void => {
-  entities.filter((en) => en.renderInitial).forEach((en) => en.renderInitial!())
+  entities.filter((en) => en.renderInitial).forEach((en) => { en.renderInitial!() })
 }
 
 const beginFrame = (timestamp: number): void => {
@@ -96,7 +96,7 @@ const endFrame = (): void => {
 }
 
 const clear = (): void => {
-  entities.filter((en) => en.destroy).forEach((en) => en.destroy!())
+  entities.filter((en) => en.destroy).forEach((en) => { en.destroy!() })
   entities.length = 0
   beginFrameEntities.length = 0
   updateEntities.length = 0
