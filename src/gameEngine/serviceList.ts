@@ -70,10 +70,10 @@ const render = (interpolationPercentage: number): void => {
   }
 }
 
-const endFrame = (panic: boolean): void => {
+const endFrame = (): void => {
   const services = endFrameBindings
   for (const service of services) {
-    service(panic)
+    service(false) // Default panic to false
   }
 }
 
@@ -84,7 +84,7 @@ const paused = (): void => {
   }
 }
 
-const resume = (): void => {
+const resumed = (): void => {
   const services = resumedBindings
   for (const service of services) {
     service()
@@ -98,6 +98,6 @@ export default {
   render,
   endFrame,
   paused,
-  resume,
+  resumed,
   clear,
 }
