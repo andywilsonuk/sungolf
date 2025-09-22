@@ -10,17 +10,15 @@
     },
     "type": "module",
     "scripts": {
-        "start": "(if exist dist rmdir dist /S /Q) && parcel serve ./src/index.html --open Chrome",
-        "build": "(if exist dist rmdir dist /S /Q) && parcel build ./src/index.html --no-source-maps --public-url .",
+        "start": "vite dev",
+        "build": "vite build",
+        "preview": "vite preview",
         "terraincheck": "node xtools/terrainCheck.js"
     },
     "author": "andywilsonuk",
     "devDependencies": {
-        "@parcel/packager-raw-url": "^2.7.0",
-        "@parcel/transformer-webmanifest": "^2.7.0",
-        "@parcel/service-worker": "^2.7.0",
-        "parcel": "^2.7.0",
-        "standard": "^17.0.0-2"
+        "standard": "^17.0.0-2",
+        "vite": "^7.1.7"
     },
     "dependencies": {
         "alea": "^1.0.1",

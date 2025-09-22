@@ -1,4 +1,3 @@
-import { canInstall, installPrompt, isInstalled } from '../appInstall'
 import { mute, unmute } from '../audioSystem'
 import { deferAddClass, deferRemoveClass } from '../gameEngine/deferredRender'
 import { subscribe } from '../gameEngine/signalling'
@@ -56,7 +55,7 @@ export default class OptionsEntity {
     this.fullscreenToggleElement = bindToggleButton('fullscreenToggle', this.toggleFullscreen.bind(this, undefined))
     this.startOverElement = bindButton('startOver', this.showStartOverConfirm.bind(this))
     this.startOverConfirmElement = bindButton('startOverConfirm', this.startOverConfirmed.bind(this))
-    this.installElement = bindButton('install', this.installApp.bind(this))
+    this.installElement = bindButton('install', () => {})
 
     this.toggleSound(this.soundOn)
     this.toggleFullscreen(this.fullscreenOn)
@@ -67,18 +66,11 @@ export default class OptionsEntity {
     removeClass(this.optionsElement, 'fadeOut')
     removeClass(this.optionsElement, 'hide')
     removeClass(this.startOverElement, 'disabled')
-    removeClass(this.installElement, 'hide')
     addClass(this.startOverConfirmElement, 'hide')
     this.hidden = false
 
-    if (isInstalled()) {
-      addClass(this.installElement, 'hide')
-      document.querySelectorAll('a').forEach(a => a.removeAttribute('href'))
-    } else if (canInstall()) {
-      removeClass(this.installElement, 'disabled')
-    } else {
-      addClass(this.installElement, 'disabled')
-    }
+    // Hide install button since service worker functionality has been removed
+    addClass(this.installElement, 'hide')
   }
 
   hide () {
@@ -131,11 +123,5 @@ export default class OptionsEntity {
   startOverConfirmed () {
     this.hide()
     this.stateEntity.reset.bind(this.stateEntity)
-  }
-
-  async installApp () {
-    if (!canInstall()) { return }
-    deferAddClass(this.installElement, 'disabled')
-    await installPrompt()
   }
 }
