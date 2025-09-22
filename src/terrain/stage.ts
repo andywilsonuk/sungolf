@@ -12,7 +12,7 @@ import plotterMinimalVertical from './plotterMinimalVertical'
 import plotterSegments from './plotterSegments'
 
 const debug = false
-const featureMap = new Map(terrainFeatures.map(f => [f.name, f]))
+const featureMap = new Map(terrainFeatures.map((f) => [f.name, f]))
 
 interface StageParameters {
   initialDepth: number
@@ -56,16 +56,19 @@ export class Stage {
   layoutSegments(): void {
     if (debug) { console.log(`---> stage ${this.id}`, Object.entries(this.parameters)) }
     const { holeDepth, holeDistance, drift, allowedFeatures, preferCrags, specialFeature } = this.parameters
-    const features = allowedFeatures.map(name => featureMap.get(name)!).filter(f => f)
+    const features = allowedFeatures.map((name) => featureMap.get(name)).filter((f): f is TerrainFeature => Boolean(f))
 
-    const segmentMarkers: Array<{
+    const segmentMarkers: {
       segment: TerrainFeature
       distance: number
       relativeX: number
-    }> = []
+    }[] = []
 
     if (this.id !== finalStageId) {
-      segmentMarkers.push({ segment: featureMap.get(holeName)!, distance: holeDistance, relativeX: holeTotalWidth })
+      const holeFeature = featureMap.get(holeName)
+      if (holeFeature) {
+        segmentMarkers.push({ segment: holeFeature, distance: holeDistance, relativeX: holeTotalWidth })
+      }
     }
     if (specialFeature !== undefined) {
       const { name, distance, width } = specialFeature
@@ -74,9 +77,9 @@ export class Stage {
         distance2 = holeDistance - width
       }
       segmentMarkers.push({
-        segment: featureMap.get(name)!,
+        segment: featureMap.get(name) ?? (() => { throw new Error(`Feature ${name} not found`) })(),
         distance: distance2,
-        relativeX: width
+        relativeX: width,
       })
     }
 
@@ -92,20 +95,25 @@ export class Stage {
       let { segment } = p
 
       if (segment === null) {
-        const allowed = features.filter(s => s.allowed(p))
+        const allowed = features.filter((s) => s.allowed(p))
         if (allowed.length === 0) {
           console.warn('No features allowed', p)
+          continue
         }
-        const cragSegment = preferCrags ? allowed.find(x => x === crag) : undefined
+        const cragSegment = preferCrags ? allowed.find((x) => x === crag) : undefined
         segment = cragSegment ?? randomItem(randSelection, allowed)
-        p.setSegment(segment!)
+        if (segment) {
+          p.setSegment(segment)
+        }
       }
-      segment!.apply(this.layout, p, randSelection)
+      if (segment) {
+        segment.apply(this.layout, p, randSelection)
 
-      if (segment!.isSpecial) {
-        this.specialFeaturePlacement = { name: segment!.name, x: p.x, y: p.y }
+        if (segment.isSpecial) {
+          this.specialFeaturePlacement = { name: segment.name, x: p.x, y: p.y }
+        }
+        if (debug) { console.log(`${segment.name} w${p.relativeX} h${p.relativeY} x${p.x} y${p.y}`) }
       }
-      if (debug) { console.log(`${segment!.name} w${p.relativeX} h${p.relativeY} x${p.x} y${p.y}`) }
     }
 
     this.layout.finalise()
@@ -114,10 +122,11 @@ export class Stage {
   }
 
   get distance(): number {
-    return this.plotter.last!.x
+    const lastPoint = this.plotter.last
+    return lastPoint ? lastPoint.x : 0
   }
 
-  get commands(): Array<{ command: string; x: number; y: number }> {
+  get commands(): { command: string, x: number, y: number }[] {
     return this.layout.commands
   }
 }

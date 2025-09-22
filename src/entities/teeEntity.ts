@@ -1,4 +1,4 @@
-import { Box, Vec2 } from 'planck-js'
+import { Box, Vec2, type Body } from 'planck-js'
 import { createBody, physicsScale } from '../gameEngine/physics'
 import { subscribe } from '../gameEngine/signalling'
 import Hsl from '../shared/hsl'
@@ -12,26 +12,31 @@ const teeHeight = holeDepth * 0.5 * physicsScale
 const teeDepth = 6
 
 export default class TeeEntity {
-  constructor () {
+  position: Vec2 | null
+  visible: boolean
+  dirty: boolean
+  teeBody!: Body
+
+  constructor() {
     this.position = null
     this.visible = false
     this.dirty = false
   }
 
-  init () {
+  init(): void {
     this.teeBody = createBody({
-      active: false
+      active: false,
     })
     this.teeBody.createFixture(Box(teeWidth, teeHeight, Vec2(teeWidth, teeHeight)), {
       friction: 1,
-      filterCategoryBits: terrainCategory
+      filterCategoryBits: terrainCategory,
     })
     subscribe(stageReadySignal, this.start.bind(this))
     subscribe(stageCompleteSignal, this.stop.bind(this))
     subscribe(stageTransitioningSignal, this.hide.bind(this))
   }
 
-  renderOnCanvas (ctx) {
+  renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     this.dirty = false
     if (!this.visible) { return }
 
@@ -43,18 +48,18 @@ export default class TeeEntity {
     ctx.restore()
   }
 
-  start ({ startPosition }) {
+  start({ startPosition }: { startPosition: Vec2 }): void {
     this.teeBody.setPosition(startPosition)
     this.teeBody.setActive(true)
     this.visible = true
     this.dirty = true
   }
 
-  stop () {
+  stop(): void {
     this.teeBody.setActive(false)
   }
 
-  hide () {
+  hide(): void {
     this.visible = false
     this.dirty = true
   }

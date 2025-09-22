@@ -51,15 +51,15 @@ export class Plotter {
   }
 
   getByIndex(index: number): PlotterPoint {
-    return this.points[index]!
+    return this.points[index]
   }
 
-  getBySegment(segment: any): PlotterPoint | undefined {
-    return this.points.find(p => p.segment === segment)
+  getBySegment(segment: TerrainFeature): PlotterPoint | undefined {
+    return this.points.find((p) => p.segment === segment)
   }
 
   getPoints(): [number, number][] {
-    return this.points.map(p => p.absolute)
+    return this.points.map((p) => p.absolute)
   }
 
   availableYDistance(point: PlotterPoint, downwards: boolean): number {
@@ -68,7 +68,7 @@ export class Plotter {
     const deltaAdjacent = downwards && previousPointY - nextPointY < 0 ? point.relativeY : (point.next?.relativeY ?? 0)
     const pointRemainingY = Math.min(
       downwards ? this.maximumY - point.y : point.y - this.minimumY,
-      this.maximumYRelative - Math.min(0, deltaAdjacent)
+      this.maximumYRelative - Math.min(0, deltaAdjacent),
     )
     return pointRemainingY
   }

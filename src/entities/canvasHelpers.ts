@@ -14,7 +14,7 @@ const colors = [
   new Hsl(29, 96, 49),
   new Hsl(58, 99, 50),
   new Hsl(82, 94, 39),
-].map(color => color.asString(fixtureAlpha))
+].map((color) => color.asString(fixtureAlpha))
 let colorNext = 0
 const getColor = (body: Body): string => {
   const existing = colorMap.get(body)

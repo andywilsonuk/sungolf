@@ -1,17 +1,23 @@
-import { Polygon, Vec2 } from 'planck-js'
+import { Polygon, Vec2, type Body, type Fixture } from 'planck-js'
 import { createBody, physicsScale } from '../gameEngine/physics'
 import { subscribeResize } from '../gameEngine/renderCanvas'
 import { updateBoxFixtureVertices } from '../shared/planckHelpers'
 import { boundaryCategory } from './constants'
 
-const createBoundaryBox = (body) =>
+const createBoundaryBox = (body: Body): Fixture =>
   body.createFixture(Polygon([Vec2.zero(), Vec2.zero(), Vec2.zero(), Vec2.zero()]), {
     isSensor: true,
-    filterCategoryBits: boundaryCategory
+    filterCategoryBits: boundaryCategory,
   })
 
 export default class BoundaryEntity {
-  init () {
+  boundaryBody!: Body
+  leftBoundary!: Fixture
+  rightBoundary!: Fixture
+  topBoundary!: Fixture
+  bottomBoundary!: Fixture
+
+  init(): void {
     this.boundaryBody = createBody()
     this.leftBoundary = createBoundaryBox(this.boundaryBody)
     this.rightBoundary = createBoundaryBox(this.boundaryBody)
@@ -21,7 +27,7 @@ export default class BoundaryEntity {
     subscribeResize(this.onResize.bind(this))
   }
 
-  onResize ({ width, height }) {
+  onResize({ width, height }: { width: number, height: number }): void {
     const sceneWidth = width * physicsScale
     const sceneHeight = height * physicsScale
     const boundaryThickness = 50 * physicsScale

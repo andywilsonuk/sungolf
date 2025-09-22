@@ -44,7 +44,7 @@ const up = (e: TouchEvent): void => {
 }
 const cancel = (e?: TouchEvent): void => {
   if (!held) { return }
-  if (e && e.cancelable) { e.preventDefault() }
+  if (e?.cancelable) { e.preventDefault() }
   held = false
   cancelled = true
   changedThisFrame = true

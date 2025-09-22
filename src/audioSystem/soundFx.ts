@@ -77,7 +77,7 @@ export default class SoundFx {
     }
     if (looping) {
       instance.start(this.connectTrack(instance), true)
-      instance.source!.playbackRate.value = playbackRate
+      instance.source.playbackRate.value = playbackRate
     }
   }
 
