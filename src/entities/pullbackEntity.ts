@@ -1,4 +1,5 @@
-import { Vec2 } from 'planck-js'
+import type { Vec2 } from 'planck-js'
+import { Vec2 as Vec2Constructor } from 'planck-js'
 import { subscribe } from '../gameEngine/signalling'
 import { getOneEntityByTag } from '../gameEngine/world'
 import { clamp, normalize } from '../shared/utils'
@@ -17,7 +18,7 @@ const stiffnessMultiplier = 4
 const arrowColorString = new Hsl(224, 75, 45).asString()
 const shadowColorString = new Hsl(225, 6, 13).asString()
 
-const draw = (ctx, headSize, length, dash) => {
+const draw = (ctx: CanvasRenderingContext2D, headSize: number, length: number, dash: number[]): void => {
   ctx.beginPath()
   ctx.moveTo(0, 0)
   ctx.lineTo(headSize, headSize * -0.25)
@@ -34,22 +35,31 @@ const draw = (ctx, headSize, length, dash) => {
 }
 
 export default class PullbackEntity {
-  constructor () {
-    this.downPosition = Vec2.zero()
-    this.upPosition = Vec2.zero()
+  private downPosition: Vec2 = Vec2Constructor.zero()
+  private upPosition: Vec2 = Vec2Constructor.zero()
+  private allowed = false
+  private isDown = false
+  public dirty = false
+  private ballEntity: any
+  private canvasElement!: HTMLCanvasElement
+  private ctx!: CanvasRenderingContext2D
+
+  constructor() {
+    this.downPosition = Vec2Constructor.zero()
+    this.upPosition = Vec2Constructor.zero()
     this.allowed = false
     this.isDown = false
     this.dirty = false
   }
 
-  init () {
+  init(): void {
     this.ballEntity = getOneEntityByTag(ballTag)
     subscribe(stageReadySignal, this.start.bind(this))
     subscribe(stageCompleteSignal, this.stop.bind(this))
     subscribeResize(this.onResize.bind(this))
   }
 
-  beginFrame (_timestamp) {
+  beginFrame(_timestamp: number): void {
     if (!this.allowed) { return }
     const { position, held, cancelled } = inputState()
     const isAlreadyDown = this.isDown
@@ -80,24 +90,24 @@ export default class PullbackEntity {
     }
   }
 
-  onResize ({ renderWidth, renderHeight }) {
-    this.canvasElement = document.getElementById('pullback')
+  onResize({ renderWidth, renderHeight }: { renderWidth: number; renderHeight: number }): void {
+    this.canvasElement = document.getElementById('pullback')! as HTMLCanvasElement
     this.canvasElement.width = renderWidth
     this.canvasElement.height = renderHeight
   }
 
-  renderInitial () {
-    this.ctx = this.canvasElement.getContext('2d')
+  renderInitial(): void {
+    this.ctx = this.canvasElement.getContext('2d')!
   }
 
-  render () {
+  render(): void {
     if (!this.dirty) { return }
     const { ctx } = this
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 
     if (!this.isDown) { return }
 
-    const delta = Vec2.sub(this.upPosition, this.downPosition)
+    const delta = this.upPosition.sub(this.downPosition)
     const normalizedLength = normalize(delta.length(), minPullback, maxPullback)
     const currentLength = clamp(0, 1, normalizedLength)
 
@@ -133,22 +143,22 @@ export default class PullbackEntity {
     ctx.restore()
   }
 
-  project () {
+  project(): void {
     if (this.ballEntity.isMoving) { return }
-    const delta = Vec2.sub(this.downPosition, this.upPosition)
+    const delta = this.downPosition.sub(this.upPosition)
     const currentLength = delta.length()
     if (currentLength < minLengthForProject) { return }
     const difference = Math.min(0.25, currentLength / maxPullback) * stiffnessMultiplier
-    const force = Vec2.mul(delta, difference * stiffness)
+    const force = delta.mul(difference * stiffness)
 
     this.ballEntity.applyForce(force)
   }
 
-  start () {
+  start(): void {
     this.allowed = true
   }
 
-  stop () {
+  stop(): void {
     this.allowed = false
     this.isDown = false
     this.dirty = true
