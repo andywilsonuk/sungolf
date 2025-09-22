@@ -1,0 +1,141 @@
+import type Hsl from '../shared/hsl'
+import { randomFillArray, randomGenerator, randomInt } from '../shared/random'
+import { biasedInt, clamp, isFunction, lerp, lerpColor, lerpMinMax, normalize, scaleInt } from '../shared/utils'
+import { holeDistanceMax, holeDistanceMin } from '../terrain/constants'
+import data from './data'
+
+interface ExpandedSpecialFeature {
+  name: string
+  distance: number
+  width: number
+}
+
+interface CalculatorResult {
+  stageId: number
+  zoneName: string
+  initialDepth: number
+  holeDepth: number
+  holeDistance: number
+  color: Hsl
+  backgroundColor: Hsl
+  backgroundColorStop: number
+  drift: number
+  allowedFeatures: string[]
+  preferCrags: boolean
+  water: boolean
+  specialFeature?: ExpandedSpecialFeature
+}
+
+type FunctionExpanderValue = unknown
+
+const expandFunction = (relativeStageId: number, zone?: unknown) =>
+  (value: FunctionExpanderValue, r?: number) =>
+    isFunction(value) ? value(relativeStageId, r, zone) : value
+
+const getDataIndexForStage = (id: number): number => {
+  let dataIndex = 0
+
+  if (id < 0) { return 0 } // special case for -1
+
+  while (dataIndex < data.length) {
+    const d = data[dataIndex]
+    if (d.end !== undefined && d.end >= id) { return dataIndex }
+    dataIndex++
+  }
+  return data.length - 2 // special case for end
+}
+
+const getHoleRand = (stageId: number) => randomGenerator(`hole${stageId}`)
+const getExpandHoleRand = (stageId: number) => randomGenerator(`expandHole${stageId}`)
+const getOrchestrationRand = (stageId: number) => randomGenerator(`orchestration${stageId}`)
+
+const expandHoleDepthMinMax = (stageId: number): [number, number] => {
+  const { start, depthMinMax } = data[getDataIndexForStage(stageId)]
+  const randValue = getExpandHoleRand(stageId).next()
+  const functionExpander = expandFunction(stageId - (start ?? 0))
+  const result = functionExpander(depthMinMax, randValue)
+  return Array.isArray(result) ? result as [number, number] : [0, 0]
+}
+
+const getHoleDepth = (stageId: number): number => {
+  const d = data[getDataIndexForStage(stageId)]
+  const { start, end, depthMinMax } = d
+  const n = normalize(stageId, start ?? 0, end ?? 0)
+  const next = data[getDataIndexForStage(stageId) + 1] ?? data[data.length - 1]
+
+  let minMax: [number, number]
+  if (isFunction(depthMinMax)) {
+    minMax = expandHoleDepthMinMax(stageId)
+  } else {
+    const lerpStart = depthMinMax as [number, number] | number[]
+    const lerpEnd = expandHoleDepthMinMax(next.start ?? 0)
+    minMax = lerpMinMax(lerpStart as [number, number], lerpEnd, n)
+  }
+
+  const [depthMin, depthMax] = minMax
+  return randomInt(getHoleRand(stageId), depthMin, depthMax)
+}
+
+export default (stageId: number): CalculatorResult => {
+  if (stageId < 0) { stageId = 0 }
+  const zone = data[getDataIndexForStage(stageId)]
+  const {
+    start, end, name: zoneName, color, backgroundColor, backgroundColorStop, holeMinDistanceBias, driftMinMax,
+    allowedFeatures, preferCrags, water, specialFeature,
+  } = zone
+  const next = data[getDataIndexForStage(stageId) + 1] ?? data[data.length - 1]
+  const n = clamp(0, 1, normalize(stageId, start ?? 0, end ?? 0))
+
+  const initialDepth = getHoleDepth(stageId - 1 < 0 ? 0 : stageId - 1)
+  const holeDepth = getHoleDepth(stageId)
+
+  const randValues = randomFillArray(getOrchestrationRand(stageId), 10)
+  const functionExpander = expandFunction(stageId - (start ?? 0), zone)
+
+  let driftMin: number, driftMax: number
+  if (isFunction(driftMinMax)) {
+    const driftResult = functionExpander(driftMinMax, randValues[0])
+    ;[driftMin, driftMax] = Array.isArray(driftResult) ? driftResult as [number, number] : [0, 0]
+  } else {
+    const lerpStart = driftMinMax as [number, number] | number[]
+    const randNext = getOrchestrationRand(next.start ?? 0).next()
+    const lerpEnd = functionExpander(next.driftMinMax, randNext)
+    ;[driftMin, driftMax] = lerpMinMax(lerpStart as [number, number], lerpEnd as [number, number], n)
+  }
+
+  const expandedSpecialFeature = expandSpecial(functionExpander(specialFeature, randValues[9]), randValues[5], randValues[6])
+
+  const result: CalculatorResult = {
+    stageId,
+    zoneName: zoneName ?? 'Unknown',
+    initialDepth,
+    holeDepth,
+    holeDistance: biasedInt(randValues[1], randValues[2], holeDistanceMin, holeDistanceMax, holeDistanceMin, holeMinDistanceBias ?? 0),
+    color: lerpColor(color ?? zone.color!, next.color ?? zone.color!, n),
+    backgroundColor: lerpColor(backgroundColor ?? zone.backgroundColor!, next.backgroundColor ?? zone.backgroundColor!, n),
+    backgroundColorStop: lerp(backgroundColorStop ?? 0, next.backgroundColorStop ?? 0, n),
+    drift: scaleInt(randValues[3], driftMin, driftMax),
+    allowedFeatures: functionExpander(allowedFeatures, randValues[4]) as string[],
+    preferCrags: functionExpander(preferCrags, randValues[7]) as boolean,
+    water: functionExpander(water, randValues[8]) as boolean,
+    specialFeature: expandedSpecialFeature,
+  }
+  return result
+}
+
+function expandSpecial(specialFeature: unknown, randValue1: number, randValue2: number): ExpandedSpecialFeature | undefined {
+  if (specialFeature === undefined) { return }
+
+  // Type guard to ensure specialFeature has the expected structure
+  if (typeof specialFeature === 'object' && specialFeature !== null && 'feature' in specialFeature) {
+    const sf = specialFeature as { feature: string, distanceMinMax: [number, number], widthMinMax: [number, number] }
+    const [distanceMin, distanceMax] = sf.distanceMinMax
+    const [widthMin, widthMax] = sf.widthMinMax
+
+    return {
+      name: sf.feature,
+      distance: scaleInt(randValue1, distanceMin, distanceMax),
+      width: scaleInt(randValue2, widthMin, widthMax),
+    }
+  }
+}

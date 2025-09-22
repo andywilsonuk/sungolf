@@ -4,32 +4,48 @@ const expandedWidthMax = 1.5
 const expandedHeightMax = 1.8
 
 let ratio = referenceWidth / referenceHeight
-let devicePixelRatio
+let devicePixelRatio: number
 let expandedWidthPercent = 1
 let expandedHeightPercent = 1
-let gameAreaElement
-let renderWidth, renderHeight
-const resizeSubscribers = []
+let gameAreaElement: HTMLElement
+let renderWidth: number, renderHeight: number
 
-const init = () => {
-  gameAreaElement = document.getElementById('gameArea')
-  window.addEventListener('resize', debouncedResize, false)
-  window.screen.orientation?.addEventListener('change', debouncedResize, false)
+interface ResizePayload {
+  width: number
+  height: number
+  renderWidth: number
+  renderHeight: number
 }
 
-const renderInitial = () => {
+type ResizeCallback = (payload: ResizePayload) => void
+
+const resizeSubscribers: ResizeCallback[] = []
+
+const init = (): void => {
+  const element = document.getElementById('gameArea')
+  if (!element) {
+    throw new Error('Game area element not found')
+  }
+  gameAreaElement = element
+  window.addEventListener('resize', debouncedResize, false)
+  if (window.screen.orientation) {
+    window.screen.orientation.addEventListener('change', debouncedResize, false)
+  }
+}
+
+const renderInitial = (): void => {
   updateSize()
 }
 
 let pending = false
 
-const debouncedResize = () => {
+const debouncedResize = (): void => {
   if (pending) { return }
   pending = true
   window.requestAnimationFrame(updateSize)
 }
 
-const updateSize = () => {
+const updateSize = (): void => {
   const refWidthToHeight = referenceWidth / referenceHeight
   const windowWidth = document.documentElement.clientWidth
   const windowHeight = document.documentElement.clientHeight
@@ -70,37 +86,37 @@ const updateSize = () => {
   pending = false
 }
 
-export const applyPixelScale = (ctx2) => {
+export const applyPixelScale = (ctx2: CanvasRenderingContext2D): void => {
   ctx2.resetTransform()
   ctx2.scale(devicePixelRatio, devicePixelRatio)
 }
-export const applyRatioScale = (ctx2) => {
+
+export const applyRatioScale = (ctx2: CanvasRenderingContext2D): void => {
   ctx2.scale(ratio, ratio)
 }
 
-export const heightPadding = () => {
+export const heightPadding = (): number => {
   if (expandedHeightPercent === 1) { return 0 }
   return referenceHeight * (1 - expandedHeightPercent)
 }
 
-export const subscribeResize = (callback) => {
+export const subscribeResize = (callback: ResizeCallback): void => {
   resizeSubscribers.push(callback)
 }
 
-const notifySubscribers = () => {
-  const payload = {
+const notifySubscribers = (): void => {
+  const payload: ResizePayload = {
     width: referenceWidth * expandedWidthPercent,
     height: referenceHeight * expandedHeightPercent,
     renderWidth,
-    renderHeight
+    renderHeight,
   }
-  for (let i = 0; i < resizeSubscribers.length; i++) {
-    const subscriberCallback = resizeSubscribers[i]
+  for (const subscriberCallback of resizeSubscribers) {
     subscriberCallback(payload)
   }
 }
 
 export default {
   init,
-  renderInitial
+  renderInitial,
 }

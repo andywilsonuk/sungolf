@@ -41,5 +41,5 @@ export default [
   cloud,
   cactus,
   tower,
-  ending
+  ending,
 ]
