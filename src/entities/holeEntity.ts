@@ -1,4 +1,5 @@
-import { Box, Vec2 } from 'planck-js'
+import type { Body, Contact, Vec2 } from 'planck-js'
+import { Box, Vec2 as Vec2Constructor } from 'planck-js'
 import { getTimestamp } from '../gameEngine/gameLoop'
 import { createBody, registerBeginContact, registerEndContact, physicsScale } from '../gameEngine/physics'
 import { dispatchSignal, subscribe } from '../gameEngine/signalling'
@@ -8,16 +9,20 @@ import { finalStageId, stageCompleteSignal, stageReadySignal } from './constants
 const delayBeforeComplete = 0.5 * 1000
 
 export default class HoleEntity {
-  constructor () {
+  private stageId: number | null = null
+  private completeTimestamp: number | null = null
+  private holeBody!: Body
+
+  constructor() {
     this.stageId = null
     this.completeTimestamp = null
   }
 
-  init () {
+  init(): void {
     this.holeBody = createBody({
       active: false
     })
-    this.holeBody.createFixture(Box(holeTotalWidth * 0.5 * physicsScale, holeDepth * 0.25 * physicsScale, Vec2(holeTotalWidth * -0.5 * physicsScale, holeDepth * 0.75 * physicsScale)), {
+    this.holeBody.createFixture(Box(holeTotalWidth * 0.5 * physicsScale, holeDepth * 0.25 * physicsScale, Vec2Constructor(holeTotalWidth * -0.5 * physicsScale, holeDepth * 0.75 * physicsScale)), {
       isSensor: true
     })
 
@@ -27,35 +32,35 @@ export default class HoleEntity {
     registerEndContact(this.endContactTest.bind(this))
   }
 
-  enableHole ({ stageId, holePosition }) {
+  enableHole({ stageId, holePosition }: { stageId: number; holePosition: Vec2 }): void {
     if (stageId === finalStageId) { return }
     this.stageId = stageId
     this.holeBody.setPosition(holePosition)
     this.holeBody.setActive(true)
   }
 
-  disableHole () {
+  disableHole(): void {
     this.holeBody.setActive(false)
   }
 
-  beginFrame (timestamp) {
+  beginFrame(timestamp: number): void {
     if (this.completeTimestamp === null || timestamp < this.completeTimestamp) { return }
     this.holeComplete()
   }
 
-  contactTest (contact) {
+  contactTest(contact: Contact): void {
     if (this.completeTimestamp === null && this.isContactWithHole(contact)) {
       this.completeTimestamp = getTimestamp() + delayBeforeComplete
     }
   }
 
-  endContactTest (contact) {
+  endContactTest(contact: Contact): void {
     if (this.isContactWithHole(contact)) {
       this.completeTimestamp = null
     }
   }
 
-  isContactWithHole (contact) {
+  isContactWithHole(contact: Contact): boolean {
     const bodyA = contact.getFixtureA().getBody()
     const bodyB = contact.getFixtureB().getBody()
     const holeBody = this.holeBody
@@ -63,7 +68,8 @@ export default class HoleEntity {
     return bodyA === holeBody || bodyB === holeBody
   }
 
-  holeComplete () {
+  holeComplete(): void {
+    if (this.stageId === null) return
     dispatchSignal(stageCompleteSignal, this.stageId)
     this.completeTimestamp = null
   }
