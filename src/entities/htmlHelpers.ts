@@ -6,7 +6,7 @@ type AttributeRecord = Record<string, string | number>
 
 const applyAttributes = (element: SVGElement, attributes?: AttributeRecord): void => {
   if (attributes) {
-    Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value.toString()))
+    Object.entries(attributes).forEach(([key, value]) => { element.setAttribute(key, value.toString()) })
   }
 }
 
@@ -89,12 +89,12 @@ export const basicElement = (tag: string, attributes?: AttributeRecord): HTMLEle
 }
 
 export const addClass = (element: Element, ...classNames: string[]): void => {
-  for (let i = 0; i < classNames.length; i++) {
-    element.classList.add(classNames[i])
+  for (const className of classNames) {
+    element.classList.add(className)
   }
 }
 
-export const removeClass = (element: Element, className: string): void => element.classList.remove(className)
+export const removeClass = (element: Element, className: string): void => { element.classList.remove(className) }
 
 export const createTranslate = (element: SVGGraphicsElement, position: [number, number] = zero): SVGTransform => {
   const svgElement = document.getElementById(svgRootId) as unknown as SVGSVGElement

@@ -1,4 +1,3 @@
-
 import type Hsl from '../shared/hsl'
 import calculator from './calculator'
 import data from './data'
@@ -27,8 +26,7 @@ const debug = false
 const cache: CachedResult[] = []
 
 const getFromCache = (id: number): CachedResult | undefined => {
-  for (let i = 0; i < cache.length; i++) {
-    const result = cache[i]
+  for (const result of cache) {
     if (result.stageId === id) { return result }
   }
   return undefined
@@ -52,6 +50,7 @@ export default (stageId: number): CachedResult => {
 export const zoneColors = (): (Hsl | undefined)[] => data.map(({ color }) => color)
 export const zoneRanges = (): { start: number | undefined, end: number | undefined }[] => data.map(({ start, end }) => ({ start, end }))
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 if (debug) {
-  data.forEach(zone => console.log(`${zone.name}@${zone.start} for ${zone.duration}`))
+  data.forEach((zone) => { console.log(`${zone.name}@${zone.start} for ${zone.duration}`) })
 }

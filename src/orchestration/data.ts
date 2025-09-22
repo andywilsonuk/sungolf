@@ -48,7 +48,7 @@ const defaultValues: Partial<ZoneData> = {
   allowedFeatures: standardFeatures,
   specialFeature: undefined,
   preferCrags: false,
-  water: false
+  water: false,
 }
 
 const trainingZone: ZoneData = {
@@ -57,7 +57,7 @@ const trainingZone: ZoneData = {
   depthMinMax: (relativeStageId) => relativeStageId <= 0 ? [floorDepth - 200, floorDepth - 200] : [floorDepth - 205, floorDepth - 205],
   driftMinMax: (relativeStageId) => relativeStageId <= 0 ? [0, 0] : [20, 20],
   holeMinDistanceBias: 1,
-  allowedFeatures: trainingFeatures
+  allowedFeatures: trainingFeatures,
 }
 const initialZone: ZoneData = {
   name: 'Initial',
@@ -76,7 +76,7 @@ const initialZone: ZoneData = {
       ? [300, 300]
       : [100, clamp(100, maxDrift, relativeStageId * 4)],
   holeMinDistanceBias: 1,
-  allowedFeatures: (relativeStageId) => relativeStageId <= 5 ? earlyFeatures : standardFeatures
+  allowedFeatures: (relativeStageId) => relativeStageId <= 5 ? earlyFeatures : standardFeatures,
 }
 const cactusZone: ZoneData = {
   name: 'Cactus',
@@ -88,30 +88,30 @@ const cactusZone: ZoneData = {
     ? {
         feature: cactusName,
         distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-        widthMinMax: [specialWidth, specialWidth]
+        widthMinMax: [specialWidth, specialWidth],
       }
-    : undefined
+    : undefined,
 }
 const yellow1aZone = {
   name: 'Yellow1a',
   duration: 19,
   depthMinMax: [ceilingDepth + 100, floorDepth - 100],
   driftMinMax: [150, 350],
-  holeMinDistanceBias: 0.5
+  holeMinDistanceBias: 0.5,
 }
 const flatZone = {
   name: 'Flat',
   duration: 2,
   depthMinMax: [300, 300],
   driftMinMax: [0, 0],
-  allowedFeatures: trainingFeatures
+  allowedFeatures: trainingFeatures,
 }
 const yellow1bZone = {
   name: 'Yellow1b',
   duration: 119,
   depthMinMax: [ceilingDepth + 100, floorDepth - 100],
   driftMinMax: [150, 350],
-  holeMinDistanceBias: 0.5
+  holeMinDistanceBias: 0.5,
 }
 const initialSinkholeZone = {
   name: 'Sinkhole',
@@ -122,8 +122,8 @@ const initialSinkholeZone = {
   specialFeature: {
     feature: sinkholeName,
     distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-    widthMinMax: [sinkholeWidthMin, sinkholeWidthMin]
-  }
+    widthMinMax: [sinkholeWidthMin, sinkholeWidthMin],
+  },
 }
 const yellow1cZone = {
   name: 'Yellow1c',
@@ -134,9 +134,9 @@ const yellow1cZone = {
     ? {
         feature: sinkholeName,
         distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-        widthMinMax: [sinkholeWidthMin, sinkholeWidthMin]
+        widthMinMax: [sinkholeWidthMin, sinkholeWidthMin],
       }
-    : undefined
+    : undefined,
 }
 const cloudZone = {
   ...yellow1bZone,
@@ -145,13 +145,13 @@ const cloudZone = {
   specialFeature: {
     feature: cloudName,
     distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-    widthMinMax: [specialWidth, specialWidth]
-  }
+    widthMinMax: [specialWidth, specialWidth],
+  },
 }
 const yellow1dZone = {
   ...yellow1cZone,
   name: 'Yellow1c',
-  duration: 104
+  duration: 104,
 }
 const skullZone = {
   ...yellow1bZone,
@@ -160,13 +160,13 @@ const skullZone = {
   specialFeature: {
     feature: skullName,
     distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-    widthMinMax: [specialWidth, specialWidth]
-  }
+    widthMinMax: [specialWidth, specialWidth],
+  },
 }
 const yellow1eZone = {
   ...yellow1cZone,
   name: 'Yellow1d',
-  duration: 1
+  duration: 1,
 }
 const pink1aZone = {
   name: 'Pink1a',
@@ -176,19 +176,19 @@ const pink1aZone = {
   backgroundColorStop: redBackgroundColorStop,
   depthMinMax: [ceilingDepth, ceilingDepth + 100],
   driftMinMax: [maxDrift - 100, maxDrift],
-  preferCrags: true
+  preferCrags: true,
 }
 const pink1bZone = {
   ...pink1aZone,
   name: 'Pink1b',
   duration: 66,
-  color: new Hsl(356, 39, 48)
+  color: new Hsl(356, 39, 48),
 }
 const pink1cZone = {
   ...pink1aZone,
   name: 'Pink1c',
   duration: 66,
-  color: new Hsl(356, 69, 40)
+  color: new Hsl(356, 69, 40),
 }
 const towerZone = {
   ...pink1cZone,
@@ -197,14 +197,14 @@ const towerZone = {
   specialFeature: {
     feature: towerName,
     distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-    widthMinMax: [specialWidth, specialWidth]
-  }
+    widthMinMax: [specialWidth, specialWidth],
+  },
 }
 const pink1dZone = {
   ...pink1aZone,
   name: 'Pink1d',
   duration: 49,
-  color: new Hsl(0, 74, 40)
+  color: new Hsl(0, 74, 40),
 }
 const green1aZone = {
   name: 'Green1a',
@@ -221,16 +221,16 @@ const green1aZone = {
     return {
       feature: sinkholeName,
       distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-      widthMinMax: [sinkholeWidthMin, sinkholeWidthMin]
+      widthMinMax: [sinkholeWidthMin, sinkholeWidthMin],
     }
   },
-  water: true
+  water: true,
 }
 const green1bZone = {
   ...green1aZone,
   name: 'Green1b',
   duration: 20,
-  color: new Hsl(91, 50, 41)
+  color: new Hsl(91, 50, 41),
 }
 const green1cZone = {
   ...green1aZone,
@@ -238,7 +238,7 @@ const green1cZone = {
   duration: 30,
   color: new Hsl(91, 53, 32),
   depthMinMax: [floorDepth - 100, floorDepth],
-  driftMinMax: [60, 100]
+  driftMinMax: [60, 100],
 }
 const yellow2Zone = {
   name: 'Yellow2',
@@ -252,17 +252,17 @@ const yellow2Zone = {
       return {
         feature: sinkholeName,
         distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-        widthMinMax: [sinkholeWidthMin, sinkholeWidthMin]
+        widthMinMax: [sinkholeWidthMin, sinkholeWidthMin],
       }
     } else if (chance === 2) {
       return {
         feature: mesaName,
         distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-        widthMinMax: [mesaWidth, mesaWidth]
+        widthMinMax: [mesaWidth, mesaWidth],
       }
     }
   },
-  preferCrags: true
+  preferCrags: true,
 }
 const redZone = {
   name: 'Red',
@@ -272,7 +272,7 @@ const redZone = {
   backgroundColorStop: redBackgroundColorStop,
   depthMinMax: [ceilingDepth, ceilingDepth + 100],
   driftMinMax: [maxDrift, maxDrift],
-  preferCrags: true
+  preferCrags: true,
 }
 const gray1aZone = {
   name: 'Gray1a',
@@ -281,19 +281,19 @@ const gray1aZone = {
   backgroundColor: grayBackgroundColor,
   backgroundColorStop: grayBackgroundColorStop,
   depthMinMax: [ceilingDepth, floorDepth],
-  driftMinMax: [midDrift - 100, maxDrift]
+  driftMinMax: [midDrift - 100, maxDrift],
 }
 const gray1bZone = {
   ...gray1aZone,
   name: 'Gray1b',
   duration: 20,
-  color: new Hsl(12, 61, 30)
+  color: new Hsl(12, 61, 30),
 }
 const gray1cZone = {
   ...gray1aZone,
   name: 'Gray1c',
   duration: 20,
-  color: new Hsl(21, 36, 58)
+  color: new Hsl(21, 36, 58),
 }
 const wet1aZone = {
   name: 'Wet1a',
@@ -307,29 +307,29 @@ const wet1aZone = {
     ? {
         feature: sinkholeName,
         distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-        widthMinMax: [sinkholeWidthMin, sinkholeWidthMax]
+        widthMinMax: [sinkholeWidthMin, sinkholeWidthMax],
       }
     : undefined,
   holeMinDistanceBias: 0.6,
-  water: true
+  water: true,
 }
 const wet1bZone = {
   ...wet1aZone,
   name: 'Wet1b',
   duration: 20,
-  color: new Hsl(36, 33, 33)
+  color: new Hsl(36, 33, 33),
 }
 const wet1cZone = {
   ...wet1aZone,
   name: 'Wet1c',
   duration: 20,
-  color: new Hsl(37, 33, 41)
+  color: new Hsl(37, 33, 41),
 }
 const wet1dZone = {
   ...wet1aZone,
   name: 'Wet1d',
   duration: 20,
-  color: new Hsl(36, 33, 51)
+  color: new Hsl(36, 33, 51),
 }
 const yellow3Zone = {
   name: 'Yellow3',
@@ -343,18 +343,18 @@ const yellow3Zone = {
       return {
         feature: sinkholeName,
         distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-        widthMinMax: [sinkholeWidthMin, sinkholeWidthMin]
+        widthMinMax: [sinkholeWidthMin, sinkholeWidthMin],
       }
     } else if (chance > 50) {
       return {
         feature: mesaName,
         distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-        widthMinMax: [mesaWidth, mesaWidth]
+        widthMinMax: [mesaWidth, mesaWidth],
       }
     }
   },
   preferCrags: (_, randValue) => oneIn(randValue, 3),
-  water: (_, randValue) => oneIn(randValue, 40)
+  water: (_, randValue) => oneIn(randValue, 40),
 }
 const endAZone = {
   ...yellow3Zone,
@@ -366,7 +366,7 @@ const endAZone = {
   backgroundColor: endingBackgroundColor,
   backgroundColorStop: endingBackgroundColorStop,
   specialFeature: undefined,
-  water: true
+  water: true,
 }
 const endBZone = {
   ...endAZone,
@@ -375,8 +375,8 @@ const endBZone = {
   specialFeature: {
     feature: endingName,
     distanceMinMax: [specialFeatureDistanceMax, specialFeatureDistanceMax],
-    widthMinMax: [sinkholeWidthMax, sinkholeWidthMax]
-  }
+    widthMinMax: [sinkholeWidthMax, sinkholeWidthMax],
+  },
 }
 
 const transitionZoneName = 'transition'
@@ -422,12 +422,12 @@ const zones: ZoneData[] = [
   yellow3Zone,
   transitionZone(60),
   endAZone,
-  endBZone
+  endBZone,
 ]
 const allData = (): ZoneData[] => {
   let start = 0
   let previous: ZoneData | undefined
-  return zones.map(d => {
+  return zones.map((d) => {
     const end = start + d.duration - 1
     const result: ZoneData = d.name === transitionZoneName ? { ...previous, ...d, start, end } : { ...defaultValues, ...d, start, end }
     start = end + 1

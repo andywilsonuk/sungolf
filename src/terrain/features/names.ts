@@ -35,21 +35,21 @@ export const standardFeatures = [
   spurRightName,
   cliffLeftName,
   cliffRightName,
-  cragName
+  cragName,
 ]
 export const greenFeatures = [
   flatName,
   slopeName,
   ridgeDownName,
-  ridgeUpName
+  ridgeUpName,
 ]
 export const greenFeaturesPlus = [
   ...greenFeatures,
   hillName,
-  depressionName
+  depressionName,
 ]
 export const trainingFeatures = [
   flatName,
-  slopeName
+  slopeName,
 ]
 export const earlyFeatures = arrayMinus(standardFeatures, [cliffRightName])
