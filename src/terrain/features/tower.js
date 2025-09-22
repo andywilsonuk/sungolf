@@ -10,7 +10,7 @@ export default {
   allowed () {
     throw new Error('Not implemented')
   },
-  apply (layout, { relativeX, relativeY }, rand) {
+  apply (layout, { relativeX, relativeY }, _rand) {
     const side = 1
     layout.line(side, 0)
     const peakX = relativeX * 0.5

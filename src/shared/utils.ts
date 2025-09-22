@@ -58,7 +58,7 @@ export const lerpMinMax = (
   return [min, max]
 }
 
-export const isFunction = (value: unknown): value is Function => typeof value === 'function'
+export const isFunction = (value: unknown): value is (...args: unknown[]) => unknown => typeof value === 'function'
 
 export const isBoolean = (value: unknown): value is boolean => value === false || value === true
 

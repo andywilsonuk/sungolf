@@ -71,8 +71,8 @@ declare module 'planck-js' {
     createBody(def?: BodyDef): Body
     destroyBody(body: Body): void
     step(timeStep: number, velocityIterations?: number, positionIterations?: number): void
-    on(event: string, callback: Function): void
-    off(event: string, callback: Function): void
+    on(event: string, callback: (...args: unknown[]) => void): void
+    off(event: string, callback: (...args: unknown[]) => void): void
   }
 
   export interface BodyDef {

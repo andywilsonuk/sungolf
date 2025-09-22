@@ -1,6 +1,6 @@
-const log = []
+const log: string[] = []
 
-export default (text, outputToConsole = true) => {
+export default (text: unknown, outputToConsole: boolean = true): void => {
   const nowPadded = String(Math.floor(window.performance.now())).padStart(5, '0')
   log.push(`${nowPadded}: ${text}`)
   if (outputToConsole) {
@@ -8,4 +8,4 @@ export default (text, outputToConsole = true) => {
   }
 }
 
-export const entries = () => log
+export const entries = (): string[] => log

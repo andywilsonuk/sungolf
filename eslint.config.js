@@ -1,6 +1,7 @@
 import js from '@eslint/js'
 import tseslint from '@typescript-eslint/eslint-plugin'
 import tsparser from '@typescript-eslint/parser'
+import globals from 'globals'
 
 export default [
   js.configs.recommended,
@@ -12,6 +13,10 @@ export default [
         ecmaVersion: 2020,
         sourceType: 'module',
         project: './tsconfig.json'
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node
       }
     },
     plugins: {
@@ -23,7 +28,8 @@ export default [
       '@typescript-eslint/prefer-interface-definition': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn'
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unsafe-function-type': 'off'
     }
   },
   {

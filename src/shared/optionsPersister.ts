@@ -1,5 +1,5 @@
 import LocalStorageFacade from './localStorageFacade'
-import { objectToCodedText, textToObject, SerializationTemplate } from './serializer'
+import { objectToCodedText, textToObject } from './serializer'
 
 interface OptionsState {
   sound: boolean
