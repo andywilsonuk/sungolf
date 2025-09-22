@@ -7,7 +7,17 @@ import { addClass, removeClass } from './htmlHelpers'
 const strokesUntilSkippable = 20
 
 export default class ScoreEntity {
-  constructor () {
+  public tags = new Set([scoreTag])
+  private stageId = 0
+  private score = 0
+  private stroke = 0
+  private skipVisible = false
+  private terrainEntity: any
+  private scoreElement!: HTMLElement
+  private strokeElement!: HTMLElement
+  private skipElement!: HTMLElement
+
+  constructor() {
     this.tags = new Set([scoreTag])
     this.stageId = 0
     this.score = 0
@@ -15,43 +25,43 @@ export default class ScoreEntity {
     this.skipVisible = false
   }
 
-  init () {
+  init(): void {
     this.terrainEntity = getOneEntityByTag(terrainTag)
     subscribe(stageReadySignal, this.stageReady.bind(this))
     subscribe(gamePausedSignal, this.toggleSkip.bind(this, false))
     subscribe(gameResumedSignal, this.toggleSkip.bind(this, true))
   }
 
-  renderInitial () {
-    this.scoreElement = document.getElementById('score')
-    this.strokeElement = document.getElementById('stroke')
-    this.skipElement = document.getElementById('skip')
+  renderInitial(): void {
+    this.scoreElement = document.getElementById('score')!
+    this.strokeElement = document.getElementById('stroke')!
+    this.skipElement = document.getElementById('skip')!
     addClass(this.skipElement, 'hide')
     this.skipElement.addEventListener('click', this.skipStage.bind(this))
   }
 
-  setScore (score, stroke) {
+  setScore(score: number, stroke: number): void {
     this.score = score
     this.stroke = stroke
     deferUntilRender(this.renderScore.bind(this))
   }
 
-  stageReady ({ stageId }) {
+  stageReady({ stageId }: { stageId: number }): void {
     this.stageId = stageId
     deferUntilRender(this.renderScore.bind(this))
   }
 
-  skipStage () {
+  skipStage(): void {
     dispatchSignal(stageCompleteSignal, this.stageId)
   }
 
-  toggleSkip (visible) {
+  toggleSkip(visible: boolean): void {
     this.skipVisible = visible
     deferUntilRender(this.renderScore.bind(this))
   }
 
-  renderScore () {
-    this.scoreElement.innerText = this.score
+  renderScore(): void {
+    this.scoreElement.innerText = String(this.score)
     this.strokeElement.innerText = `+${this.stroke}`
 
     if (this.stageId === 0) {

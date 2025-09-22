@@ -1,3 +1,4 @@
+import type { Body, Fixture } from 'planck-js'
 import { Polygon, Vec2 } from 'planck-js'
 import { createBody, physicsScale } from '../gameEngine/physics'
 import { subscribeResize } from '../gameEngine/renderCanvas'
@@ -12,21 +13,28 @@ const colorString = waterColor.asString()
 const visibleOffset = 12 * physicsScale
 const boundaryThickness = 50 * physicsScale
 
-const createBoundaryBox = (body) =>
+const createBoundaryBox = (body: Body): Fixture =>
   body.createFixture(Polygon([Vec2.zero(), Vec2.zero(), Vec2.zero(), Vec2.zero()]), {
     isSensor: true,
     filterCategoryBits: waterCategory
   })
 
 export default class WaterEntity {
-  constructor () {
+  private visible = false
+  private width: number | null = null
+  private y: number | null = null
+  public dirty = false
+  private waterBody!: Body
+  private waterBoundary!: Fixture
+
+  constructor() {
     this.visible = false
     this.width = null
     this.y = null
     this.dirty = false
   }
 
-  init () {
+  init(): void {
     this.waterBody = createBody({ active: false })
     this.waterBoundary = createBoundaryBox(this.waterBody)
 
@@ -34,21 +42,21 @@ export default class WaterEntity {
     subscribe(stageReadySignal, this.stageReady.bind(this))
   }
 
-  onResize ({ width }) {
+  onResize({ width }: { width: number }): void {
     this.width = width * physicsScale
     this.y = absoluteFloorDepth * physicsScale - visibleOffset
     updateBoxFixtureVertices(this.waterBoundary, this.width, boundaryThickness, 0, this.y)
   }
 
-  stageReady ({ stageId }) {
+  stageReady({ stageId }: { stageId: number }): void {
     this.visible = orchestration(stageId - 1).water || orchestration(stageId).water || orchestration(stageId + 1).water
     this.waterBody.setActive(this.visible)
     this.dirty = true
   }
 
-  renderOnCanvas (ctx) {
+  renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     this.dirty = false
-    if (!this.visible) { return }
+    if (!this.visible || this.width === null || this.y === null) { return }
 
     ctx.save()
     translateHeightPadding(ctx)
