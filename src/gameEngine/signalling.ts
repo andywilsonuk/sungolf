@@ -25,7 +25,7 @@ export const subscribe = (signal: string, callback: SignalCallback): Unsubscribe
     signals.set(signal, subscribers)
   }
   subscribers.push(callback)
-  return () => unsubscribe(signal, callback)
+  return () => { unsubscribe(signal, callback) }
 }
 
 export const dispatchSignal = (signal: string, ...args: unknown[]): void => {

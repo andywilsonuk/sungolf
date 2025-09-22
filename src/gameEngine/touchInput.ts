@@ -1,12 +1,19 @@
+interface InputState {
+  position: [number, number] | null
+  held: boolean
+  cancelled: boolean
+}
+
 let changedThisFrame = false
-let currentX, currentY
+let currentX: number
+let currentY: number
 let held = false
 let cancelled = false
-let element
+let element: HTMLElement | null
 
-const down = (e) => {
+const down = (e: TouchEvent): void => {
   const { clientX, clientY } = e.changedTouches[0]
-  const { left, top, right, bottom, width, height } = element.getBoundingClientRect()
+  const { left, top, right, bottom, width, height } = element!.getBoundingClientRect()
   const pad = Math.min(width, height) * 0.05
   if (clientX < left + pad || clientX > right - pad || clientY < top + pad || clientY > bottom - pad) {
     return
@@ -17,7 +24,7 @@ const down = (e) => {
   currentY = clientY
   changedThisFrame = true
 }
-const move = (e) => {
+const move = (e: TouchEvent): void => {
   if (!held) { return }
   e.stopImmediatePropagation()
   const { clientX, clientY } = e.changedTouches[0]
@@ -25,7 +32,7 @@ const move = (e) => {
   currentY = clientY
   changedThisFrame = true
 }
-const up = (e) => {
+const up = (e: TouchEvent): void => {
   if (!held) { return }
   if (e.cancelable) { e.preventDefault() }
 
@@ -35,7 +42,7 @@ const up = (e) => {
   held = false
   changedThisFrame = true
 }
-const cancel = (e) => {
+const cancel = (e?: TouchEvent): void => {
   if (!held) { return }
   if (e && e.cancelable) { e.preventDefault() }
   held = false
@@ -43,20 +50,20 @@ const cancel = (e) => {
   changedThisFrame = true
 }
 
-export const bindListeners = () => {
+export const bindListeners = (): void => {
   element = document.getElementById('pullback')
-  element.addEventListener('touchstart', down)
-  element.addEventListener('touchmove', move)
-  element.addEventListener('touchend', up)
-  element.addEventListener('touchcancel', cancel)
+  element?.addEventListener('touchstart', down)
+  element?.addEventListener('touchmove', move)
+  element?.addEventListener('touchend', up)
+  element?.addEventListener('touchcancel', cancel)
 }
-export const unbindListeners = () => {
-  element.removeEventListener('touchstart', down)
-  element.removeEventListener('touchmove', move)
-  element.removeEventListener('touchend', up)
-  element.removeEventListener('touchcancel', cancel)
+export const unbindListeners = (): void => {
+  element?.removeEventListener('touchstart', down)
+  element?.removeEventListener('touchmove', move)
+  element?.removeEventListener('touchend', up)
+  element?.removeEventListener('touchcancel', cancel)
 }
-export const current = (inputState) => {
+export const current = (inputState: InputState): void => {
   if (!changedThisFrame) { return }
   inputState.position = [currentX, currentY]
   inputState.held = held

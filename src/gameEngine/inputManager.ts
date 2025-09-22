@@ -1,18 +1,24 @@
 import * as mouse from './mouseInput'
 import * as touch from './touchInput'
 
-const current = {
-  position: null,
-  held: false,
-  cancelled: false
+interface InputState {
+  position: [number, number] | null
+  held: boolean
+  cancelled: boolean
 }
 
-const init = () => {
+const current: InputState = {
+  position: null,
+  held: false,
+  cancelled: false,
+}
+
+const init = (): void => {
   mouse.bindListeners()
   touch.bindListeners()
 }
 
-const beginFrame = () => {
+const beginFrame = (): void => {
   current.position = null
   current.held = false
   current.cancelled = false
@@ -20,17 +26,17 @@ const beginFrame = () => {
   touch.current(current)
 }
 
-const clear = () => {
+const clear = (): void => {
   mouse.unbindListeners()
   touch.unbindListeners()
 }
 
-export const inputState = () => current
+export const inputState = (): InputState => current
 
-const paused = () => {
+const paused = (): void => {
   clear()
 }
-const resumed = () => {
+const resumed = (): void => {
   init()
 }
 
@@ -39,5 +45,5 @@ export default {
   beginFrame,
   clear,
   paused,
-  resumed
+  resumed,
 }

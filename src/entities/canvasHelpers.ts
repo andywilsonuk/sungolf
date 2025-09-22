@@ -1,3 +1,4 @@
+import type { Body, Fixture, Shape } from 'planck-js'
 import { physicsScale } from '../gameEngine/physics'
 import { applyPixelScale, applyRatioScale, heightPadding } from '../gameEngine/renderCanvas'
 import Hsl from '../shared/hsl'
@@ -6,25 +7,25 @@ const lineWidth = 0.01
 const fixtureAlpha = 0.5
 export const physicsScaleInverse = 1 / physicsScale
 
-const colorMap = new Map()
+const colorMap = new Map<Body, string>()
 const colors = [
   new Hsl(4, 84, 57),
   new Hsl(198, 97, 41),
   new Hsl(29, 96, 49),
   new Hsl(58, 99, 50),
-  new Hsl(82, 94, 39)
+  new Hsl(82, 94, 39),
 ].map(color => color.asString(fixtureAlpha))
 let colorNext = 0
-const getColor = (body) => {
+const getColor = (body: Body): string => {
   const existing = colorMap.get(body)
   if (existing !== undefined) { return existing }
   colorMap.set(body, colors[colorNext])
   colorNext = (colorNext + 1) % colors.length
-  return colorMap.get(body)
+  return colorMap.get(body)!
 }
 
-const drawPolygon = (ctx, body, shape) => {
-  const vertices = shape.m_vertices
+const drawPolygon = (ctx: CanvasRenderingContext2D, body: Body, shape: Shape): void => {
+  const vertices = (shape as any).m_vertices
   if (!vertices.length) {
     return
   }
@@ -52,8 +53,8 @@ const drawPolygon = (ctx, body, shape) => {
   ctx.stroke()
 }
 
-const drawCircle = (ctx, body, shape) => {
-  const radius = shape.m_radius
+const drawCircle = (ctx: CanvasRenderingContext2D, body: Body, shape: Shape): void => {
+  const radius = (shape as any).m_radius
   const { x, y } = body.getPosition()
 
   circle(ctx, radius, x + lineWidth, y + lineWidth)
@@ -61,11 +62,11 @@ const drawCircle = (ctx, body, shape) => {
   ctx.fill()
 }
 
-export const debugBodyRender = (ctx, body, applyOffsetY = false) => {
+export const debugBodyRender = (ctx: CanvasRenderingContext2D, body: Body, applyOffsetY = false): void => {
   const debugRenderStrokeColor = new Hsl(0, 0, 0)
 
   for (
-    let fixture = body.getFixtureList();
+    let fixture: Fixture | null = body.getFixtureList();
     fixture;
     fixture = fixture.getNext()
   ) {
@@ -100,32 +101,32 @@ export const debugBodyRender = (ctx, body, applyOffsetY = false) => {
   }
 }
 
-export const debugHorizontalLine = (ctx, y) => {
+export const debugHorizontalLine = (ctx: CanvasRenderingContext2D, y: number): void => {
   ctx.save()
   ctx.fillStyle = '#000000'
   ctx.fillRect(0, y, 1000, 1)
   ctx.restore()
 }
 
-export const scalePixelRatio = (ctx) => {
+export const scalePixelRatio = (ctx: CanvasRenderingContext2D): void => {
   ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
 }
 
-export const scalePhysics = (ctx) => {
+export const scalePhysics = (ctx: CanvasRenderingContext2D): void => {
   ctx.scale(physicsScaleInverse, physicsScaleInverse)
 }
-export const translatePhysics = (ctx, x, y) => {
+export const translatePhysics = (ctx: CanvasRenderingContext2D, x: number, y: number): void => {
   ctx.translate(x * physicsScaleInverse, y * physicsScaleInverse)
 }
-export const translateHeightPadding = (ctx) => {
+export const translateHeightPadding = (ctx: CanvasRenderingContext2D): void => {
   ctx.translate(0, -heightPadding())
 }
 
-export const flipHorizontal = (ctx) => {
+export const flipHorizontal = (ctx: CanvasRenderingContext2D): void => {
   ctx.scale(-1, 1)
 }
 
-export const circle = (ctx, radius, x = 0, y = 0) => {
+export const circle = (ctx: CanvasRenderingContext2D, radius: number, x = 0, y = 0): void => {
   ctx.beginPath()
   ctx.arc(x, y, radius, 0, 2 * Math.PI)
   ctx.closePath()

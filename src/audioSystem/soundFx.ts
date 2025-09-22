@@ -4,7 +4,19 @@ import SoundFxInstance from './soundFxInstance'
 const maxInstances = 5
 
 export default class SoundFx {
-  constructor (id, filepath, volume = 1, looped = false) {
+  id: string
+  filepath: string | URL
+  volume: number
+  loop: boolean
+  audioBuffer: AudioBuffer | null
+  audioBufferRaw: ArrayBuffer | null
+  audioGain: GainNode | null
+  instances: SoundFxInstance[]
+  endedCallback: (() => void) | null
+  playRequested: boolean
+  initRequested: boolean
+
+  constructor(id: string, filepath: string | URL, volume = 1, looped = false) {
     this.id = id
     this.filepath = filepath
     this.volume = volume
@@ -18,14 +30,14 @@ export default class SoundFx {
     this.initRequested = false
   }
 
-  pause () {
+  pause(): void {
     for (let i = 0; i < this.instances.length; i++) {
       const instance = this.instances[i]
       instance.stop(true)
     }
   }
 
-  resume () {
+  resume(): void {
     for (let i = 0; i < this.instances.length; i++) {
       const instance = this.instances[i]
       if (!instance.paused) { continue }
@@ -33,7 +45,7 @@ export default class SoundFx {
     }
   }
 
-  play () {
+  play(): SoundFxInstance | undefined {
     if (this.audioBuffer === null) {
       this.playRequested = true
       return undefined
@@ -48,14 +60,14 @@ export default class SoundFx {
     return undefined
   }
 
-  stop () {
+  stop(): void {
     for (let i = 0; i < this.instances.length; i++) {
       const instance = this.instances[i]
       instance.stop(false)
     }
   }
 
-  ended (instance) {
+  ended(instance: SoundFxInstance): void {
     if (instance.source === null) { return }
     const looping = this.loop && instance.looping
     const playbackRate = instance.source.playbackRate.value
@@ -65,21 +77,21 @@ export default class SoundFx {
     }
     if (looping) {
       instance.start(this.connectTrack(instance), true)
-      instance.source.playbackRate.value = playbackRate
+      instance.source!.playbackRate.value = playbackRate
     }
   }
 
-  onEnd (callback) {
+  onEnd(callback: () => void): void {
     this.endedCallback = callback
   }
 
-  connectTrack (instance) {
-    const source = createFromBuffer(this.audioBuffer, this.audioGain)
+  connectTrack(instance: SoundFxInstance): AudioBufferSourceNode {
+    const source = createFromBuffer(this.audioBuffer!, this.audioGain!)
     source.addEventListener('ended', this.ended.bind(this, instance))
     return source
   }
 
-  async load () {
+  async load(): Promise<void> {
     const response = await window.fetch(this.filepath)
     this.audioBufferRaw = await response.arrayBuffer()
     if (this.initRequested) {
@@ -87,7 +99,7 @@ export default class SoundFx {
     }
   }
 
-  async init () {
+  async init(): Promise<void> {
     if (this.audioBufferRaw === null) {
       this.initRequested = true
       return

@@ -2,16 +2,16 @@ import { pause, resume } from '../audioSystem/audioContext'
 import { playAudio } from '../audioSystem'
 
 const maxQueue = 10
-const queue = Array.from({ length: maxQueue })
+const queue: string[] = Array.from({ length: maxQueue })
 let queueLength = 0
-const framePlayed = Array.from({ length: maxQueue })
+const framePlayed: string[] = Array.from({ length: maxQueue })
 let framePlayedLength = 0
 
-export const enqueueAudio = (audioId) => {
+export const enqueueAudio = (audioId: string): void => {
   queue[queueLength] = audioId
   queueLength += 1
 }
-const isPlayedThisFrame = (id) => {
+const isPlayedThisFrame = (id: string): boolean => {
   for (let j = 0; j < framePlayedLength; j++) {
     const previous = framePlayed[j]
     if (previous === id) {
@@ -21,7 +21,7 @@ const isPlayedThisFrame = (id) => {
   return false
 }
 
-const endFrame = (panic) => {
+const endFrame = (panic: boolean): void => {
   if (queueLength === 0) { return }
   if (queueLength >= maxQueue) {
     throw new Error('Maxed queue: audio')
@@ -39,15 +39,15 @@ const endFrame = (panic) => {
   framePlayedLength = 0
 }
 
-const paused = () => {
+const paused = (): void => {
   pause()
 }
-const resumed = () => {
+const resumed = (): void => {
   resume()
 }
 
 export default {
   endFrame,
   paused,
-  resumed
+  resumed,
 }

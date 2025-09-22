@@ -5,6 +5,7 @@ import globals from 'globals'
 
 export default tseslint.config({
   files: ['src/**/*.ts', 'src/**/*.tsx'],
+  ignores: ['src/**/*.js'], // Temporarily ignore JS files during conversion process
   extends: [
     js.configs.recommended,
     stylistic.configs.recommended,
