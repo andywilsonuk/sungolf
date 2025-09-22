@@ -6,7 +6,7 @@ declare global {
     webkitFullscreenElement?: Element
     webkitExitFullscreen?: () => void
   }
-  
+
   interface Element {
     webkitRequestFullscreen?: (options?: FullscreenOptions) => void
   }
@@ -16,7 +16,7 @@ export const goFullscreen = async (): Promise<void> => {
   try {
     if (document.body.webkitRequestFullscreen) {
       document.body.webkitRequestFullscreen({ navigationUI: 'hide' })
-    } else if (document.body.requestFullscreen) {
+    } else {
       await document.body.requestFullscreen({ navigationUI: 'hide' })
     }
   } catch (error) {

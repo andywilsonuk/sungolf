@@ -1,38 +1,37 @@
-import js from '@eslint/js'
-import tseslint from '@typescript-eslint/eslint-plugin'
-import tsparser from '@typescript-eslint/parser'
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import stylistic from '@stylistic/eslint-plugin'
 import globals from 'globals'
 
-export default [
-  js.configs.recommended,
-  {
-    files: ['**/*.ts', '**/*.js'],
-    languageOptions: {
-      parser: tsparser,
-      parserOptions: {
-        ecmaVersion: 2020,
-        sourceType: 'module',
-        project: './tsconfig.json'
-      },
-      globals: {
-        ...globals.browser,
-        ...globals.node
-      }
-    },
-    plugins: {
-      '@typescript-eslint': tseslint
-    },
-    rules: {
-      ...tseslint.configs.recommended.rules,
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      '@typescript-eslint/prefer-interface-definition': 'off',
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unsafe-function-type': 'off'
+export default tseslint.config({
+  files: ['src/**/*.ts', 'src/**/*.tsx'],
+  extends: [
+    js.configs.recommended,
+    stylistic.configs.recommended,
+    tseslint.configs.strictTypeChecked,
+    tseslint.configs.stylisticTypeChecked,
+  ],
+  plugins: {
+    '@stylistic': stylistic,
+  },
+  languageOptions: {
+    globals: globals.browser,
+    parserOptions: {
+      projectService: true,
+      tsconfigRootDir: import.meta.dirname,
     }
   },
-  {
-    ignores: ['dist/**', 'node_modules/**']
+  rules: {
+    ...stylistic.configs.recommended.rules,
+    '@typescript-eslint/consistent-type-imports': 'error',
+    '@typescript-eslint/no-unused-vars': ['error', { args: 'all', argsIgnorePattern: '^_', caughtErrors: 'all', caughtErrorsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_', varsIgnorePattern: '^_', ignoreRestSiblings: true }],
+    '@typescript-eslint/restrict-template-expressions': [ 'error', { allowNumber: true, allow: [{ name: 'ReadonlySignal', from: 'package', package: '@preact/signals' }] }],
+    '@typescript-eslint/no-empty-function': 'off',
+    '@typescript-eslint/no-empty-object-type': 'off',
+    '@typescript-eslint/no-unnecessary-type-parameters': 'off',
+    '@stylistic/max-statements-per-line': ['error', { max: 2 }],
+    '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }],
+    '@stylistic/arrow-parens': ['error', 'always'],
+    '@stylistic/jsx-one-expression-per-line': 'off',
   }
-]
+})

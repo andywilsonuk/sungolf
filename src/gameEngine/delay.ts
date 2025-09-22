@@ -10,8 +10,7 @@ let nowOffset = 0
 let previousTimestamp: number | undefined
 
 export const delay = (fn: () => void, time: number): void => {
-  for (let i = 0; i < delayed.length; i++) {
-    const d = delayed[i]
+  for (const d of delayed) {
     if (d[0] !== undefined) { continue }
     d[0] = nowOffset + time
     d[1] = fn
@@ -29,8 +28,7 @@ const beginFrame = (timestamp: number): void => {
   }
   previousTimestamp = timestamp
   if (delayedLength === 0) { return }
-  for (let i = 0; i < delayed.length; i++) {
-    const d = delayed[i]
+  for (const d of delayed) {
     const time = d[0]
     if (time === undefined) { continue }
     if (time <= nowOffset) {
@@ -50,5 +48,5 @@ const clear = (): void => {
 
 export default {
   beginFrame,
-  clear
+  clear,
 }

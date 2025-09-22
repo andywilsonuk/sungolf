@@ -5,28 +5,32 @@ interface RandomGenerator {
   next(): number
 }
 
-export const randomGenerator = (seed: string | number): RandomGenerator => new (Alea as any)(seed)
+export const randomGenerator = (seed: string | number): RandomGenerator => {
+  const aleaInstance = Alea(seed)
+  return {
+    next: () => aleaInstance.next(),
+  }
+}
 
-export const randomInt = (rand: RandomGenerator, min: number, max: number): number => 
+export const randomInt = (rand: RandomGenerator, min: number, max: number): number =>
   scaleInt(rand.next(), min, max) // max inclusive
 
-export const randomRange = (rand: RandomGenerator, min: number, max: number): number => 
+export const randomRange = (rand: RandomGenerator, min: number, max: number): number =>
   scaleRange(rand.next(), min, max)
 
 export const randomTernary = <T>(
-  rand: RandomGenerator, 
-  value1: T = false as T, 
-  value2: T = true as T
-): T => 
+  rand: RandomGenerator,
+  value1: T = false as T,
+  value2: T = true as T,
+): T =>
   rand.next() < 0.5 ? value1 : value2
 
 export const randomShuffle = <T>(rand: RandomGenerator, list: T[]): T[] => {
   // based on https://stackoverflow.com/a/2450976
   let currentIndex = list.length
-  let randomIndex
 
   while (currentIndex !== 0) {
-    randomIndex = Math.floor(rand.next() * currentIndex)
+    const randomIndex = Math.floor(rand.next() * currentIndex)
     currentIndex -= 1;
 
     [list[currentIndex], list[randomIndex]] = [list[randomIndex], list[currentIndex]]
@@ -45,11 +49,11 @@ export const randomItem = <T>(rand: RandomGenerator, list?: T[]): T | undefined 
 
 // bias is between min and max, influence 0-1
 export const randomBiased = (
-  rand: RandomGenerator, 
-  min: number, 
-  max: number, 
-  bias?: number, 
-  influence: number = 1
+  rand: RandomGenerator,
+  min: number,
+  max: number,
+  bias?: number,
+  influence = 1,
 ): number => {
   // based on https://stackoverflow.com/a/29325222
   const rnd = randomRange(rand, min, max)
@@ -59,16 +63,16 @@ export const randomBiased = (
 }
 
 export const randomBiasedInt = (
-  generator: RandomGenerator, 
-  min: number, 
-  max: number, 
-  bias?: number, 
-  influence?: number
-): number => 
+  generator: RandomGenerator,
+  min: number,
+  max: number,
+  bias?: number,
+  influence?: number,
+): number =>
   Math.round(randomBiased(generator, min, max, bias, influence))
 
-export const randomOneIn = (generator: RandomGenerator, chance: number): boolean => 
+export const randomOneIn = (generator: RandomGenerator, chance: number): boolean =>
   randomInt(generator, 1, chance) === 1
 
-export const randomFillArray = (generator: RandomGenerator, length: number): number[] => 
+export const randomFillArray = (generator: RandomGenerator, length: number): number[] =>
   Array.from({ length }, () => generator.next())

@@ -2,17 +2,17 @@ import Hsl from './hsl'
 
 type MinMaxTuple = [number, number]
 
-export const normalize = (val: number, min: number, max: number): number => 
+export const normalize = (val: number, min: number, max: number): number =>
   val === min ? 0 : (val - min) / (max - min)
 
-export const scaleInt = (value: number, min: number, max: number): number => 
+export const scaleInt = (value: number, min: number, max: number): number =>
   (min === max ? min : Math.floor(value * (max - min + 1) + min)) // inclusive
 
-export const scaleRange = (value: number, min: number, max: number): number => 
+export const scaleRange = (value: number, min: number, max: number): number =>
   (value * (max - min) + min)
 
-export const sequence = (count: number, initial: number = 0): number[] => 
-  count <= 0 ? [] : [...Array(count).keys()].map(i => i + initial)
+export const sequence = (count: number, initial = 0): number[] =>
+  count <= 0 ? [] : [...Array(count).keys()].map((i) => i + initial)
 
 export const clamp = (min: number, max: number, value: number): number => {
   if (value > max) { return max }
@@ -27,18 +27,18 @@ export const clearArray = <T>(arr: T[], fn: () => T = () => undefined as T): voi
 }
 
 // https://stackoverflow.com/a/53092728
-export const arrayMinus = <T>(arr: T[], exclude: T[]): T[] => 
-  arr.filter(n => !exclude.includes(n))
+export const arrayMinus = <T>(arr: T[], exclude: T[]): T[] =>
+  arr.filter((n) => !exclude.includes(n))
 
 // https://stackoverflow.com/a/7343013
 export const roundDecimal = (value: number, precision?: number): number => {
-  const multiplier = Math.pow(10, precision || 0)
+  const multiplier = Math.pow(10, precision ?? 0)
   return Math.round(value * multiplier) / multiplier
 }
 
 export const mod = (n: number, m: number): number => ((n % m) + m) % m
 
-export const lerp = (first: number, last: number, offset: number): number => 
+export const lerp = (first: number, last: number, offset: number): number =>
   (last - first) * offset + first
 
 export const lerpColor = (from: Hsl, to: Hsl, n: number): Hsl => {
@@ -49,9 +49,9 @@ export const lerpColor = (from: Hsl, to: Hsl, n: number): Hsl => {
 }
 
 export const lerpMinMax = (
-  [minCurrent, maxCurrent]: MinMaxTuple, 
-  [minNext, maxNext]: MinMaxTuple, 
-  n: number
+  [minCurrent, maxCurrent]: MinMaxTuple,
+  [minNext, maxNext]: MinMaxTuple,
+  n: number,
 ): MinMaxTuple => {
   const min = lerp(minCurrent, minNext, n)
   const max = lerp(maxCurrent, maxNext, n)
@@ -64,11 +64,11 @@ export const isBoolean = (value: unknown): value is boolean => value === false |
 
 // phase = 0 - 1
 export const sinWave = (
-  time: number, 
-  period: number, 
-  offset: number, 
-  amplitude: number, 
-  phase: number = 0
+  time: number,
+  period: number,
+  offset: number,
+  amplitude: number,
+  phase = 0,
 ): number => {
   // https://riptutorial.com/javascript/example/10173/periodic-functions-using-math-sin
   const frequency = 1 / period
@@ -76,16 +76,16 @@ export const sinWave = (
   return Math.floor(output)
 }
 
-export const oneIn = (randValue: number, chance: number): boolean => 
+export const oneIn = (randValue: number, chance: number): boolean =>
   scaleInt(randValue, 1, chance) === 1
 
 export const biasedInt = (
-  randValue1: number, 
-  randValue2: number, 
-  min: number, 
-  max: number, 
-  bias?: number, 
-  influence: number = 1
+  randValue1: number,
+  randValue2: number,
+  min: number,
+  max: number,
+  bias?: number,
+  influence = 1,
 ): number => {
   // based on https://stackoverflow.com/a/29325222
   const rnd = scaleRange(randValue1, min, max)

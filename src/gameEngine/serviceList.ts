@@ -41,53 +41,53 @@ export const addService = (service: GameService): void => {
 }
 
 const init = (): void => {
-  serviceList.filter((s) => s.init).forEach((s) => s.init!())
-  serviceList.filter((s) => s.renderInitial).forEach((s) => s.renderInitial!())
+  serviceList.filter((s) => s.init).forEach((s) => { s.init?.() })
+  serviceList.filter((s) => s.renderInitial).forEach((s) => { s.renderInitial?.() })
 }
 
 const clear = (): void => {
-  serviceList.filter((s) => s.clear).forEach((s) => s.clear!())
+  serviceList.filter((s) => s.clear).forEach((s) => { s.clear?.() })
 }
 
 const beginFrame = (timestamp: number): void => {
   const services = beginFrameBindings
-  for (let i = 0; i < services.length; i++) {
-    services[i](timestamp)
+  for (const service of services) {
+    service(timestamp)
   }
 }
 
 const update = (deltaTime: number): void => {
   const services = updateBindings
-  for (let i = 0; i < services.length; i++) {
-    services[i](deltaTime)
+  for (const service of services) {
+    service(deltaTime)
   }
 }
 
 const render = (interpolationPercentage: number): void => {
   const services = renderBindings
-  for (let i = 0; i < services.length; i++) {
-    services[i](interpolationPercentage)
+  for (const service of services) {
+    service(interpolationPercentage)
   }
 }
 
 const endFrame = (panic: boolean): void => {
   const services = endFrameBindings
-  for (let i = 0; i < services.length; i++) {
-    services[i](panic)
+  for (const service of services) {
+    service(panic)
   }
 }
 
 const paused = (): void => {
   const services = pausedBindings
-  for (let i = 0; i < services.length; i++) {
-    services[i]()
+  for (const service of services) {
+    service()
   }
 }
 
 const resume = (): void => {
   const services = resumedBindings
-  for (let i = 0; i < services.length; i++) {
-    services[i]()
+  for (const service of services) {
+    service()
   }
 }
 
@@ -99,5 +99,5 @@ export default {
   endFrame,
   paused,
   resume,
-  clear
+  clear,
 }

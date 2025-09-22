@@ -1,4 +1,4 @@
-import { Contact, Body, Fixture, BoxShape } from 'planck-js'
+import type { Contact, Body, Fixture, BoxShape } from 'planck-js'
 
 export const contactOtherFixture = (contact: Contact, knownBody: Body): Fixture | undefined => {
   const fixtureA = contact.getFixtureA()
@@ -10,11 +10,11 @@ export const contactOtherFixture = (contact: Contact, knownBody: Body): Fixture 
 }
 
 export const updateBoxFixtureVertices = (
-  fixture: Fixture, 
-  width: number, 
-  height: number, 
-  x: number, 
-  y: number
+  fixture: Fixture,
+  width: number,
+  height: number,
+  x: number,
+  y: number,
 ): void => {
   const shape = fixture.getShape() as BoxShape
   shape.getVertex(0).set(x, y)

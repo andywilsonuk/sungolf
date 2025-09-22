@@ -1,7 +1,7 @@
 import LocalStorageFacade from './localStorageFacade'
-import { objectToCodedText, textToObject } from './serializer'
+import { objectToCodedText, textToObject, type SerializationTemplate } from './serializer'
 
-interface OptionsState {
+interface OptionsState extends SerializationTemplate {
   sound: boolean
   fullscreen: boolean
 }
@@ -9,12 +9,12 @@ interface OptionsState {
 const store = new LocalStorageFacade('options')
 const template: OptionsState = {
   sound: true,
-  fullscreen: true
+  fullscreen: true,
 }
 
 export const saveState = (sound: boolean, fullscreen: boolean): void => {
   const data = { sound, fullscreen }
-  const serialised = objectToCodedText(data, template as any)
+  const serialised = objectToCodedText(data, template)
   store.write(serialised)
 }
 
@@ -22,6 +22,6 @@ export const loadState = (): OptionsState => {
   if (!store.exists()) { return template }
   const serialised = store.read()
   if (!serialised) { return template }
-  const data = textToObject(serialised, template as any) as OptionsState
+  const data = textToObject(serialised, template) as OptionsState
   return data
 }

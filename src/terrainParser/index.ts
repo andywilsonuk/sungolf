@@ -23,7 +23,7 @@ const curveSampleLength = 19
 const minimumArea = 45
 
 const commandsToPoints = (commands: PathCommand[]): Point[] => {
-  const element = document.createElementNS(svgNS, 'path') as SVGPathElement
+  const element = document.createElementNS(svgNS, 'path')
   const points: Point[] = []
   let previousLength = 0
   let currentPath = ''
@@ -69,7 +69,7 @@ const filterMinArea = (chunk: Point[], minimumArea: number): boolean => area(chu
 const filter3PointsMin = (chunk: Point[]): boolean => chunk.length > 2
 
 const roundPoints = (chunk: Point[]): void => {
-  chunk.forEach(point => {
+  chunk.forEach((point) => {
     point[0] = Math.round(point[0])
     point[1] = Math.round(point[1])
   })
@@ -78,7 +78,7 @@ const roundPoints = (chunk: Point[]): void => {
 const validateParts = (parts: Point[][], stageId: number): void => {
   const roundingGrace = 1
   const maxY = absoluteFloorDepth + roundingGrace
-  parts.forEach(chunkVertices => {
+  parts.forEach((chunkVertices) => {
     if (chunkVertices.some(([_x, y]) => y > maxY)) {
       debugLog(`Stage ${stageId}: Bad y: ${JSON.stringify(chunkVertices)}`)
     }
@@ -91,14 +91,14 @@ const validateParts = (parts: Point[][], stageId: number): void => {
 export default (commands: PathCommand[], stageId: number) => {
   const concave = commandsToPoints(commands)
   let chunks = quickDecomp(concave)
-  chunks.forEach(chunk => {
+  chunks.forEach((chunk) => {
     roundPoints(chunk)
     removeCollinearPoints(chunk, 0)
   })
-  chunks = chunks.filter(chunk => filter3PointsMin(chunk))
-  chunks = chunks.filter(chunk => filterMinArea(chunk, minimumArea))
+  chunks = chunks.filter((chunk) => filter3PointsMin(chunk))
+  chunks = chunks.filter((chunk) => filterMinArea(chunk, minimumArea))
   validateParts(chunks, stageId)
 
-  const result = chunks.map(chunkVertices => chunkVertices.map(([x, y]) => Vec2(x * physicsScale, y * physicsScale)))
+  const result = chunks.map((chunkVertices) => chunkVertices.map(([x, y]) => Vec2(x * physicsScale, y * physicsScale)))
   return result
 }
