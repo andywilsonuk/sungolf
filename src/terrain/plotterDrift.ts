@@ -1,8 +1,9 @@
 import debugLog from '../gameEngine/debugLog'
 import { randomInt, randomShuffle, randomTernary } from '../shared/random'
 import { sequence } from '../shared/utils'
+import type { Plotter } from './plotter'
 
-export default (plotter, delta, rand) => {
+export default (plotter: Plotter, delta: number, rand: () => number): void => {
   let remaining = Math.abs(delta)
   const indexes = sequence(plotter.count - 3, 1) // not first, last or hole
 

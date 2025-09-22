@@ -1,7 +1,15 @@
 import { randomInt } from '../shared/random'
 import { segmentDistanceMax, segmentDistanceMin } from './constants'
+import type { Plotter } from './plotter'
+import type { TerrainFeature } from './features/types'
 
-export default (plotter, segmentMarkers, rand) => {
+interface SegmentMarker {
+  segment: TerrainFeature
+  distance: number
+  relativeX: number
+}
+
+export default (plotter: Plotter, segmentMarkers: SegmentMarker[], rand: () => number): void => {
   let current = 0
   const remainingMarkers = [...segmentMarkers]
   remainingMarkers.sort((a, b) => a.distance - b.distance)

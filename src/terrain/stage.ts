@@ -4,6 +4,7 @@ import { segmentDepthMax, ceilingDepth, floorDepth, holeTotalWidth } from './con
 import terrainFeatures from './features'
 import crag from './features/crag'
 import { holeName } from './features/names'
+import type { TerrainFeature } from './features/types'
 import { Layout } from './layout'
 import { Plotter } from './plotter'
 import plotterDrift from './plotterDrift'
@@ -13,8 +14,35 @@ import plotterSegments from './plotterSegments'
 const debug = false
 const featureMap = new Map(terrainFeatures.map(f => [f.name, f]))
 
+interface StageParameters {
+  initialDepth: number
+  holeDepth: number
+  holeDistance: number
+  drift: number
+  allowedFeatures: string[]
+  preferCrags: boolean
+  specialFeature?: {
+    name: string
+    distance: number
+    width: number
+  }
+}
+
+interface SpecialFeaturePlacement {
+  name: string
+  x: number
+  y: number
+}
+
 export class Stage {
-  constructor (id, parameters) {
+  id: number
+  initialDepth: number
+  parameters: StageParameters
+  plotter: Plotter
+  layout: Layout
+  specialFeaturePlacement: SpecialFeaturePlacement | null
+
+  constructor(id: number, parameters: StageParameters) {
     this.id = id
     this.initialDepth = parameters.initialDepth
     this.parameters = parameters
@@ -25,15 +53,19 @@ export class Stage {
     this.specialFeaturePlacement = null
   }
 
-  layoutSegments () {
+  layoutSegments(): void {
     if (debug) { console.log(`---> stage ${this.id}`, Object.entries(this.parameters)) }
     const { holeDepth, holeDistance, drift, allowedFeatures, preferCrags, specialFeature } = this.parameters
-    const features = allowedFeatures.map(name => featureMap.get(name))
+    const features = allowedFeatures.map(name => featureMap.get(name)!).filter(f => f)
 
-    const segmentMarkers = []
+    const segmentMarkers: Array<{
+      segment: TerrainFeature
+      distance: number
+      relativeX: number
+    }> = []
 
     if (this.id !== finalStageId) {
-      segmentMarkers.push({ segment: featureMap.get(holeName), distance: holeDistance, relativeX: holeTotalWidth })
+      segmentMarkers.push({ segment: featureMap.get(holeName)!, distance: holeDistance, relativeX: holeTotalWidth })
     }
     if (specialFeature !== undefined) {
       const { name, distance, width } = specialFeature
@@ -42,7 +74,7 @@ export class Stage {
         distance2 = holeDistance - width
       }
       segmentMarkers.push({
-        segment: featureMap.get(name),
+        segment: featureMap.get(name)!,
         distance: distance2,
         relativeX: width
       })
@@ -57,7 +89,6 @@ export class Stage {
 
     for (let i = 1; i < this.plotter.count; i++) { // skip the initial point
       const p = this.plotter.getByIndex(i)
-      this.currentPoint = p
       let { segment } = p
 
       if (segment === null) {
@@ -67,14 +98,14 @@ export class Stage {
         }
         const cragSegment = preferCrags ? allowed.find(x => x === crag) : undefined
         segment = cragSegment ?? randomItem(randSelection, allowed)
-        p.setSegment(segment)
+        p.setSegment(segment!)
       }
-      segment.apply(this.layout, p, randSelection)
+      segment!.apply(this.layout, p, randSelection)
 
-      if (segment.isSpecial) {
-        this.specialFeaturePlacement = { name: segment.name, x: p.x, y: p.y }
+      if (segment!.isSpecial) {
+        this.specialFeaturePlacement = { name: segment!.name, x: p.x, y: p.y }
       }
-      if (debug) { console.log(`${segment.name} w${p.relativeX} h${p.relativeY} x${p.x} y${p.y}`) }
+      if (debug) { console.log(`${segment!.name} w${p.relativeX} h${p.relativeY} x${p.x} y${p.y}`) }
     }
 
     this.layout.finalise()
@@ -82,11 +113,11 @@ export class Stage {
     if (debug) { console.log(this.layout.commands) }
   }
 
-  get distance () {
-    return this.plotter.last.x
+  get distance(): number {
+    return this.plotter.last!.x
   }
 
-  get commands () {
+  get commands(): Array<{ command: string; x: number; y: number }> {
     return this.layout.commands
   }
 }

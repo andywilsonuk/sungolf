@@ -1,9 +1,10 @@
 import debugLog from '../gameEngine/debugLog'
 import { randomInt, randomShuffle } from '../shared/random'
 import { sequence } from '../shared/utils'
+import type { Plotter } from './plotter'
 
-export default (plotter, targetY, rand) => {
-  const delta = targetY - plotter.first.y
+export default (plotter: Plotter, targetY: number, rand: () => number): void => {
+  const delta = targetY - plotter.first!.y
 
   const sign = Math.sign(delta)
   let remaining = Math.abs(delta)
