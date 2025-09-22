@@ -14,12 +14,19 @@
         "build": "vite build",
         "prepreview": "npm run build",
         "preview": "vite preview",
+        "lint": "eslint src --ext .ts,.js",
+        "lint:fix": "eslint src --ext .ts,.js --fix",
+        "type-check": "tsc --noEmit",
         "update-packages": "npx npm-check-updates -u && npm install",
         "terraincheck": "node xtools/terrainCheck.js"
     },
     "author": "andywilsonuk",
     "devDependencies": {
-        "standard": "^17.0.0-2",
+        "@types/node": "^24.5.2",
+        "@typescript-eslint/eslint-plugin": "^8.44.0",
+        "@typescript-eslint/parser": "^8.44.0",
+        "eslint": "^9.36.0",
+        "typescript": "^5.9.2",
         "vite": "^7.1.7"
     },
     "dependencies": {
