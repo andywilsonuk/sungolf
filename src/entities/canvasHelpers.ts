@@ -1,20 +1,7 @@
-import type { Body, Fixture, Shape } from 'planck'
+import type { Body, Fixture, Shape, Circle, Polygon } from 'planck'
 import { physicsScale } from '../gameEngine/physics'
 import { applyPixelScale, applyRatioScale, heightPadding } from '../gameEngine/renderCanvas'
 import Hsl from '../shared/hsl'
-
-interface Vertex {
-  x: number
-  y: number
-}
-
-interface PolygonShape extends Shape {
-  m_vertices: Vertex[]
-}
-
-interface CircleShape extends Shape {
-  m_radius: number
-}
 
 const lineWidth = 0.01
 const fixtureAlpha = 0.5
@@ -42,7 +29,7 @@ const getColor = (body: Body): string => {
 }
 
 const drawPolygon = (ctx: CanvasRenderingContext2D, body: Body, shape: Shape): void => {
-  const vertices = (shape as PolygonShape).m_vertices
+  const vertices = (shape as Polygon).m_vertices
   if (!vertices.length) {
     return
   }
@@ -71,7 +58,7 @@ const drawPolygon = (ctx: CanvasRenderingContext2D, body: Body, shape: Shape): v
 }
 
 const drawCircle = (ctx: CanvasRenderingContext2D, body: Body, shape: Shape): void => {
-  const radius = (shape as CircleShape).m_radius
+  const radius = (shape as Circle).m_radius
   const { x, y } = body.getPosition()
 
   circle(ctx, radius, x + lineWidth, y + lineWidth)

@@ -36,7 +36,7 @@ export default class TerrainManager {
     if (discard === undefined) { return }
     const world = discard.body.getWorld()
     world.destroyBody(discard.body)
-    discard.specialObject?.hide?.()
+    discard.specialObject?.hide()
     this.offsetX += discard.distance - 0.01
   }
 
@@ -63,7 +63,7 @@ export default class TerrainManager {
   disable(): void {
     for (const { body, specialObject } of this.definitions) {
       body.setActive(false)
-      specialObject?.disable?.()
+      specialObject?.disable()
     }
   }
 
@@ -77,7 +77,7 @@ export default class TerrainManager {
       const offset = new Vec2Ctor(currentOffset, 0)
       body.setPosition(offset)
       body.setActive(true)
-      specialObject?.enable?.(offset)
+      specialObject?.enable(offset)
       currentOffset += distance
     }
   }

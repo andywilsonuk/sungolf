@@ -22,9 +22,9 @@ export interface TerrainFeature {
 }
 
 export interface SpecialObject {
-  show?(position: Vec2): void
-  hide?(): void
-  disable?(): void
-  enable?(offset: Vec2): void
+  show(position: Vec2): void
+  hide(): void
+  disable(): void
+  enable(offset: Vec2): void
   renderOnCanvas?(ctx: CanvasRenderingContext2D): void
 }

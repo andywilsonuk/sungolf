@@ -34,6 +34,8 @@ export default tseslint.config({
         { from: 'package', package: 'planck', name: 'Vec2' },
         { from: 'package', package: 'planck', name: 'World' },
         { from: 'package', package: 'planck', name: 'Box' },
+        { from: 'package', package: 'planck', name: 'Circle' },
+        { from: 'package', package: 'planck', name: 'Polygon' },
       ]
     }],
     '@stylistic/max-statements-per-line': ['error', { max: 2 }],

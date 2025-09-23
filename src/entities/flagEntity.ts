@@ -1,5 +1,5 @@
 ﻿import type { Vec2 } from 'planck'
-import { Vec2 as Vec2Constructor } from 'planck'
+import { Vec2 as Vec2Ctor } from 'planck'
 import { EasingAnimation, linear } from '../gameEngine/easingAnimation'
 import { addAnimation } from '../gameEngine/animator'
 import { physicsScale, rayCast } from '../gameEngine/physics'
@@ -57,20 +57,20 @@ export default class FlagEntity {
     const y = holePosition.y
     this.visible = true
     this.stageId = stageId
-    this.position = Vec2Constructor(x, y)
+    this.position = new Vec2Ctor(x, y)
     this.leftObstructed = false
     this.rightObstructed = false
 
     const rayY = y - flagFinalOffsetY * physicsScale + height * 0.5 * physicsScale
-    const p1 = Vec2Constructor(x, rayY)
-    const p2 = Vec2Constructor(x + obstructionCastLength, rayY)
+    const p1 = new Vec2Ctor(x, rayY)
+    const p2 = new Vec2Ctor(x + obstructionCastLength, rayY)
 
     if (p2.x > this.boundaryRight) {
       this.obstructedRight()
     } else {
       rayCast(p1, p2, this.obstructedRight.bind(this))
     }
-    const p2b = Vec2Constructor(x - obstructionCastLength, p2.y)
+    const p2b = Vec2Ctor(x - obstructionCastLength, p2.y)
     rayCast(p1, p2b, this.obstructedLeft.bind(this))
 
     this.flagRaiseAnimY.start(0, -flagFinalOffsetY * physicsScale)

@@ -92,7 +92,7 @@ export default class TerrainEntity implements TerrainEntityColor, SetStageTerrai
     body.setUserData(stageId)
 
     const specialObject = this.specialObjects.get(special?.name ?? '')
-    specialObject?.show?.(new Vec2Ctor(special?.x ?? 0 * physicsScale, special?.y ?? 0 * physicsScale))
+    specialObject?.show(new Vec2Ctor((special?.x ?? 0) * physicsScale, (special?.y ?? 0) * physicsScale))
     this.terrain.add(new TerrainData(path, startY * physicsScale, (distance - 1) * physicsScale, body, specialObject))
   }
 

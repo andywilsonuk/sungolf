@@ -65,7 +65,7 @@ export default class SkullEntity implements SpecialObject {
     ctx.save()
 
     const { x, y } = this.position
-    translatePhysics(ctx, x, y)
+    translatePhysics(ctx, x - 0.5, y)
 
     circle(ctx, 8, -1, -1)
     ctx.fillStyle = backgroundColorString

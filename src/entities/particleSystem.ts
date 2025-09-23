@@ -1,5 +1,5 @@
 import type { Vec2 } from 'planck'
-import { Vec2 as Vec2Constructor } from 'planck'
+import { Vec2 as Vec2Ctor } from 'planck'
 import { randomGenerator, randomRange } from '../shared/random'
 
 interface RandomGenerator {
@@ -51,7 +51,7 @@ export default class ParticleSystem {
       const length = randomRange(rand, this.spreadMinMax[0], this.spreadMinMax[1])
       const alpha = randomRange(rand, 0.5, 1)
 
-      const endPosition = Vec2Constructor(x, y)
+      const endPosition = new Vec2Ctor(x, y)
       endPosition.mul(length)
       endPosition.add(startPosition)
 
