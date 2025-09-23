@@ -11,7 +11,7 @@ import BackgroundEntity from './backgroundEntity'
 import TopographyEntity from './topographyEntity'
 import HoleEntity from './holeEntity'
 
-export default () => {
+export default (): void => {
   addEntity(new StateEntity())
   addEntity(new BoundaryEntity())
   addEntity(new HoleEntity())

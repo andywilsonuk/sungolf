@@ -8,9 +8,7 @@ export default tseslint.config({
   // TODO: Remove the following ignores as JS files are converted to TS
   ignores: [
     'src/entities/ballEntity.js',
-    'src/entities/createWorld.js', 
     'src/entities/devtoolsEntity.js',
-    'src/entities/particleSystem.js',
     'src/entities/stateEntity.js',
     'src/entities/terrainEntity.js'
   ], // Temporarily ignore remaining JS files during conversion process
