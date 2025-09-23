@@ -1,4 +1,4 @@
-import { Settings, Vec2 } from 'planck-js'
+import { Settings, Vec2 } from 'planck'
 import { quickDecomp, removeCollinearPoints } from 'poly-decomp'
 import debugLog from '../gameEngine/debugLog'
 import { physicsScale } from '../gameEngine/physics'
@@ -99,6 +99,6 @@ export default (commands: PathCommand[], stageId: number) => {
   chunks = chunks.filter((chunk) => filterMinArea(chunk, minimumArea))
   validateParts(chunks, stageId)
 
-  const result = chunks.map((chunkVertices) => chunkVertices.map(([x, y]) => Vec2(x * physicsScale, y * physicsScale)))
+  const result = chunks.map((chunkVertices) => chunkVertices.map(([x, y]) => new Vec2(x * physicsScale, y * physicsScale)))
   return result
 }

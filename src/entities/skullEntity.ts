@@ -1,5 +1,5 @@
-import type { Body, Vec2 } from 'planck-js'
-import { Circle, Vec2 as Vec2Constructor } from 'planck-js'
+import type { Body, Vec2 } from 'planck'
+import { Circle as CircleCtor, Vec2 as Vec2Ctor } from 'planck'
 import { createBody, physicsScale } from '../gameEngine/physics'
 import Hsl from '../shared/hsl'
 import { specialWidth } from '../terrain/constants'
@@ -14,7 +14,7 @@ const fixtureOptions = {
   filterCategoryBits: objectCategory,
 }
 const hitBoxSize = 12 * physicsScale
-const offset = Vec2Constructor(specialWidth * physicsScale * -0.5, -0.1)
+const offset = new Vec2Ctor(specialWidth * physicsScale * -0.5, -0.1)
 const backgroundColorString = new Hsl(0, 0, 20).asString()
 const foregroundColorString = new Hsl(21, 20, 86).asString()
 
@@ -31,7 +31,7 @@ export default class SkullEntity implements SpecialObject {
     const body = createBody({
       active: false,
     })
-    body.createFixture(Circle(hitBoxSize), fixtureOptions)
+    body.createFixture(new CircleCtor(hitBoxSize), fixtureOptions)
     this.body = body
     this.visible = false
     this.position = null

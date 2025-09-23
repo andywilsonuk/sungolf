@@ -1,4 +1,4 @@
-import { Box, Vec2, type Body } from 'planck-js'
+import { Box as BoxCtor, Vec2 as Vec2Ctor, type Body, type Vec2 } from 'planck'
 import { createBody, physicsScale } from '../gameEngine/physics'
 import { subscribe } from '../gameEngine/signalling'
 import Hsl from '../shared/hsl'
@@ -27,7 +27,7 @@ export default class TeeEntity {
     this.teeBody = createBody({
       active: false,
     })
-    this.teeBody.createFixture(Box(teeWidth, teeHeight, Vec2(teeWidth, teeHeight)), {
+    this.teeBody.createFixture(new BoxCtor(teeWidth, teeHeight, new Vec2Ctor(teeWidth, teeHeight)), {
       friction: 1,
       filterCategoryBits: terrainCategory,
     })

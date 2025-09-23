@@ -1,6 +1,6 @@
 import type { SpecialObject } from '@/terrain/features/types'
-import type { Body } from 'planck-js'
-import { Vec2 } from 'planck-js'
+import type { Body } from 'planck'
+import { Vec2 as Vec2Ctor } from 'planck'
 
 export class TerrainData {
   renderPath: Path2D
@@ -74,7 +74,7 @@ export default class TerrainManager {
 
     let currentOffset = this.offsetX
     for (const { body, specialObject, distance } of this.definitions) {
-      const offset = Vec2(currentOffset, 0)
+      const offset = new Vec2Ctor(currentOffset, 0)
       body.setPosition(offset)
       body.setActive(true)
       specialObject?.enable?.(offset)

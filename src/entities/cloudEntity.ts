@@ -1,5 +1,5 @@
-import type { Vec2 } from 'planck-js'
-import { Vec2 as Vec2Constructor } from 'planck-js'
+import type { Vec2 } from 'planck'
+import { Vec2 as Vec2Constructor } from 'planck'
 import { physicsScale } from '../gameEngine/physics'
 import Hsl from '../shared/hsl'
 import { specialWidth } from '../terrain/constants'

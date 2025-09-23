@@ -1,5 +1,5 @@
-import type { Body, Vec2 } from 'planck-js'
-import { Polygon, Vec2 as Vec2Constructor } from 'planck-js'
+import type { Body, Vec2 } from 'planck'
+import { Polygon as PolygonCtor, Vec2 as Vec2Ctor } from 'planck'
 import { createBody, physicsScale } from '../gameEngine/physics'
 import Hsl from '../shared/hsl'
 import { specialWidth } from '../terrain/constants'
@@ -14,7 +14,7 @@ const fixtureOptions = {
   friction: 0.05,
   filterCategoryBits: objectCategory,
 }
-const offset = Vec2Constructor(specialWidth * physicsScale * -0.5, -0.2)
+const offset = new Vec2Ctor(specialWidth * physicsScale * -0.5, -0.2)
 const colorString = new Hsl(10, 53, 28).asString()
 
 export default class TowerEntity implements SpecialObject {
@@ -30,8 +30,8 @@ export default class TowerEntity implements SpecialObject {
     const body = createBody({
       active: false,
     })
-    const scaledPoints = points.map((p) => Vec2Constructor(p[0], p[1]).mul(physicsScale))
-    body.createFixture(Polygon(scaledPoints), fixtureOptions)
+    const scaledPoints = points.map((p) => new Vec2Ctor(p[0], p[1]).mul(physicsScale))
+    body.createFixture(new PolygonCtor(scaledPoints), fixtureOptions)
     this.body = body
     this.visible = false
     this.position = null

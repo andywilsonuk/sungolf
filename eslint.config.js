@@ -29,6 +29,13 @@ export default tseslint.config({
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-empty-object-type': 'off',
     '@typescript-eslint/no-unnecessary-type-parameters': 'off',
+    "@typescript-eslint/no-deprecated": ['error', {
+      "allow": [
+        { from: 'package', package: 'planck', name: 'Vec2' },
+        { from: 'package', package: 'planck', name: 'World' },
+        { from: 'package', package: 'planck', name: 'Box' },
+      ]
+    }],
     '@stylistic/max-statements-per-line': ['error', { max: 2 }],
     '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }],
     '@stylistic/arrow-parens': ['error', 'always'],

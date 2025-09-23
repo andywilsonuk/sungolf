@@ -24,7 +24,7 @@
     "author": "andywilsonuk",
     "devDependencies": {
         "@eslint/js": "^9.36.0",
-        "@playwright/test": "^1.55.0",
+        "@playwright/test": "^1.55.1",
         "@stylistic/eslint-plugin": "^5.2.3",
         "@types/mainloop.js": "^1.0.7",
         "@types/node": "^24.5.2",
@@ -37,7 +37,7 @@
     "dependencies": {
         "alea": "^1.0.1",
         "mainloop.js": "^1.0.4",
-        "planck-js": "^0.3.31",
+        "planck": "^1.4.2",
         "poly-decomp": "^0.3.0"
     }
 }

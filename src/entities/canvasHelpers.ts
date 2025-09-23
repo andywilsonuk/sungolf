@@ -1,4 +1,4 @@
-import type { Body, Fixture, Shape } from 'planck-js'
+import type { Body, Fixture, Shape } from 'planck'
 import { physicsScale } from '../gameEngine/physics'
 import { applyPixelScale, applyRatioScale, heightPadding } from '../gameEngine/renderCanvas'
 import Hsl from '../shared/hsl'

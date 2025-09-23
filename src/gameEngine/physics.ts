@@ -1,10 +1,10 @@
-import type { Body, BodyDef, Contact, Fixture } from 'planck-js'
-import { Settings, World, Vec2 } from 'planck-js'
+import type { Body, BodyDef, Contact, Fixture, World as WorldType } from 'planck'
+import { Settings, World, Vec2 } from 'planck'
 
 export const physicsScale = 0.01
 const maxPolygonVertices = 40
 
-let world: World | undefined
+let world: WorldType | undefined
 
 const worldOrThrow = () => {
   if (!world) { throw new Error('World not created') }
@@ -32,7 +32,7 @@ export const rayCast = (p1: Vec2, p2: Vec2, callback: (fixture: Fixture, point: 
 }
 
 const init = (): void => {
-  world = new World(Vec2(0, 10))
+  world = new World(new Vec2(0, 10))
   Settings.maxPolygonVertices = maxPolygonVertices
 }
 

@@ -1,5 +1,5 @@
-import type { Vec2 } from 'planck-js'
-import { Vec2 as Vec2Constructor } from 'planck-js'
+import type { Vec2 } from 'planck'
+import { Vec2 as Vec2Ctor } from 'planck'
 import { loadState, saveState } from '../shared/statePersister'
 import { getOneEntityByTag } from '../gameEngine/world'
 import { ballStrokeSignal, ballTag, scoreTag, stageCompleteSignal, stageReadySignal, terrainTag, stateTag } from './constants'
@@ -59,7 +59,7 @@ export default class StateEntity implements ResetState {
       this.scoreEntity.setScore(score, stroke)
     }
     if (ballPosition && ballForce && this.ballEntity) {
-      this.ballEntity.setShot(Vec2Constructor(ballPosition[0], ballPosition[1]), Vec2Constructor(ballForce[0], ballForce[1]))
+      this.ballEntity.setShot(new Vec2Ctor(ballPosition[0], ballPosition[1]), new Vec2Ctor(ballForce[0], ballForce[1]))
     }
   }
 

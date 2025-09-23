@@ -1,5 +1,4 @@
-import type { Body, Vec2 } from 'planck-js'
-import { Circle, Vec2 as Vec2Constructor } from 'planck-js'
+import { type Body, Circle, Vec2 } from 'planck'
 import { createBody, physicsScale } from '../gameEngine/physics'
 import Hsl from '../shared/hsl'
 import { specialWidth } from '../terrain/constants'
@@ -14,7 +13,7 @@ const fixtureOptions = {
   filterCategoryBits: objectCategory,
 }
 const hitBoxSize = 12 * physicsScale
-const offset = Vec2Constructor(specialWidth * physicsScale * -0.5, -0.15)
+const offset = new Vec2(specialWidth * physicsScale * -0.5, -0.15)
 const colorString = new Hsl(139, 89, 38).asString()
 
 export default class CactusEntity implements SpecialObject {
@@ -30,7 +29,7 @@ export default class CactusEntity implements SpecialObject {
     const body = createBody({
       active: false,
     })
-    body.createFixture(Circle(hitBoxSize), fixtureOptions)
+    body.createFixture(new Circle(hitBoxSize), fixtureOptions)
     this.body = body
     this.visible = false
     this.position = null

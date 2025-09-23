@@ -1,5 +1,4 @@
-import type { Vec2 } from 'planck-js'
-import { Vec2 as Vec2Constructor } from 'planck-js'
+import { Vec2 } from 'planck'
 import { subscribe } from '../gameEngine/signalling'
 import { getOneEntityByTag } from '../gameEngine/world'
 import { clamp, normalize } from '../shared/utils'
@@ -36,8 +35,8 @@ const draw = (ctx: CanvasRenderingContext2D, headSize: number, length: number, d
 }
 
 export default class PullbackEntity {
-  private downPosition: Vec2 = Vec2Constructor.zero()
-  private upPosition: Vec2 = Vec2Constructor.zero()
+  private downPosition: Vec2 = Vec2.zero()
+  private upPosition: Vec2 = Vec2.zero()
   private allowed = false
   private isDown = false
   public dirty = false
@@ -46,8 +45,8 @@ export default class PullbackEntity {
   private ctx!: CanvasRenderingContext2D
 
   constructor() {
-    this.downPosition = Vec2Constructor.zero()
-    this.upPosition = Vec2Constructor.zero()
+    this.downPosition = Vec2.zero()
+    this.upPosition = Vec2.zero()
     this.allowed = false
     this.isDown = false
     this.dirty = false

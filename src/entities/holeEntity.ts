@@ -1,5 +1,5 @@
-import type { Body, Contact, Vec2 } from 'planck-js'
-import { Box, Vec2 as Vec2Constructor } from 'planck-js'
+import type { Body, Contact, Vec2 as Vec2Type } from 'planck'
+import { Box, Vec2 } from 'planck'
 import { getTimestamp } from '../gameEngine/gameLoop'
 import { createBody, registerBeginContact, registerEndContact, physicsScale } from '../gameEngine/physics'
 import { dispatchSignal, subscribe } from '../gameEngine/signalling'
@@ -22,12 +22,12 @@ export default class HoleEntity {
     this.holeBody = createBody({
       active: false,
     })
-    this.holeBody.createFixture(Box(holeTotalWidth * 0.5 * physicsScale, holeDepth * 0.25 * physicsScale, Vec2Constructor(holeTotalWidth * -0.5 * physicsScale, holeDepth * 0.75 * physicsScale)), {
+    this.holeBody.createFixture(new Box(holeTotalWidth * 0.5 * physicsScale, holeDepth * 0.25 * physicsScale, Vec2(holeTotalWidth * -0.5 * physicsScale, holeDepth * 0.75 * physicsScale)), {
       isSensor: true,
     })
 
     subscribe(stageReadySignal, (...args: unknown[]) => {
-      const [{ stageId, holePosition }] = args as [{ stageId: number, holePosition: Vec2 }]
+      const [{ stageId, holePosition }] = args as [{ stageId: number, holePosition: Vec2Type }]
       this.enableHole({ stageId, holePosition })
     })
     subscribe(stageCompleteSignal, this.disableHole.bind(this))
@@ -35,7 +35,7 @@ export default class HoleEntity {
     registerEndContact(this.endContactTest.bind(this))
   }
 
-  enableHole({ stageId, holePosition }: { stageId: number, holePosition: Vec2 }): void {
+  enableHole({ stageId, holePosition }: { stageId: number, holePosition: Vec2Type }): void {
     if (stageId === finalStageId) { return }
     this.stageId = stageId
     this.holeBody.setPosition(holePosition)

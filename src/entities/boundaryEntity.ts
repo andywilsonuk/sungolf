@@ -1,11 +1,11 @@
-import { Polygon, Vec2, type Body, type Fixture } from 'planck-js'
+import { Polygon, Vec2, type Body, type Fixture } from 'planck'
 import { createBody, physicsScale } from '../gameEngine/physics'
 import { subscribeResize } from '../gameEngine/renderCanvas'
 import { updateBoxFixtureVertices } from '../shared/planckHelpers'
 import { boundaryCategory } from './constants'
 
 const createBoundaryBox = (body: Body): Fixture =>
-  body.createFixture(Polygon([Vec2.zero(), Vec2.zero(), Vec2.zero(), Vec2.zero()]), {
+  body.createFixture(new Polygon([Vec2.zero(), Vec2.zero(), Vec2.zero(), Vec2.zero()]), {
     isSensor: true,
     filterCategoryBits: boundaryCategory,
   })

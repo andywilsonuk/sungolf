@@ -1,4 +1,4 @@
-import type { Vec2 } from 'planck-js'
+import type { Vec2 } from 'planck'
 import { addAnimation } from '../gameEngine/animator'
 import { EasingAnimation, easeInCubic, easeOutCubic } from '../gameEngine/easingAnimation'
 import { circle, translateHeightPadding, physicsScaleInverse } from './canvasHelpers'

@@ -1,6 +1,6 @@
 import type { Layout } from '../layout'
 import type { RandomGenerator } from '../../shared/random'
-import type { Vec2 } from 'planck-js'
+import type { Vec2 } from 'planck'
 
 export interface PlotterPoint {
   x: number

@@ -1,4 +1,4 @@
-import { Polygon, Vec2 as Vec2Constructor } from 'planck-js'
+import { Polygon as PolygonCtor, Vec2 as Vec2Ctor } from 'planck'
 import type Hsl from '../shared/hsl'
 import { finalStageId, stageCompleteSignal, stageReadySignal, stageTransitioningSignal, terrainCategory, terrainTag } from './constants'
 import terrainGen from '../terrain'
@@ -81,7 +81,7 @@ export default class TerrainEntity implements TerrainEntityColor, SetStageTerrai
 
     const terrainParts = terrainParser(commands, stageId)
     terrainParts.forEach((part, partId) => {
-      const polygon = Polygon(part)
+      const polygon = new PolygonCtor(part)
       const fixture = body.createFixture(polygon, fixtureOptions)
       fixture.setUserData(`${stageId},${partId}`)
       // Debug code commented out due to type issues with physics library internals
@@ -92,7 +92,7 @@ export default class TerrainEntity implements TerrainEntityColor, SetStageTerrai
     body.setUserData(stageId)
 
     const specialObject = this.specialObjects.get(special?.name ?? '')
-    specialObject?.show?.(Vec2Constructor(special?.x ?? 0 * physicsScale, special?.y ?? 0 * physicsScale))
+    specialObject?.show?.(new Vec2Ctor(special?.x ?? 0 * physicsScale, special?.y ?? 0 * physicsScale))
     this.terrain.add(new TerrainData(path, startY * physicsScale, (distance - 1) * physicsScale, body, specialObject))
   }
 
@@ -160,8 +160,8 @@ export default class TerrainEntity implements TerrainEntityColor, SetStageTerrai
     const stageTerrain = this.terrain.current
     const nextTerrain = this.terrain.next
 
-    const startPosition = Vec2Constructor(startOffset, stageTerrain.startY)
-    const holePosition = Vec2Constructor(stageTerrain.distance + startOffset + teeWidth, nextTerrain.startY)
+    const startPosition = new Vec2Ctor(startOffset, stageTerrain.startY)
+    const holePosition = new Vec2Ctor(stageTerrain.distance + startOffset + teeWidth, nextTerrain.startY)
 
     dispatchSignal(stageReadySignal, { stageId, startPosition, holePosition })
   }
