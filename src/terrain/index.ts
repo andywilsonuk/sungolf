@@ -2,7 +2,11 @@ import { Stage } from './stage'
 import orchestration from '../orchestration'
 
 interface TerrainResult {
-  commands: { command: string }[]
+  commands: {
+    command: string
+    x: number
+    y: number
+  }[]
   path: string
   startY: number
   distance: number

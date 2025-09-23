@@ -1,11 +1,6 @@
+import type { SpecialObject } from '@/terrain/features/types'
 import type { Body } from 'planck-js'
 import { Vec2 } from 'planck-js'
-
-interface SpecialObject {
-  hide?(): void
-  disable?(): void
-  enable?(offset: Vec2): void
-}
 
 export class TerrainData {
   renderPath: Path2D

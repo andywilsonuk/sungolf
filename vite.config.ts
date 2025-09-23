@@ -6,7 +6,7 @@ export default defineConfig({
     assetsDir: '.'
   },
   server: {
-    port: 8705,
+    port: 8708,
     strictPort: true,
   },
   preview: {

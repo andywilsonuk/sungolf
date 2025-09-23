@@ -1,18 +1,20 @@
 import { deferUntilRender } from '../gameEngine/deferredRender'
 import { dispatchSignal, subscribe } from '../gameEngine/signalling'
-import { getOneEntityByTag } from '../gameEngine/world'
-import { gamePausedSignal, gameResumedSignal, scoreTag, stageCompleteSignal, stageReadySignal, terrainTag } from './constants'
+import { gamePausedSignal, gameResumedSignal, scoreTag, stageCompleteSignal, stageReadySignal } from './constants'
 import { addClass, removeClass } from './htmlHelpers'
 
 const strokesUntilSkippable = 20
 
-export default class ScoreEntity {
+export interface SetScore {
+  setScore: (score: number, stroke: number) => void
+}
+
+export default class ScoreEntity implements SetScore {
   public tags = new Set([scoreTag])
   private stageId = 0
   private score = 0
   private stroke = 0
   private skipVisible = false
-  private terrainEntity: any
   private scoreElement!: HTMLElement
   private strokeElement!: HTMLElement
   private skipElement!: HTMLElement
@@ -26,16 +28,32 @@ export default class ScoreEntity {
   }
 
   init(): void {
-    this.terrainEntity = getOneEntityByTag(terrainTag)
-    subscribe(stageReadySignal, this.stageReady.bind(this))
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [{ stageId }] = args as [{ stageId: number }]
+      this.stageReady({ stageId })
+    })
     subscribe(gamePausedSignal, this.toggleSkip.bind(this, false))
     subscribe(gameResumedSignal, this.toggleSkip.bind(this, true))
   }
 
   renderInitial(): void {
-    this.scoreElement = document.getElementById('score')!
-    this.strokeElement = document.getElementById('stroke')!
-    this.skipElement = document.getElementById('skip')!
+    const scoreElement = document.getElementById('score')
+    if (!scoreElement) {
+      throw new Error('Score element not found')
+    }
+    this.scoreElement = scoreElement
+
+    const strokeElement = document.getElementById('stroke')
+    if (!strokeElement) {
+      throw new Error('Stroke element not found')
+    }
+    this.strokeElement = strokeElement
+
+    const skipElement = document.getElementById('skip')
+    if (!skipElement) {
+      throw new Error('Skip element not found')
+    }
+    this.skipElement = skipElement
     addClass(this.skipElement, 'hide')
     this.skipElement.addEventListener('click', this.skipStage.bind(this))
   }

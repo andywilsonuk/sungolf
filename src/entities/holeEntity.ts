@@ -20,19 +20,22 @@ export default class HoleEntity {
 
   init(): void {
     this.holeBody = createBody({
-      active: false
+      active: false,
     })
     this.holeBody.createFixture(Box(holeTotalWidth * 0.5 * physicsScale, holeDepth * 0.25 * physicsScale, Vec2Constructor(holeTotalWidth * -0.5 * physicsScale, holeDepth * 0.75 * physicsScale)), {
-      isSensor: true
+      isSensor: true,
     })
 
-    subscribe(stageReadySignal, this.enableHole.bind(this))
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [{ stageId, holePosition }] = args as [{ stageId: number, holePosition: Vec2 }]
+      this.enableHole({ stageId, holePosition })
+    })
     subscribe(stageCompleteSignal, this.disableHole.bind(this))
     registerBeginContact(this.contactTest.bind(this))
     registerEndContact(this.endContactTest.bind(this))
   }
 
-  enableHole({ stageId, holePosition }: { stageId: number; holePosition: Vec2 }): void {
+  enableHole({ stageId, holePosition }: { stageId: number, holePosition: Vec2 }): void {
     if (stageId === finalStageId) { return }
     this.stageId = stageId
     this.holeBody.setPosition(holePosition)

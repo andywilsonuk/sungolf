@@ -31,7 +31,10 @@ export default class TeeEntity {
       friction: 1,
       filterCategoryBits: terrainCategory,
     })
-    subscribe(stageReadySignal, this.start.bind(this))
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [{ startPosition }] = args as [{ startPosition: Vec2 }]
+      this.start({ startPosition })
+    })
     subscribe(stageCompleteSignal, this.stop.bind(this))
     subscribe(stageTransitioningSignal, this.hide.bind(this))
   }

@@ -1,8 +1,12 @@
 import type Hsl from '../shared/hsl'
+import HslClass from '../shared/hsl'
 import { randomFillArray, randomGenerator, randomInt } from '../shared/random'
 import { biasedInt, clamp, isFunction, lerp, lerpColor, lerpMinMax, normalize, scaleInt } from '../shared/utils'
 import { holeDistanceMax, holeDistanceMin } from '../terrain/constants'
 import data from './data'
+
+const defaultColor = new HslClass(200, 50, 50)
+const defaultBackgroundColor = new HslClass(220, 30, 80)
 
 interface ExpandedSpecialFeature {
   name: string
@@ -80,7 +84,7 @@ export default (stageId: number): CalculatorResult => {
   if (stageId < 0) { stageId = 0 }
   const zone = data[getDataIndexForStage(stageId)]
   const {
-    start, end, name: zoneName, color, backgroundColor, backgroundColorStop, holeMinDistanceBias, driftMinMax,
+    start, end, name: _zoneName, color, backgroundColor, backgroundColorStop, holeMinDistanceBias, driftMinMax,
     allowedFeatures, preferCrags, water, specialFeature,
   } = zone
   const next = data[getDataIndexForStage(stageId) + 1] ?? data[data.length - 1]
@@ -94,25 +98,34 @@ export default (stageId: number): CalculatorResult => {
 
   let driftMin: number, driftMax: number
   if (isFunction(driftMinMax)) {
-    const driftResult = functionExpander(driftMinMax, randValues[0])
-    ;[driftMin, driftMax] = Array.isArray(driftResult) ? driftResult as [number, number] : [0, 0]
+    const driftResult = functionExpander(driftMinMax, randValues[0]);
+    [driftMin, driftMax] = Array.isArray(driftResult) ? driftResult as [number, number] : [0, 0]
   } else {
     const lerpStart = driftMinMax as [number, number] | number[]
+
     const randNext = getOrchestrationRand(next.start ?? 0).next()
-    const lerpEnd = functionExpander(next.driftMinMax, randNext)
-    ;[driftMin, driftMax] = lerpMinMax(lerpStart as [number, number], lerpEnd as [number, number], n)
+    const lerpEnd = functionExpander(next.driftMinMax, randNext);
+    [driftMin, driftMax] = lerpMinMax(lerpStart as [number, number], lerpEnd as [number, number], n)
   }
 
   const expandedSpecialFeature = expandSpecial(functionExpander(specialFeature, randValues[9]), randValues[5], randValues[6])
 
   const result: CalculatorResult = {
     stageId,
-    zoneName: zoneName ?? 'Unknown',
+    zoneName: zone.name,
     initialDepth,
     holeDepth,
     holeDistance: biasedInt(randValues[1], randValues[2], holeDistanceMin, holeDistanceMax, holeDistanceMin, holeMinDistanceBias ?? 0),
-    color: lerpColor(color ?? zone.color!, next.color ?? zone.color!, n),
-    backgroundColor: lerpColor(backgroundColor ?? zone.backgroundColor!, next.backgroundColor ?? zone.backgroundColor!, n),
+    color: lerpColor(
+      color ?? zone.color ?? defaultColor,
+      next.color ?? zone.color ?? defaultColor,
+      n,
+    ),
+    backgroundColor: lerpColor(
+      backgroundColor ?? zone.backgroundColor ?? defaultBackgroundColor,
+      next.backgroundColor ?? zone.backgroundColor ?? defaultBackgroundColor,
+      n,
+    ),
     backgroundColorStop: lerp(backgroundColorStop ?? 0, next.backgroundColorStop ?? 0, n),
     drift: scaleInt(randValues[3], driftMin, driftMax),
     allowedFeatures: functionExpander(allowedFeatures, randValues[4]) as string[],

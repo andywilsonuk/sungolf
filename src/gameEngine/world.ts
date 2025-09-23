@@ -1,5 +1,5 @@
 interface Entity {
-  tags?: string[]
+  tags?: string[] | Set<string>
   spawn?(): void
   init?(): void
   renderInitial?(): void
@@ -11,10 +11,10 @@ interface Entity {
 }
 
 const entities: Entity[] = []
-const beginFrameEntities: Entity[] = []
-const updateEntities: Entity[] = []
-const renderEntities: Entity[] = []
-const endFrameEntities: Entity[] = []
+const beginFrameFunctions: ((timestamp: number) => void)[] = []
+const updateFunctions: ((deltaTime: number) => void)[] = []
+const renderFunctions: (() => void)[] = []
+const endFrameFunctions: (() => void)[] = []
 const tags = new Map<string, Entity[]>()
 const empty: Entity[] = []
 
@@ -22,9 +22,10 @@ export const addEntity = (entity: Entity): Entity => {
   entities.push(entity)
 
   if (entity.tags) {
-    entity.tags.forEach((tag) => {
+    const tagList = Array.isArray(entity.tags) ? entity.tags : Array.from(entity.tags)
+    tagList.forEach((tag) => {
       if (tags.has(tag)) {
-        tags.get(tag)!.push(entity)
+        tags.get(tag)?.push(entity)
       } else {
         tags.set(tag, [entity])
       }
@@ -32,76 +33,98 @@ export const addEntity = (entity: Entity): Entity => {
   }
 
   if (entity.beginFrame) {
-    beginFrameEntities.push(entity)
+    beginFrameFunctions.push(entity.beginFrame.bind(entity))
   }
   if (entity.update) {
-    updateEntities.push(entity)
+    updateFunctions.push(entity.update.bind(entity))
   }
   if (entity.render) {
-    renderEntities.push(entity)
+    renderFunctions.push(entity.render.bind(entity))
   }
   if (entity.endFrame) {
-    endFrameEntities.push(entity)
+    endFrameFunctions.push(entity.endFrame.bind(entity))
   }
 
   return entity
 }
 
 export const getEntityByTag = (tag: string): Entity[] => tags.get(tag) ?? empty
-export const getOneEntityByTag = (tag: string): Entity => tags.get(tag)![0]
+export const getOneEntityByTag = (tag: string): Entity => {
+  const entityList = tags.get(tag)
+  if (!entityList || entityList.length === 0) {
+    throw new Error(`No entity found with tag: ${tag}`)
+  }
+  return entityList[0]
+}
 
 const init = (): void => {
   const spawned: Entity[] = []
 
-  let nextSpawn = entities.filter((en) => en.spawn).filter((en) => !spawned.includes(en))
+  let nextSpawn = entities.filter((en) => en.spawn !== undefined).filter((en) => !spawned.includes(en))
   while (nextSpawn.length !== 0) {
-    nextSpawn.forEach((en) => { en.spawn!() })
+    nextSpawn.forEach((en) => {
+      if (en.spawn === undefined) { return }
+      en.spawn()
+    })
     spawned.push(...nextSpawn)
-    nextSpawn = entities.filter((en) => en.spawn).filter((en) => !spawned.includes(en))
+    nextSpawn = entities.filter((en) => en.spawn !== undefined).filter((en) => !spawned.includes(en))
   }
 
-  entities.filter((en) => en.init).forEach((en) => { en.init!() })
+  entities.forEach((en) => {
+    if (en.init === undefined) { return }
+    en.init()
+  })
 }
 
 const renderInitial = (): void => {
-  entities.filter((en) => en.renderInitial).forEach((en) => { en.renderInitial!() })
+  entities.forEach((en) => {
+    if (en.renderInitial === undefined) { return }
+    en.renderInitial()
+  })
 }
 
 const beginFrame = (timestamp: number): void => {
-  const { length } = beginFrameEntities
+  const { length } = beginFrameFunctions
   for (let i = 0; i < length; i++) {
-    beginFrameEntities[i].beginFrame!(timestamp)
+    const fn = beginFrameFunctions[i]
+    fn(timestamp)
   }
 }
 
 const update = (deltaTime: number): void => {
-  const { length } = updateEntities
+  const { length } = updateFunctions
   for (let i = 0; i < length; i++) {
-    updateEntities[i].update!(deltaTime)
+    const fn = updateFunctions[i]
+    fn(deltaTime)
   }
 }
 
 const render = (): void => {
-  const { length } = renderEntities
+  const { length } = renderFunctions
   for (let i = 0; i < length; i++) {
-    renderEntities[i].render!()
+    const fn = renderFunctions[i]
+    fn()
   }
 }
 
 const endFrame = (): void => {
-  const { length } = endFrameEntities
+  const { length } = endFrameFunctions
   for (let i = 0; i < length; i++) {
-    endFrameEntities[i].endFrame!()
+    const fn = endFrameFunctions[i]
+    fn()
   }
 }
 
 const clear = (): void => {
-  entities.filter((en) => en.destroy).forEach((en) => { en.destroy!() })
+  entities.forEach((en) => {
+    if (en.destroy === undefined) { return }
+    en.destroy()
+  })
   entities.length = 0
-  beginFrameEntities.length = 0
-  updateEntities.length = 0
-  renderEntities.length = 0
-  endFrameEntities.length = 0
+  beginFrameFunctions.length = 0
+  updateFunctions.length = 0
+  renderFunctions.length = 0
+  endFrameFunctions.length = 0
   tags.clear()
 }
 

@@ -1,7 +1,7 @@
 import Alea from 'alea'
 import { scaleInt, scaleRange } from './utils'
 
-interface RandomGenerator {
+export interface RandomGenerator {
   next(): number
 }
 

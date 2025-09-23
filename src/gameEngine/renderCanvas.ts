@@ -28,6 +28,7 @@ const init = (): void => {
   }
   gameAreaElement = element
   window.addEventListener('resize', debouncedResize, false)
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (window.screen.orientation) {
     window.screen.orientation.addEventListener('change', debouncedResize, false)
   }

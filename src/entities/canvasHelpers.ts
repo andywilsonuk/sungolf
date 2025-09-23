@@ -3,6 +3,19 @@ import { physicsScale } from '../gameEngine/physics'
 import { applyPixelScale, applyRatioScale, heightPadding } from '../gameEngine/renderCanvas'
 import Hsl from '../shared/hsl'
 
+interface Vertex {
+  x: number
+  y: number
+}
+
+interface PolygonShape extends Shape {
+  m_vertices: Vertex[]
+}
+
+interface CircleShape extends Shape {
+  m_radius: number
+}
+
 const lineWidth = 0.01
 const fixtureAlpha = 0.5
 export const physicsScaleInverse = 1 / physicsScale
@@ -21,11 +34,15 @@ const getColor = (body: Body): string => {
   if (existing !== undefined) { return existing }
   colorMap.set(body, colors[colorNext])
   colorNext = (colorNext + 1) % colors.length
-  return colorMap.get(body)!
+  const result = colorMap.get(body)
+  if (!result) {
+    throw new Error('Failed to get color for body')
+  }
+  return result
 }
 
 const drawPolygon = (ctx: CanvasRenderingContext2D, body: Body, shape: Shape): void => {
-  const vertices = (shape as any).m_vertices
+  const vertices = (shape as PolygonShape).m_vertices
   if (!vertices.length) {
     return
   }
@@ -54,7 +71,7 @@ const drawPolygon = (ctx: CanvasRenderingContext2D, body: Body, shape: Shape): v
 }
 
 const drawCircle = (ctx: CanvasRenderingContext2D, body: Body, shape: Shape): void => {
-  const radius = (shape as any).m_radius
+  const radius = (shape as CircleShape).m_radius
   const { x, y } = body.getPosition()
 
   circle(ctx, radius, x + lineWidth, y + lineWidth)

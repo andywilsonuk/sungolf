@@ -13,7 +13,10 @@ let element: HTMLElement | null
 
 const down = (e: TouchEvent): void => {
   const { clientX, clientY } = e.changedTouches[0]
-  const { left, top, right, bottom, width, height } = element!.getBoundingClientRect()
+  if (!element) {
+    throw new Error('Element not initialized')
+  }
+  const { left, top, right, bottom, width, height } = element.getBoundingClientRect()
   const pad = Math.min(width, height) * 0.05
   if (clientX < left + pad || clientX > right - pad || clientY < top + pad || clientY > bottom - pad) {
     return

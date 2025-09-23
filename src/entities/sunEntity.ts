@@ -14,7 +14,10 @@ export default class SunEntity {
   private normalizedAlpha = 0
 
   init(): void {
-    subscribe(stageReadySignal, this.stageReady.bind(this))
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [{ stageId }] = args as [{ stageId: number }]
+      this.stageReady({ stageId })
+    })
     this.normalizedAngle = 0
     this.normalizedAlpha = 0
   }
@@ -48,6 +51,7 @@ export default class SunEntity {
     const x = Math.floor(centerX + dx)
     const y = Math.floor(centerY + dy)
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (debug) {
       circle(ctx, radius, centerX, centerY)
       ctx.strokeStyle = debugColorString

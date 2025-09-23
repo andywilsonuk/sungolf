@@ -1,6 +1,6 @@
-import type { Vec2 } from 'planck-js'
+﻿import type { Vec2 } from 'planck-js'
 import { Vec2 as Vec2Constructor } from 'planck-js'
-import { Animation, linear } from '../gameEngine/animation'
+import { EasingAnimation, linear } from '../gameEngine/easingAnimation'
 import { addAnimation } from '../gameEngine/animator'
 import { physicsScale, rayCast } from '../gameEngine/physics'
 import { subscribeResize } from '../gameEngine/renderCanvas'
@@ -27,7 +27,7 @@ export default class FlagEntity {
   private position: Vec2 | null = null
   private leftObstructed = false
   private rightObstructed = false
-  private flagRaiseAnimY: Animation
+  private flagRaiseAnimY: EasingAnimation
   private boundaryRight = 0
   public dirty = false
 
@@ -37,18 +37,21 @@ export default class FlagEntity {
     this.position = null
     this.leftObstructed = false
     this.rightObstructed = false
-    this.flagRaiseAnimY = addAnimation(new Animation(linear, flagRaiseAnimDuration))
+    this.flagRaiseAnimY = addAnimation(new EasingAnimation(linear, flagRaiseAnimDuration)) as EasingAnimation
     this.boundaryRight = 0
     this.dirty = false
   }
 
   init(): void {
     subscribeResize(this.onResize.bind(this))
-    subscribe(stageReadySignal, this.show.bind(this))
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [payload] = args as [{ stageId: number, holePosition: Vec2 }]
+      this.show(payload)
+    })
     subscribe(stageCompleteSignal, this.hide.bind(this))
   }
 
-  show({ stageId, holePosition }: { stageId: number; holePosition: Vec2 }): void {
+  show({ stageId, holePosition }: { stageId: number, holePosition: Vec2 }): void {
     if (stageId === finalStageId) { return }
     const x = holePosition.x + holeWidth * -0.5 * physicsScale
     const y = holePosition.y
@@ -98,7 +101,7 @@ export default class FlagEntity {
     this.dirty = this.flagRaiseAnimY.running
     if (!this.visible || !this.position) { return }
     ctx.save()
-    translatePhysics(ctx, this.position.x, this.position.y + this.flagRaiseAnimY.final)
+    translatePhysics(ctx, this.position.x, this.position.y + (this.flagRaiseAnimY.final ?? 0))
 
     const leftDirection = this.rightObstructed && !this.leftObstructed
 
@@ -107,7 +110,7 @@ export default class FlagEntity {
 
     const flagText = this.stageId === 0 ? ' ' : String(this.stageId)
     const poleEdge = leftDirection ? -poleWidth * physicsScale : 0
-    translatePhysics(ctx, poleEdge, this.flagRaiseAnimY.current - this.flagRaiseAnimY.final)
+    translatePhysics(ctx, poleEdge, this.flagRaiseAnimY.current - (this.flagRaiseAnimY.final ?? 0))
 
     ctx.font = `${height}px Main`
     ctx.textBaseline = 'middle'

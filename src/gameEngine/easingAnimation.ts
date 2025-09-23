@@ -1,4 +1,5 @@
 // https://github.com/phegman/animate-vanilla-js/
+import type { AnimationUpdate } from './animator'
 import { interpolationCurrent } from './animator'
 
 type EasingFunction = (t: number, b: number, c: number, d: number) => number
@@ -27,7 +28,7 @@ export const easeInOutQuint: EasingFunction = (t, b, c, d) =>
     ? (c / 2) * t * t * t * t * t + b
     : (c / 2) * ((t -= 2) * t * t * t * t + 2) + b
 
-export class Animation {
+export class EasingAnimation implements AnimationUpdate {
   easing: EasingFunction
   duration: number
   onDone?: () => void
@@ -69,7 +70,8 @@ export class Animation {
   }
 
   get current(): number {
-    if (this.finished) { return this.final! }
-    return this.easing(this.progress + interpolationCurrent(), this.initial!, this.change!, this.duration)
+    if (this.finished && this.final !== null) { return this.final }
+    if (this.initial === null || this.change === null) { return 0 }
+    return this.easing(this.progress + interpolationCurrent(), this.initial, this.change, this.duration)
   }
 }

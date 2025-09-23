@@ -18,12 +18,12 @@ interface ZoneData {
   backgroundColor?: Hsl
   backgroundColorStop?: number
   depthMinMax?: [number, number] | number[] | ((relativeStageId: number, randValue: number) => [number, number] | number[])
-  driftMinMax?: [number, number] | number[] | ((relativeStageId: number, randValue: number) => [number, number] | number[])
+  driftMinMax?: [number, number] | number[] | ((relativeStageId: number, randValue?: number) => [number, number] | number[])
   holeMinDistanceBias?: number
-  allowedFeatures?: string[] | ((relativeStageId: number) => string[])
-  specialFeature?: SpecialFeature | ((relativeStageId: number, randValue?: number) => SpecialFeature | undefined) | undefined
-  preferCrags?: boolean | ((relativeStageId: number, randValue: number) => boolean)
-  water?: boolean | ((relativeStageId: number, randValue: number) => boolean)
+  allowedFeatures?: string[] | ((relativeStageId: number, randValue?: number, zone?: unknown) => string[])
+  specialFeature?: SpecialFeature | ((relativeStageId: number, randValue?: number, zone?: unknown) => SpecialFeature | undefined) | undefined
+  preferCrags?: boolean | ((relativeStageId: number, randValue?: number) => boolean)
+  water?: boolean | ((relativeStageId: number, randValue?: number) => boolean)
 }
 
 const defaultColor = new Hsl(43, 89, 38)
@@ -71,8 +71,8 @@ const initialZone: ZoneData = {
     const sin = sinWave(relativeStageId, 30, mid, max)
     return [sin - 30, sin]
   },
-  driftMinMax: (relativeStageId: number, randValue: number) =>
-    relativeStageId > 10 && oneIn(randValue, 5)
+  driftMinMax: (relativeStageId: number, randValue?: number) =>
+    relativeStageId > 10 && oneIn(randValue ?? 0, 5)
       ? [300, 300]
       : [100, clamp(100, maxDrift, relativeStageId * 4)],
   holeMinDistanceBias: 1,
@@ -130,7 +130,7 @@ const yellow1cZone = {
   duration: 63,
   depthMinMax: [ceilingDepth + 100, floorDepth],
   driftMinMax: [150, 400],
-  specialFeature: (_, randValue) => oneIn(randValue, 30)
+  specialFeature: (_: number, randValue?: number) => oneIn(randValue ?? 0, 30)
     ? {
         feature: sinkholeName,
         distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
@@ -215,9 +215,9 @@ const green1aZone = {
   depthMinMax: [floorDepth - 50, floorDepth],
   holeMinDistanceBias: 0.7,
   driftMinMax: [0, 60],
-  allowedFeatures: (_, randValue) => oneIn(randValue, 6) ? greenFeaturesPlus : greenFeatures,
-  specialFeature: (_, randValue, zone) => {
-    if (!oneIn(randValue, 8) || zone.depthMinMax[1] < floorDepth - 10) { return }
+  allowedFeatures: (_: number, randValue?: number) => oneIn(randValue ?? 0, 6) ? greenFeaturesPlus : greenFeatures,
+  specialFeature: (_: number, randValue?: number, zone?: { depthMinMax?: number[] }) => {
+    if (!oneIn(randValue ?? 0, 8) || (zone?.depthMinMax?.[1] ?? 0) < floorDepth - 10) { return }
     return {
       feature: sinkholeName,
       distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
@@ -246,8 +246,8 @@ const yellow2Zone = {
   color: defaultColor,
   depthMinMax: [ceilingDepth, floorDepth],
   driftMinMax: [0, maxDrift],
-  specialFeature: (_, randValue) => {
-    const chance = scaleInt(randValue, 1, 60)
+  specialFeature: (_: number, randValue?: number) => {
+    const chance = scaleInt(randValue ?? 0, 1, 60)
     if (chance === 1) {
       return {
         feature: sinkholeName,
@@ -302,8 +302,8 @@ const wet1aZone = {
   backgroundColor: grayBackgroundColor,
   backgroundColorStop: grayBackgroundColorStop,
   depthMinMax: [floorDepth - 150, floorDepth],
-  driftMinMax: (_, randValue) => oneIn(randValue, 5) ? [50, 100] : [0, 0],
-  specialFeature: (_, randValue) => oneIn(randValue, 5)
+  driftMinMax: (_: number, randValue?: number) => oneIn(randValue ?? 0, 5) ? [50, 100] : [0, 0],
+  specialFeature: (_: number, randValue?: number) => oneIn(randValue ?? 0, 5)
     ? {
         feature: sinkholeName,
         distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
@@ -337,8 +337,8 @@ const yellow3Zone = {
   color: defaultColor,
   depthMinMax: [ceilingDepth, floorDepth],
   driftMinMax: [0, maxDrift],
-  specialFeature: (_, randValue) => {
-    const chance = scaleInt(randValue, 1, 60)
+  specialFeature: (_: number, randValue?: number) => {
+    const chance = scaleInt(randValue ?? 0, 1, 60)
     if (chance === 1) {
       return {
         feature: sinkholeName,
@@ -353,8 +353,8 @@ const yellow3Zone = {
       }
     }
   },
-  preferCrags: (_, randValue) => oneIn(randValue, 3),
-  water: (_, randValue) => oneIn(randValue, 40),
+  preferCrags: (_: number, randValue?: number) => oneIn(randValue ?? 0, 3),
+  water: (_: number, randValue?: number) => oneIn(randValue ?? 0, 40),
 }
 const endAZone = {
   ...yellow3Zone,

@@ -6,17 +6,18 @@ import { specialWidth } from '../terrain/constants'
 import { towerName } from '../terrain/features/names'
 import { translatePhysics } from './canvasHelpers'
 import { objectCategory } from './constants'
+import type { SpecialObject } from '@/terrain/features/types'
 
 const path = new window.Path2D('m-13 1l6 0l0 10l14 0l0 -10l6 0l-13 -20z')
 const points = [[-13, 1], [-7, 1], [-7, 11], [7, 11], [7, 1], [13, 1], [0, -19]]
 const fixtureOptions = {
   friction: 0.05,
-  filterCategoryBits: objectCategory
+  filterCategoryBits: objectCategory,
 }
 const offset = Vec2Constructor(specialWidth * physicsScale * -0.5, -0.2)
 const colorString = new Hsl(10, 53, 28).asString()
 
-export default class TowerEntity {
+export default class TowerEntity implements SpecialObject {
   private path!: Path2D
   private body!: Body
   private visible = false
@@ -27,9 +28,9 @@ export default class TowerEntity {
   init(): void {
     this.path = new window.Path2D(path)
     const body = createBody({
-      active: false
+      active: false,
     })
-    const scaledPoints = points.map(p => Vec2Constructor(p[0], p[1]).mul(physicsScale))
+    const scaledPoints = points.map((p) => Vec2Constructor(p[0], p[1]).mul(physicsScale))
     body.createFixture(Polygon(scaledPoints), fixtureOptions)
     this.body = body
     this.visible = false
@@ -60,7 +61,7 @@ export default class TowerEntity {
 
   renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     if (!this.position) return
-    
+
     ctx.save()
 
     const { x, y } = this.position

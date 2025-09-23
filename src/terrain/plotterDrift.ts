@@ -1,9 +1,9 @@
 import debugLog from '../gameEngine/debugLog'
-import { randomInt, randomShuffle, randomTernary } from '../shared/random'
+import { randomInt, randomShuffle, randomTernary, type RandomGenerator } from '../shared/random'
 import { sequence } from '../shared/utils'
 import type { Plotter } from './plotter'
 
-export default (plotter: Plotter, delta: number, rand: () => number): void => {
+export default (plotter: Plotter, delta: number, rand: RandomGenerator): void => {
   let remaining = Math.abs(delta)
   const indexes = sequence(plotter.count - 3, 1) // not first, last or hole
 
@@ -11,8 +11,8 @@ export default (plotter: Plotter, delta: number, rand: () => number): void => {
     const loopRemaining = remaining
     randomShuffle(rand, indexes)
 
-    for (let i = 0; i < indexes.length; i++) {
-      const point = plotter.getByIndex(indexes[i])
+    for (const index of indexes) {
+      const point = plotter.getByIndex(index)
       if (point.segment?.isSpecial) { continue }
 
       let sign = randomTernary(rand, -1, 1)

@@ -20,27 +20,35 @@ export default class TopographyEntity {
   private dirty = false
 
   spawn(): void {
-    this.waterEntity = addEntity(new WaterEntity())
-    this.terrainEntity = addEntity(new TerrainEntity())
-    this.flagEntity = addEntity(new FlagEntity())
-    this.teeEntity = addEntity(new TeeEntity())
-    this.paletteEntity = addEntity(new PaletteEntity())
-    this.sunEntity = addEntity(new SunEntity())
+    this.waterEntity = addEntity(new WaterEntity()) as WaterEntity
+    this.terrainEntity = addEntity(new TerrainEntity()) as TerrainEntity
+    this.flagEntity = addEntity(new FlagEntity()) as FlagEntity
+    this.teeEntity = addEntity(new TeeEntity()) as TeeEntity
+    this.paletteEntity = addEntity(new PaletteEntity()) as PaletteEntity
+    this.sunEntity = addEntity(new SunEntity()) as SunEntity
   }
 
   init(): void {
     subscribeResize(this.onResize.bind(this))
   }
 
-  onResize({ renderWidth, renderHeight }: { renderWidth: number; renderHeight: number }): void {
-    this.canvasElement = document.getElementById('topography')! as HTMLCanvasElement
+  onResize({ renderWidth, renderHeight }: { renderWidth: number, renderHeight: number }): void {
+    const canvasElement = document.getElementById('topography')
+    if (!canvasElement) {
+      throw new Error('Canvas element with id "topography" not found')
+    }
+    this.canvasElement = canvasElement as HTMLCanvasElement
     this.canvasElement.width = renderWidth
     this.canvasElement.height = renderHeight
     this.dirty = true
   }
 
   renderInitial(): void {
-    this.ctx = this.canvasElement.getContext('2d')!
+    const ctx = this.canvasElement.getContext('2d')
+    if (!ctx) {
+      throw new Error('Could not get 2d context from canvas')
+    }
+    this.ctx = ctx
   }
 
   get dirtyChildren(): boolean {

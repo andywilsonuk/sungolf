@@ -18,7 +18,7 @@ export default class BoundaryEntity {
   bottomBoundary!: Fixture
 
   init(): void {
-    this.boundaryBody = createBody()
+    this.boundaryBody = createBody({ })
     this.leftBoundary = createBoundaryBox(this.boundaryBody)
     this.rightBoundary = createBoundaryBox(this.boundaryBody)
     this.topBoundary = createBoundaryBox(this.boundaryBody)

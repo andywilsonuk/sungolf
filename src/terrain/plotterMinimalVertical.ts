@@ -1,10 +1,14 @@
 import debugLog from '../gameEngine/debugLog'
-import { randomInt, randomShuffle } from '../shared/random'
+import { randomInt, randomShuffle, type RandomGenerator } from '../shared/random'
 import { sequence } from '../shared/utils'
 import type { Plotter } from './plotter'
 
-export default (plotter: Plotter, targetY: number, rand: () => number): void => {
-  const delta = targetY - plotter.first!.y
+export default (plotter: Plotter, targetY: number, rand: RandomGenerator): void => {
+  const firstPoint = plotter.first
+  if (!firstPoint) {
+    throw new Error('Plotter has no first point')
+  }
+  const delta = targetY - firstPoint.y
 
   const sign = Math.sign(delta)
   let remaining = Math.abs(delta)
@@ -14,8 +18,8 @@ export default (plotter: Plotter, targetY: number, rand: () => number): void => 
     const loopRemaining = remaining
     randomShuffle(rand, indexes)
 
-    for (let i = 0; i < indexes.length; i++) {
-      const point = plotter.getByIndex(indexes[i])
+    for (const index of indexes) {
+      const point = plotter.getByIndex(index)
       if (point.segment?.isSpecial) { continue }
 
       const pointRemainingY = plotter.availableYDistance(point, sign === 1)

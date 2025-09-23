@@ -1,4 +1,3 @@
-import type { Body, Vec2 } from 'planck-js'
 import { Polygon, Vec2 as Vec2Constructor } from 'planck-js'
 import type Hsl from '../shared/hsl'
 import { finalStageId, stageCompleteSignal, stageReadySignal, stageTransitioningSignal, terrainCategory, terrainTag } from './constants'
@@ -6,64 +5,64 @@ import terrainGen from '../terrain'
 import { createBody, physicsScale } from '../gameEngine/physics'
 import { dispatchSignal, subscribe } from '../gameEngine/signalling'
 import TerrainManager, { TerrainData } from './terrainManager'
-import { absoluteFloorDepth, holeDepth, holeTotalWidth, teeWidth as teeWidthBase, teeX } from '../terrain/constants'
+import { holeDepth, holeTotalWidth, teeWidth as teeWidthBase, teeX } from '../terrain/constants'
 import { enqueueAudio } from '../gameEngine/audioManager'
 import { audioIds } from '../audio'
 import { delay } from '../gameEngine/delay'
 import { debugBodyRender, translatePhysics } from './canvasHelpers'
 import terrainParser from '../terrainParser'
-import { Animation, linear } from '../gameEngine/animation'
+import { EasingAnimation, linear } from '../gameEngine/easingAnimation'
 import { addAnimation } from '../gameEngine/animator'
 import orchestration from '../orchestration'
-import debugLog from '../gameEngine/debugLog'
 import { addEntity } from '../gameEngine/world'
 import SkullEntity from './skullEntity'
 import CloudEntity from './cloudEntity'
 import CactusEntity from './cactusEntity'
 import { cactusName, cloudName, skullName, towerName } from '../terrain/features/names'
 import TowerEntity from './towerEntity'
+import type { SpecialObject } from '@/terrain/features/types'
 
 const bodyOptions = {
-  active: false
+  active: false,
 }
 const fixtureOptions = {
   friction: 0.8,
-  filterCategoryBits: terrainCategory
+  filterCategoryBits: terrainCategory,
 }
 const teeWidth = teeWidthBase * physicsScale
 const startOffset = teeX * physicsScale
 const transitionDelay = 0.75 * 1000
 const transitionDuration = 1 * 1000
 
-interface SpecialObject {
-  show?(position: Vec2): void
-  hide?(): void
-  disable?(): void
-  enable?(offset: Vec2): void
-  renderOnCanvas?(ctx: CanvasRenderingContext2D): void
+export interface TerrainEntityColor {
+  terrainColor: Hsl | null
 }
 
-export default class TerrainEntity {
+export interface SetStageTerrain {
+  setStage: (stage: number) => void
+}
+
+export default class TerrainEntity implements TerrainEntityColor, SetStageTerrain {
   public tags = new Set([terrainTag])
   private terrain = new TerrainManager()
   private stageLoaded = false
   public wireframe = false
-  private transitionAnim: Animation
+  private transitionAnim: EasingAnimation
   public terrainColor: Hsl | null = null
   public dirty = false
   public stageId!: number
   private specialObjects!: Map<string, SpecialObject>
 
   constructor() {
-    this.transitionAnim = addAnimation(new Animation(linear, transitionDuration, this.transitionDone.bind(this)))
+    this.transitionAnim = addAnimation(new EasingAnimation(linear, transitionDuration, this.transitionDone.bind(this))) as EasingAnimation
   }
 
   spawn(): void {
     this.specialObjects = new Map([
-      [cloudName, addEntity(new CloudEntity())],
-      [cactusName, addEntity(new CactusEntity())],
-      [skullName, addEntity(new SkullEntity())],
-      [towerName, addEntity(new TowerEntity())]
+      [cloudName, addEntity(new CloudEntity()) as SpecialObject],
+      [cactusName, addEntity(new CactusEntity()) as SpecialObject],
+      [skullName, addEntity(new SkullEntity()) as SpecialObject],
+      [towerName, addEntity(new TowerEntity()) as SpecialObject],
     ])
   }
 
@@ -85,9 +84,10 @@ export default class TerrainEntity {
       const polygon = Polygon(part)
       const fixture = body.createFixture(polygon, fixtureOptions)
       fixture.setUserData(`${stageId},${partId}`)
-      if (fixture.getShape().m_vertices[0].y === -1) {
-        debugLog('bad shape', fixture.getUserData(), part)
-      }
+      // Debug code commented out due to type issues with physics library internals
+      // if (fixture.getShape().m_vertices[0].y === -1) {
+      //   debugLog('bad shape', fixture.getUserData(), part)
+      // }
     })
     body.setUserData(stageId)
 
@@ -122,8 +122,7 @@ export default class TerrainEntity {
     ctx.fillRect(0, 1, holeTotalWidth, holeDepth)
     ctx.restore()
 
-    for (let i = 0; i < definitions.length; i++) {
-      const definition = definitions[i]
+    for (const definition of definitions) {
       ctx.fill(definition.renderPath)
 
       definition.specialObject?.renderOnCanvas?.(ctx)
@@ -134,8 +133,7 @@ export default class TerrainEntity {
     ctx.restore()
 
     if (!this.wireframe) { return }
-    for (let i = 0; i < definitions.length; i++) {
-      const definition = definitions[i]
+    for (const definition of definitions) {
       debugBodyRender(ctx, definition.body, true)
     }
   }
@@ -163,7 +161,7 @@ export default class TerrainEntity {
     const nextTerrain = this.terrain.next
 
     const startPosition = Vec2Constructor(startOffset, stageTerrain.startY)
-    const holePosition = Vec2Constructor(stageTerrain.distance + startOffset + teeWidth, nextTerrain?.startY ?? absoluteFloorDepth)
+    const holePosition = Vec2Constructor(stageTerrain.distance + startOffset + teeWidth, nextTerrain.startY)
 
     dispatchSignal(stageReadySignal, { stageId, startPosition, holePosition })
   }
@@ -176,7 +174,9 @@ export default class TerrainEntity {
   }
 
   transitionDone(): void {
-    this.transitionAnim.final !== undefined && this.terrain.setOffset(this.transitionAnim.final)
+    if (this.transitionAnim.final !== null) {
+      this.terrain.setOffset(this.transitionAnim.final)
+    }
     this.terrainColor = orchestration(this.stageId + 1).color
     this.terrain.enable()
     this.notifyReady(this.stageId + 1)

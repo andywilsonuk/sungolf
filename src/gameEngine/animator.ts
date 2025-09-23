@@ -1,18 +1,17 @@
-interface Animation {
+export interface AnimationUpdate {
   update(deltaTime: number): void
 }
 
 let lastDeltaTime = 0
 let interpolation = 0
-const animations: Animation[] = []
+const animations: AnimationUpdate[] = []
 
 const render = (interpolationPercentage: number): void => {
   interpolation = interpolationPercentage
 }
 
 const update = (deltaTime: number): void => {
-  for (let i = 0; i < animations.length; i++) {
-    const animation = animations[i]
+  for (const animation of animations) {
     animation.update(deltaTime)
   }
   lastDeltaTime = deltaTime
@@ -23,7 +22,7 @@ const clear = (): void => {
 }
 
 export const interpolationCurrent = (): number => interpolation * lastDeltaTime
-export const addAnimation = (animation: Animation): Animation => {
+export const addAnimation = (animation: AnimationUpdate): AnimationUpdate => {
   animations.push(animation)
   return animation
 }

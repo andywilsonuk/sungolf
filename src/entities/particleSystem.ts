@@ -15,9 +15,7 @@ interface Particle {
   render(ctx: CanvasRenderingContext2D): void
 }
 
-interface ParticleConstructor {
-  new (doneCallback: (particle: Particle) => void): Particle
-}
+type ParticleConstructor = new (doneCallback: (particle: Particle) => void) => Particle
 
 export default class ParticleSystem {
   private inactiveHead: Particle | null = null
@@ -71,8 +69,8 @@ export default class ParticleSystem {
       this.activeHead = particle.next ?? null
     } else {
       let previous = this.activeHead
-      while (previous?.next !== particle) {
-        previous = previous?.next ?? null
+      while (previous && previous.next !== particle) {
+        previous = previous.next ?? null
       }
       if (previous) {
         previous.setNext(particle.next ?? null)

@@ -31,15 +31,13 @@ export default class SoundFx {
   }
 
   pause(): void {
-    for (let i = 0; i < this.instances.length; i++) {
-      const instance = this.instances[i]
+    for (const instance of this.instances) {
       instance.stop(true)
     }
   }
 
   resume(): void {
-    for (let i = 0; i < this.instances.length; i++) {
-      const instance = this.instances[i]
+    for (const instance of this.instances) {
       if (!instance.paused) { continue }
       instance.start(this.connectTrack(instance), this.loop)
     }
@@ -51,8 +49,7 @@ export default class SoundFx {
       return undefined
     }
     ensureContext()
-    for (let i = 0; i < this.instances.length; i++) {
-      const instance = this.instances[i]
+    for (const instance of this.instances) {
       if (!instance.available) { continue }
       instance.start(this.connectTrack(instance), this.loop)
       return instance
@@ -61,8 +58,7 @@ export default class SoundFx {
   }
 
   stop(): void {
-    for (let i = 0; i < this.instances.length; i++) {
-      const instance = this.instances[i]
+    for (const instance of this.instances) {
       instance.stop(false)
     }
   }
@@ -86,7 +82,10 @@ export default class SoundFx {
   }
 
   connectTrack(instance: SoundFxInstance): AudioBufferSourceNode {
-    const source = createFromBuffer(this.audioBuffer!, this.audioGain!)
+    if (!this.audioBuffer || !this.audioGain) {
+      throw new Error('Audio buffer or gain not initialized')
+    }
+    const source = createFromBuffer(this.audioBuffer, this.audioGain)
     source.addEventListener('ended', this.ended.bind(this, instance))
     return source
   }

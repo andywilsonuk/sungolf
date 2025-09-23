@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { zoneColors } from '../orchestration'
 
 const debug = false
 
 export default class PaletteEntity {
+  tags?: string[] | Set<string>
+
   renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     if (!debug) { return }
 
@@ -12,8 +15,10 @@ export default class PaletteEntity {
     const zones = zoneColors()
     for (let i = 0; i < zones.length; i++) {
       const color = zones[i]
-      ctx.fillStyle = color.asString()
-      ctx.fillRect(60 + size * i, 60, size, size)
+      if (color) {
+        ctx.fillStyle = color.asString()
+        ctx.fillRect(60 + size * i, 60, size, size)
+      }
     }
 
     ctx.restore()

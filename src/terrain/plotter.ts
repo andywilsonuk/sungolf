@@ -1,4 +1,5 @@
 import { PlotterPoint } from './plotterPoint'
+import type { TerrainFeature } from './features/types'
 
 export class Plotter {
   points: PlotterPoint[]

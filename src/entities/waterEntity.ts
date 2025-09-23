@@ -16,7 +16,7 @@ const boundaryThickness = 50 * physicsScale
 const createBoundaryBox = (body: Body): Fixture =>
   body.createFixture(Polygon([Vec2.zero(), Vec2.zero(), Vec2.zero(), Vec2.zero()]), {
     isSensor: true,
-    filterCategoryBits: waterCategory
+    filterCategoryBits: waterCategory,
   })
 
 export default class WaterEntity {
@@ -39,7 +39,10 @@ export default class WaterEntity {
     this.waterBoundary = createBoundaryBox(this.waterBody)
 
     subscribeResize(this.onResize.bind(this))
-    subscribe(stageReadySignal, this.stageReady.bind(this))
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [{ stageId }] = args as [{ stageId: number }]
+      this.stageReady({ stageId })
+    })
   }
 
   onResize({ width }: { width: number }): void {

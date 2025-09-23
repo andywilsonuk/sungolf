@@ -1,7 +1,6 @@
 import type { Vec2 } from 'planck-js'
-import type { Animation } from '../gameEngine/animation'
 import { addAnimation } from '../gameEngine/animator'
-import { Animation as AnimationClass, easeInCubic, easeOutCubic, linear } from '../gameEngine/animation'
+import { EasingAnimation, easeInCubic, easeOutCubic, linear } from '../gameEngine/easingAnimation'
 import { circle, translateHeightPadding, physicsScaleInverse } from './canvasHelpers'
 import { waterColor } from './constants'
 import type { RandomGenerator } from '../shared/random'
@@ -13,20 +12,20 @@ const radius = 1.4
 const rand: RandomGenerator = randomGenerator('particles')
 
 export default class ParticleWater {
-  private effectAnimX: Animation
-  private effectAnimY: Animation
-  private effectAnimFade: Animation
-  private effectAnimGravity: Animation
-  private effectAnimLightness: Animation
+  private effectAnimX: EasingAnimation
+  private effectAnimY: EasingAnimation
+  private effectAnimFade: EasingAnimation
+  private effectAnimGravity: EasingAnimation
+  private effectAnimLightness: EasingAnimation
   private color: Hsl
   public next?: ParticleWater
 
   constructor(doneCallback: (particle: ParticleWater) => void) {
-    this.effectAnimX = addAnimation(new AnimationClass(easeOutCubic, duration, this.onDone.bind(this, doneCallback)))
-    this.effectAnimY = addAnimation(new AnimationClass(easeOutCubic, duration))
-    this.effectAnimFade = addAnimation(new AnimationClass(easeInCubic, duration))
-    this.effectAnimGravity = addAnimation(new AnimationClass(linear, duration))
-    this.effectAnimLightness = addAnimation(new AnimationClass(linear, duration * 0.5))
+    this.effectAnimX = addAnimation(new EasingAnimation(easeOutCubic, duration, this.onDone.bind(this, doneCallback))) as EasingAnimation
+    this.effectAnimY = addAnimation(new EasingAnimation(easeOutCubic, duration)) as EasingAnimation
+    this.effectAnimFade = addAnimation(new EasingAnimation(easeInCubic, duration)) as EasingAnimation
+    this.effectAnimGravity = addAnimation(new EasingAnimation(linear, duration)) as EasingAnimation
+    this.effectAnimLightness = addAnimation(new EasingAnimation(linear, duration * 0.5)) as EasingAnimation
     this.color = waterColor.clone()
   }
 

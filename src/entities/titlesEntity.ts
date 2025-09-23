@@ -4,19 +4,26 @@ import { getOneEntityByTag } from '../gameEngine/world'
 import { goFullscreen } from '../shared/fullscreenHelper'
 import { gamePausedSignal, gameResumedSignal, optionsTag } from './constants'
 import { addClass, removeClass } from './htmlHelpers'
+import type { FullscreenOptions } from './optionsEntity'
 
 export default class TitlesEntity {
-  private options: any
+  private options: FullscreenOptions | null = null
   private titleElement!: HTMLElement
   private callback!: () => void
 
   init(): void {
-    this.options = getOneEntityByTag(optionsTag)
+    this.options = getOneEntityByTag(optionsTag) as FullscreenOptions
   }
 
   renderInitial(): void {
-    this.titleElement = document.getElementById('title')!
-    this.callback = this.onPlay.bind(this)
+    const titleElement = document.getElementById('title')
+    if (!titleElement) {
+      throw new Error('Title element not found')
+    }
+    this.titleElement = titleElement
+    this.callback = () => {
+      this.onPlay().catch(() => {})
+    }
 
     document.addEventListener('visibilitychange', this.onVisibilityChanged.bind(this))
 
@@ -37,9 +44,9 @@ export default class TitlesEntity {
 
   async onPlay(): Promise<void> {
     this.hide()
-    await initTracks()
+    initTracks()
 
-    if (this.options.fullscreenOn) {
+    if (this.options?.fullscreenOn) {
       await goFullscreen()
     }
   }

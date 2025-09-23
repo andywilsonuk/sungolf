@@ -5,11 +5,11 @@ import initServices from './gameEngine'
 import { loadSounds } from './audioSystem'
 import { soundList } from './audio'
 
-window.addEventListener('load', () => {
-  void (async () => {
-    initServices()
-    await loadSounds(soundList)
-    createWorld()
-    start()
-  })()
-})
+const load = async (): Promise<void> => {
+  initServices()
+  await loadSounds(soundList)
+  createWorld()
+  start()
+}
+
+window.onload = load

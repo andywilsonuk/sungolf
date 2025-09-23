@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { finalStageId } from '../entities/constants'
 import { randomGenerator, randomItem } from '../shared/random'
 import { segmentDepthMax, ceilingDepth, floorDepth, holeTotalWidth } from './constants'
@@ -101,7 +102,7 @@ export class Stage {
           continue
         }
         const cragSegment = preferCrags ? allowed.find((x) => x === crag) : undefined
-        segment = cragSegment ?? randomItem(randSelection, allowed)
+        segment = cragSegment ?? randomItem(randSelection, allowed) ?? null
         if (segment) {
           p.setSegment(segment)
         }

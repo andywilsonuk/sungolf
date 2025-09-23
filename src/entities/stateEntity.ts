@@ -4,12 +4,19 @@ import { loadState, saveState } from '../shared/statePersister'
 import { getOneEntityByTag } from '../gameEngine/world'
 import { ballStrokeSignal, ballTag, scoreTag, stageCompleteSignal, stageReadySignal, terrainTag, stateTag } from './constants'
 import { subscribe } from '../gameEngine/signalling'
+import type { BallShot } from './ballEntity'
+import type { SetScore } from './scoreEntity'
+import type { SetStageTerrain } from './terrainEntity'
 
-export default class StateEntity {
+export interface ResetState {
+  reset: () => void
+}
+
+export default class StateEntity implements ResetState {
   public tags = new Set([stateTag])
-  private terrainEntity: any
-  private scoreEntity: any
-  private ballEntity: any
+  private terrainEntity: SetStageTerrain | null = null
+  private scoreEntity: SetScore | null = null
+  private ballEntity: BallShot | null = null
   private stage!: number
   private score!: number
   private stroke!: number
@@ -17,12 +24,21 @@ export default class StateEntity {
   private ballForce!: [number, number] | null
 
   init(): void {
-    this.terrainEntity = getOneEntityByTag(terrainTag)
-    this.scoreEntity = getOneEntityByTag(scoreTag)
-    this.ballEntity = getOneEntityByTag(ballTag)
-    subscribe(stageCompleteSignal, this.stageComplete.bind(this))
-    subscribe(stageReadySignal, this.stageReady.bind(this))
-    subscribe(ballStrokeSignal, this.onStroke.bind(this))
+    this.terrainEntity = getOneEntityByTag(terrainTag) as SetStageTerrain
+    this.scoreEntity = getOneEntityByTag(scoreTag) as SetScore
+    this.ballEntity = getOneEntityByTag(ballTag) as BallShot
+    subscribe(stageCompleteSignal, (...args: unknown[]) => {
+      const [stageId] = args as [number]
+      this.stageComplete(stageId)
+    })
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [{ stageId }] = args as [{ stageId: number }]
+      this.stageReady({ stageId })
+    })
+    subscribe(ballStrokeSignal, (...args: unknown[]) => {
+      const [{ position, stroke }] = args as [{ position: Vec2, stroke: Vec2 }]
+      this.onStroke({ position, stroke })
+    })
   }
 
   renderInitial(): void {
@@ -36,9 +52,13 @@ export default class StateEntity {
     this.stroke = stroke
     this.ballPosition = ballPosition
     this.ballForce = ballForce
-    this.terrainEntity.setStage(stage)
-    this.scoreEntity.setScore(score, stroke)
-    if (ballPosition && ballForce) {
+    if (this.terrainEntity) {
+      this.terrainEntity.setStage(stage)
+    }
+    if (this.scoreEntity) {
+      this.scoreEntity.setScore(score, stroke)
+    }
+    if (ballPosition && ballForce && this.ballEntity) {
       this.ballEntity.setShot(Vec2Constructor(ballPosition[0], ballPosition[1]), Vec2Constructor(ballForce[0], ballForce[1]))
     }
   }
@@ -69,7 +89,9 @@ export default class StateEntity {
   }
 
   save(): void {
-    this.scoreEntity.setScore(this.score, this.stroke)
+    if (this.scoreEntity) {
+      this.scoreEntity.setScore(this.score, this.stroke)
+    }
     saveState(this.stage, this.score, this.stroke, this.ballPosition, this.ballForce)
   }
 

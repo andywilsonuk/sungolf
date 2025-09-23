@@ -39,7 +39,7 @@ const render = (interpolationPercentage: number): void => {
   servicesRef.render(interpolationPercentage)
 }
 
-const endFrame = (fps: number, panic: boolean): void => {
+const endFrame = (_fps: number, panic: boolean): void => {
   if (panic) {
     MainLoop.resetFrameDelta()
   }

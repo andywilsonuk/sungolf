@@ -93,6 +93,7 @@ declare module 'planck-js' {
     step(timeStep: number, velocityIterations?: number, positionIterations?: number): void
     on(event: string, callback: (...args: unknown[]) => void): void
     off(event: string, callback: (...args: unknown[]) => void): void
+    rayCast(p1: Vec2, p2: Vec2, callback: (fixture: Fixture, point: Vec2, normal: Vec2, fraction: number) => number): void
   }
 
   export interface BodyDef {
