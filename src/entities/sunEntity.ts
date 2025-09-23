@@ -5,18 +5,21 @@ import { circle } from './canvasHelpers'
 import { finalStageId, stageReadySignal } from './constants'
 
 const debug = false
-const degreesToRadians = (degrees) => degrees * (Math.PI / 180)
+const degreesToRadians = (degrees: number): number => degrees * (Math.PI / 180)
 const sunColor = new Hsl(60, 100, 43)
 const debugColorString = new Hsl(0, 0, 8).asString()
 
 export default class SunEntity {
-  init () {
+  private normalizedAngle = 0
+  private normalizedAlpha = 0
+
+  init(): void {
     subscribe(stageReadySignal, this.stageReady.bind(this))
     this.normalizedAngle = 0
     this.normalizedAlpha = 0
   }
 
-  stageReady ({ stageId }) {
+  stageReady({ stageId }: { stageId: number }): void {
     const sunDownStart = finalStageId - 50
     const initial = -55
     const stop = -170
@@ -32,7 +35,7 @@ export default class SunEntity {
     }
   }
 
-  renderOnCanvas (ctx) {
+  renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     ctx.save()
 
     const centerX = 450

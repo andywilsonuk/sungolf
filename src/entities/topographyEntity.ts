@@ -9,7 +9,17 @@ import { translateHeightPadding } from './canvasHelpers'
 import SunEntity from './sunEntity'
 
 export default class TopographyEntity {
-  spawn () {
+  private waterEntity!: WaterEntity
+  private terrainEntity!: TerrainEntity
+  private flagEntity!: FlagEntity
+  private teeEntity!: TeeEntity
+  private paletteEntity!: PaletteEntity
+  private sunEntity!: SunEntity
+  private canvasElement!: HTMLCanvasElement
+  private ctx!: CanvasRenderingContext2D
+  private dirty = false
+
+  spawn(): void {
     this.waterEntity = addEntity(new WaterEntity())
     this.terrainEntity = addEntity(new TerrainEntity())
     this.flagEntity = addEntity(new FlagEntity())
@@ -18,26 +28,26 @@ export default class TopographyEntity {
     this.sunEntity = addEntity(new SunEntity())
   }
 
-  init () {
+  init(): void {
     subscribeResize(this.onResize.bind(this))
   }
 
-  onResize ({ renderWidth, renderHeight }) {
-    this.canvasElement = document.getElementById('topography')
+  onResize({ renderWidth, renderHeight }: { renderWidth: number; renderHeight: number }): void {
+    this.canvasElement = document.getElementById('topography')! as HTMLCanvasElement
     this.canvasElement.width = renderWidth
     this.canvasElement.height = renderHeight
     this.dirty = true
   }
 
-  renderInitial () {
-    this.ctx = this.canvasElement.getContext('2d')
+  renderInitial(): void {
+    this.ctx = this.canvasElement.getContext('2d')!
   }
 
-  get dirtyChildren () {
+  get dirtyChildren(): boolean {
     return this.waterEntity.dirty || this.terrainEntity.dirty || this.flagEntity.dirty || this.teeEntity.dirty
   }
 
-  render () {
+  render(): void {
     if (this.dirty || this.dirtyChildren) {
       this.dirty = false
       const { ctx } = this

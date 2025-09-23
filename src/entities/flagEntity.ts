@@ -1,4 +1,5 @@
-import { Vec2 } from 'planck-js'
+import type { Vec2 } from 'planck-js'
+import { Vec2 as Vec2Constructor } from 'planck-js'
 import { Animation, linear } from '../gameEngine/animation'
 import { addAnimation } from '../gameEngine/animator'
 import { physicsScale, rayCast } from '../gameEngine/physics'
@@ -21,7 +22,16 @@ const flagRaiseAnimDuration = 1 * 1000
 const obstructionCastLength = height * 3 * physicsScale
 
 export default class FlagEntity {
-  constructor () {
+  private visible = false
+  private stageId: number | null = null
+  private position: Vec2 | null = null
+  private leftObstructed = false
+  private rightObstructed = false
+  private flagRaiseAnimY: Animation
+  private boundaryRight = 0
+  public dirty = false
+
+  constructor() {
     this.visible = false
     this.stageId = null
     this.position = null
@@ -32,61 +42,61 @@ export default class FlagEntity {
     this.dirty = false
   }
 
-  init () {
+  init(): void {
     subscribeResize(this.onResize.bind(this))
     subscribe(stageReadySignal, this.show.bind(this))
     subscribe(stageCompleteSignal, this.hide.bind(this))
   }
 
-  show ({ stageId, holePosition }) {
+  show({ stageId, holePosition }: { stageId: number; holePosition: Vec2 }): void {
     if (stageId === finalStageId) { return }
     const x = holePosition.x + holeWidth * -0.5 * physicsScale
     const y = holePosition.y
     this.visible = true
     this.stageId = stageId
-    this.position = Vec2(x, y)
+    this.position = Vec2Constructor(x, y)
     this.leftObstructed = false
     this.rightObstructed = false
 
     const rayY = y - flagFinalOffsetY * physicsScale + height * 0.5 * physicsScale
-    const p1 = Vec2(x, rayY)
-    const p2 = Vec2(x + obstructionCastLength, rayY)
+    const p1 = Vec2Constructor(x, rayY)
+    const p2 = Vec2Constructor(x + obstructionCastLength, rayY)
 
     if (p2.x > this.boundaryRight) {
       this.obstructedRight()
     } else {
       rayCast(p1, p2, this.obstructedRight.bind(this))
     }
-    const p2b = Vec2(x - obstructionCastLength, p2.y)
+    const p2b = Vec2Constructor(x - obstructionCastLength, p2.y)
     rayCast(p1, p2b, this.obstructedLeft.bind(this))
 
     this.flagRaiseAnimY.start(0, -flagFinalOffsetY * physicsScale)
     this.dirty = true
   }
 
-  hide () {
+  hide(): void {
     this.visible = false
     this.flagRaiseAnimY.stop()
     this.dirty = true
   }
 
-  obstructedLeft () {
+  obstructedLeft(): number {
     this.leftObstructed = true
     return 0
   }
 
-  obstructedRight () {
+  obstructedRight(): number {
     this.rightObstructed = true
     return 0
   }
 
-  onResize ({ width }) {
+  onResize({ width }: { width: number }): void {
     this.boundaryRight = width * physicsScale
   }
 
-  renderOnCanvas (ctx) {
+  renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     this.dirty = this.flagRaiseAnimY.running
-    if (!this.visible) { return }
+    if (!this.visible || !this.position) { return }
     ctx.save()
     translatePhysics(ctx, this.position.x, this.position.y + this.flagRaiseAnimY.final)
 
@@ -95,7 +105,7 @@ export default class FlagEntity {
     ctx.fillStyle = poleColor
     ctx.fillRect(-poleWidth, -1, poleWidth, poleHeight)
 
-    const flagText = this.stageId === 0 ? ' ' : this.stageId
+    const flagText = this.stageId === 0 ? ' ' : String(this.stageId)
     const poleEdge = leftDirection ? -poleWidth * physicsScale : 0
     translatePhysics(ctx, poleEdge, this.flagRaiseAnimY.current - this.flagRaiseAnimY.final)
 

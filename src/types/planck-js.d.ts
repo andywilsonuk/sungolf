@@ -3,6 +3,8 @@ declare module 'planck-js' {
   export interface Vec2Constructor {
     new (x?: number, y?: number): Vec2
     (x?: number, y?: number): Vec2
+    zero(): Vec2
+    add(a: Vec2, b: Vec2): Vec2
   }
 
   export interface Vec2 {
@@ -29,12 +31,22 @@ declare module 'planck-js' {
     isActive(): boolean
     setAwake(awake: boolean): void
     getWorld(): World
-    createFixture(shape: Shape, density?: number): Fixture
+    createFixture(shape: Shape, options?: FixtureOptions | number): Fixture
     destroyFixture(fixture: Fixture): void
     setUserData(data: unknown): void
     getUserData(): unknown
     applyLinearImpulse(impulse: Vec2, point?: Vec2, wake?: boolean): void
     getFixtureList(): Fixture | null
+  }
+
+  export interface FixtureOptions {
+    friction?: number
+    restitution?: number
+    density?: number
+    isSensor?: boolean
+    filterCategoryBits?: number
+    filterMaskBits?: number
+    filterGroupIndex?: number
   }
 
   export interface Fixture {
@@ -84,6 +96,7 @@ declare module 'planck-js' {
     position?: Vec2
     angle?: number
     userData?: unknown
+    active?: boolean
   }
 
   export interface Settings {

@@ -1,4 +1,5 @@
-import { Circle, Vec2 } from 'planck-js'
+import type { Body, Vec2 } from 'planck-js'
+import { Circle, Vec2 as Vec2Constructor } from 'planck-js'
 import { createBody, physicsScale } from '../gameEngine/physics'
 import Hsl from '../shared/hsl'
 import { specialWidth } from '../terrain/constants'
@@ -12,14 +13,19 @@ const fixtureOptions = {
   filterCategoryBits: objectCategory
 }
 const hitBoxSize = 12 * physicsScale
-const offset = Vec2(specialWidth * physicsScale * -0.5, -0.1)
+const offset = Vec2Constructor(specialWidth * physicsScale * -0.5, -0.1)
 const backgroundColorString = new Hsl(0, 0, 20).asString()
 const foregroundColorString = new Hsl(21, 20, 86).asString()
 
 export default class SkullEntity {
-  get name () { return skullName }
+  private path!: Path2D
+  private body!: Body
+  private visible = false
+  private position: Vec2 | null = null
 
-  init () {
+  get name(): string { return skullName }
+
+  init(): void {
     this.path = new window.Path2D(path)
     const body = createBody({
       active: false
@@ -30,28 +36,31 @@ export default class SkullEntity {
     this.position = null
   }
 
-  show (position) {
+  show(position: Vec2): void {
     if (this.visible) { return }
     this.visible = true
     this.position = position.add(offset)
   }
 
-  hide () {
+  hide(): void {
     if (!this.visible) { return }
     this.visible = false
     this.disable()
   }
 
-  enable (terrainOffset) {
-    this.body.setPosition(Vec2.add(this.position, terrainOffset))
+  enable(terrainOffset: Vec2): void {
+    if (!this.position) return
+    this.body.setPosition(this.position.add(terrainOffset))
     this.body.setActive(true)
   }
 
-  disable () {
+  disable(): void {
     this.body.setActive(false)
   }
 
-  renderOnCanvas (ctx) {
+  renderOnCanvas(ctx: CanvasRenderingContext2D): void {
+    if (!this.position) return
+    
     ctx.save()
 
     const { x, y } = this.position
