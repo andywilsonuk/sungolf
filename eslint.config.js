@@ -4,10 +4,7 @@ import stylistic from '@stylistic/eslint-plugin'
 import globals from 'globals'
 
 export default tseslint.config({
-  files: ['src/**/*.ts', 'src/**/*.tsx'],
-  // TODO: Remove the following ignores as JS files are converted to TS
-  ignores: [
-  ], // All JS files have been converted to TypeScript
+  files: ['src/**/*.ts', 'src/**/*.tsx', 'tests/**/*.ts', ],
   extends: [
     js.configs.recommended,
     stylistic.configs.recommended,
