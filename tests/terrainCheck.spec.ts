@@ -2,17 +2,13 @@
 import { test, expect, type Page } from '@playwright/test'
 import { finalStageId } from '../src/entities/constants.js'
 import { randomGenerator, randomInt } from '../src/shared/random.js'
-import { createFolder, folderExists, removeReservedCharacters } from './fileUtils.js'
 
-// Test configuration
 const linearProgression = true
 const linearStart = 0
 const linearCount = 20
 const randomCount = 20
-const takeScreenshots = false
+const takeScreenshots = true
 const showWireframes = false
-
-const outputFolder = 'screenshots'
 
 interface StageIterator {
   initialId: number
@@ -21,12 +17,6 @@ interface StageIterator {
 
 test.describe('Terrain Check Tests', () => {
   let errorCount = 0
-
-  test.beforeAll(async () => {
-    if (takeScreenshots && !await folderExists(outputFolder)) {
-      await createFolder(outputFolder)
-    }
-  })
 
   const loadPage = async (page: Page): Promise<void> => {
     await page.goto('/#devtools', { waitUntil: 'networkidle' })
@@ -75,10 +65,8 @@ test.describe('Terrain Check Tests', () => {
   }
 
   test('should navigate through terrain stages without errors', async ({ page }) => {
-    // Set up page
     await page.setViewportSize({ width: 1280, height: 800 })
 
-    // Listen for console messages and page errors
     page.on('console', (msg) => {
       console.log(msg.text())
     })
@@ -89,10 +77,8 @@ test.describe('Terrain Check Tests', () => {
       errorCount += 1
     })
 
-    // Initialize page
     await loadPage(page)
 
-    // Create stage iterator
     const { initialId, getNext } = linearProgression
       ? createLinearStages(page, linearStart, linearCount)
       : createRandomStages(page, randomCount)
@@ -100,7 +86,6 @@ test.describe('Terrain Check Tests', () => {
     let counter = -1
     let currentId: number | undefined = initialId
 
-    // Navigate through stages
     while (currentId !== undefined) {
       counter += 1
 
@@ -112,26 +97,19 @@ test.describe('Terrain Check Tests', () => {
         await moveToStage(page, currentId)
       }
 
-      // Check for errors
       if (errorCount > 0) {
         console.log(`stopping on ${currentId}`)
         break
       }
 
-      // Take screenshot if enabled
       if (takeScreenshots) {
         await page.waitForTimeout(1000)
-        await page.screenshot({
-          path: `${outputFolder}/${removeReservedCharacters(String(currentId).padStart(5, '0'))}.png`,
-        })
+        await page.screenshot({ path: `screenshots/${currentId.toString().padStart(5, '0')}.png`, fullPage: true })
       }
 
       currentId = await getNext()
     }
 
-    console.log('Test completed')
-
-    // Assert that no errors occurred during the test
     expect(errorCount).toBe(0)
   })
 })

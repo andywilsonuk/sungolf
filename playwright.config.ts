@@ -1,11 +1,10 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 
 const runTime = 2 * 60 * 1000
-const baseUrl = 'http://8768:8765'
+const baseUrl = 'http://localhost:8768'
 
 export default defineConfig({
   testDir: './tests',
-  snapshotPathTemplate: 'tests/snapshots/{arg}{ext}',
   fullyParallel: true,
   use: {
     locale: 'en-GB',
