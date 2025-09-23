@@ -65,7 +65,7 @@ export default class TowerEntity implements SpecialObject {
     ctx.save()
 
     const { x, y } = this.position
-    translatePhysics(ctx, x, y)
+    translatePhysics(ctx, x - 0.5, y)
 
     ctx.fillStyle = colorString
     ctx.fill(this.path)
