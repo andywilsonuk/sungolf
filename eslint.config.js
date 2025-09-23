@@ -7,11 +7,7 @@ export default tseslint.config({
   files: ['src/**/*.ts', 'src/**/*.tsx'],
   // TODO: Remove the following ignores as JS files are converted to TS
   ignores: [
-    'src/entities/ballEntity.js',
-    'src/entities/devtoolsEntity.js',
-    'src/entities/stateEntity.js',
-    'src/entities/terrainEntity.js'
-  ], // Temporarily ignore remaining JS files during conversion process
+  ], // All JS files have been converted to TypeScript
   extends: [
     js.configs.recommended,
     stylistic.configs.recommended,

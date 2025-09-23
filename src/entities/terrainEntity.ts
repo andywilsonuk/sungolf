@@ -1,7 +1,9 @@
+import type { Body, Vec2 } from 'planck-js'
+import { Polygon, Vec2 as Vec2Constructor } from 'planck-js'
+import type Hsl from '../shared/hsl'
 import { finalStageId, stageCompleteSignal, stageReadySignal, stageTransitioningSignal, terrainCategory, terrainTag } from './constants'
 import terrainGen from '../terrain'
 import { createBody, physicsScale } from '../gameEngine/physics'
-import { Polygon, Vec2 } from 'planck-js'
 import { dispatchSignal, subscribe } from '../gameEngine/signalling'
 import TerrainManager, { TerrainData } from './terrainManager'
 import { absoluteFloorDepth, holeDepth, holeTotalWidth, teeWidth as teeWidthBase, teeX } from '../terrain/constants'
@@ -33,18 +35,30 @@ const startOffset = teeX * physicsScale
 const transitionDelay = 0.75 * 1000
 const transitionDuration = 1 * 1000
 
+interface SpecialObject {
+  show?(position: Vec2): void
+  hide?(): void
+  disable?(): void
+  enable?(offset: Vec2): void
+  renderOnCanvas?(ctx: CanvasRenderingContext2D): void
+}
+
 export default class TerrainEntity {
-  constructor () {
-    this.tags = new Set([terrainTag])
-    this.terrain = new TerrainManager()
-    this.stageLoaded = false
-    this.wireframe = false
+  public tags = new Set([terrainTag])
+  private terrain = new TerrainManager()
+  private stageLoaded = false
+  public wireframe = false
+  private transitionAnim: Animation
+  public terrainColor: Hsl | null = null
+  public dirty = false
+  public stageId!: number
+  private specialObjects!: Map<string, SpecialObject>
+
+  constructor() {
     this.transitionAnim = addAnimation(new Animation(linear, transitionDuration, this.transitionDone.bind(this)))
-    this.terrainColor = null
-    this.dirty = false
   }
 
-  spawn () {
+  spawn(): void {
     this.specialObjects = new Map([
       [cloudName, addEntity(new CloudEntity())],
       [cactusName, addEntity(new CactusEntity())],
@@ -53,11 +67,11 @@ export default class TerrainEntity {
     ])
   }
 
-  init () {
+  init(): void {
     subscribe(stageCompleteSignal, this.stageComplete.bind(this))
   }
 
-  populateTerrainData (stageId) {
+  populateTerrainData(stageId: number): void {
     const { commands, path, startY, distance, special } = terrainGen(stageId)
     const body = createBody(bodyOptions)
 
@@ -77,17 +91,17 @@ export default class TerrainEntity {
     })
     body.setUserData(stageId)
 
-    const specialObject = this.specialObjects.get(special?.name)
-    specialObject?.show(Vec2(special.x * physicsScale, special.y * physicsScale))
+    const specialObject = this.specialObjects.get(special?.name ?? '')
+    specialObject?.show?.(Vec2Constructor(special?.x ?? 0 * physicsScale, special?.y ?? 0 * physicsScale))
     this.terrain.add(new TerrainData(path, startY * physicsScale, (distance - 1) * physicsScale, body, specialObject))
   }
 
-  get terrainOffsetX () {
+  get terrainOffsetX(): number {
     const transitionAnim = this.transitionAnim
     return transitionAnim.running ? transitionAnim.current : this.terrain.offsetX
   }
 
-  renderOnCanvas (ctx) {
+  renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     this.dirty = this.transitionAnim.running
     if (!this.stageLoaded) { return }
 
@@ -96,7 +110,7 @@ export default class TerrainEntity {
     const offsetX = transitionAnim.running ? transitionAnim.current : this.terrain.offsetX
 
     ctx.save()
-    ctx.fillStyle = this.terrainColor.asString()
+    ctx.fillStyle = this.terrainColor?.asString() ?? ''
 
     translatePhysics(ctx, offsetX, 0)
 
@@ -112,7 +126,7 @@ export default class TerrainEntity {
       const definition = definitions[i]
       ctx.fill(definition.renderPath)
 
-      definition.specialObject?.renderOnCanvas(ctx)
+      definition.specialObject?.renderOnCanvas?.(ctx)
 
       translatePhysics(ctx, definition.distance, 0)
     }
@@ -126,7 +140,7 @@ export default class TerrainEntity {
     }
   }
 
-  setStage (stageId) {
+  setStage(stageId: number): void {
     if (this.stageLoaded) {
       this.terrain.clear()
     }
@@ -141,40 +155,40 @@ export default class TerrainEntity {
     this.notifyReady(stageId)
   }
 
-  notifyReady (stageId) {
+  notifyReady(stageId: number): void {
     this.stageId = stageId
     this.stageLoaded = true
 
     const stageTerrain = this.terrain.current
     const nextTerrain = this.terrain.next
 
-    const startPosition = Vec2(startOffset, stageTerrain.startY)
-    const holePosition = Vec2(stageTerrain.distance + startOffset + teeWidth, nextTerrain?.startY ?? absoluteFloorDepth)
+    const startPosition = Vec2Constructor(startOffset, stageTerrain.startY)
+    const holePosition = Vec2Constructor(stageTerrain.distance + startOffset + teeWidth, nextTerrain?.startY ?? absoluteFloorDepth)
 
     dispatchSignal(stageReadySignal, { stageId, startPosition, holePosition })
   }
 
-  transitionStart () {
+  transitionStart(): void {
     this.terrain.disable()
     this.transitionAnim.start(this.terrain.offsetX, this.terrain.offsetX - this.terrain.current.distance + 0.01)
     enqueueAudio(audioIds.stageTransition)
     dispatchSignal(stageTransitioningSignal)
   }
 
-  transitionDone () {
-    this.terrain.setOffset(this.transitionAnim.final)
+  transitionDone(): void {
+    this.transitionAnim.final !== undefined && this.terrain.setOffset(this.transitionAnim.final)
     this.terrainColor = orchestration(this.stageId + 1).color
     this.terrain.enable()
     this.notifyReady(this.stageId + 1)
   }
 
-  stageComplete () {
+  stageComplete(): void {
     this.populateTerrainData(this.stageId + 2)
     delay(this.transitionStart.bind(this), transitionDelay)
     enqueueAudio(audioIds.stageComplete)
   }
 
-  toggleWireframe () {
+  toggleWireframe(): void {
     this.wireframe = !this.wireframe
     this.dirty = true
   }

@@ -6,22 +6,33 @@ import { randomGenerator, randomInt } from '../shared/random'
 import { finalStageId, stageCompleteSignal, stateTag, terrainTag } from './constants'
 import { addClass, basicElement } from './htmlHelpers'
 
+interface RandomGenerator {
+  next(): number
+}
+
 const enabled = window.location.hash === '#devtools'
 
-const button = (text, action, id) => {
-  const button = basicElement('button', id ? { id } : {})
+const button = (text: string, action: () => void, id?: string): HTMLButtonElement => {
+  const button = basicElement('button', id ? { id } : {}) as HTMLButtonElement
   button.innerText = text
   button.addEventListener('click', action)
   return button
 }
-const input = (action, id = '') => {
-  const input = basicElement('input', { type: 'text', id })
-  input.addEventListener('change', (event) => action(Number(event.target.value)))
+
+const input = (action: (value: number) => void, id = ''): HTMLInputElement => {
+  const input = basicElement('input', { type: 'text', id }) as HTMLInputElement
+  input.addEventListener('change', (event) => action(Number((event.target as HTMLInputElement).value)))
   return input
 }
 
 export default class DevtoolsEntity {
-  init () {
+  private terrainEntity: any
+  private stateEntity: any
+  private rand!: RandomGenerator
+  private keyCode: string | null = null
+  private devlogElement!: HTMLElement
+
+  init(): void {
     if (!enabled) { return }
     document.addEventListener('keydown', this.keyPress.bind(this))
     this.terrainEntity = getOneEntityByTag(terrainTag)
@@ -30,7 +41,7 @@ export default class DevtoolsEntity {
     this.keyCode = null
   }
 
-  beginFrame () {
+  beginFrame(): void {
     if (this.keyCode === null) { return }
     switch (this.keyCode) {
       case 'ArrowLeft': this.movePrevious(); break
@@ -41,12 +52,14 @@ export default class DevtoolsEntity {
     this.keyCode = null
   }
 
-  renderInitial () {
+  renderInitial(): void {
     const devToolsElement = document.getElementById('devtools')
     if (!enabled) {
-      devToolsElement.parentElement.removeChild(devToolsElement)
+      devToolsElement?.parentElement?.removeChild(devToolsElement)
       return
     }
+    if (!devToolsElement) return
+
     devToolsElement.appendChild(button('Previous stage', this.movePrevious.bind(this)))
     devToolsElement.appendChild(button('Next stage', this.moveNext.bind(this)))
     devToolsElement.appendChild(button('Advance stage', this.advance.bind(this)))
@@ -60,53 +73,59 @@ export default class DevtoolsEntity {
     devToolsElement.appendChild(button('Devlog', this.toggleDevlog.bind(this)))
 
     this.devlogElement = basicElement('div', { id: 'devlog' })
-    devToolsElement.parentNode.insertBefore(this.devlogElement, devToolsElement)
+    devToolsElement.parentNode?.insertBefore(this.devlogElement, devToolsElement)
     addClass(this.devlogElement, 'dialog', 'hide')
   }
 
-  keyPress ({ code }) {
+  keyPress({ code }: { code: string }): void {
     this.keyCode = code
   }
 
-  moveNext () {
+  moveNext(): void {
     this.terrainEntity.setStage(this.terrainEntity.stageId + 1)
   }
 
-  movePrevious () {
+  movePrevious(): void {
     this.terrainEntity.setStage(this.terrainEntity.stageId - 1)
   }
 
-  moveTo (id) {
+  moveTo(id: number): void {
     this.terrainEntity.setStage(id)
   }
 
-  moveRandom () {
+  moveRandom(): void {
     this.terrainEntity.setStage(randomInt(this.rand, 0, finalStageId))
   }
 
-  wireframe () {
+  wireframe(): void {
     this.terrainEntity.toggleWireframe()
   }
 
-  advance () {
+  advance(): void {
     dispatchSignal(stageCompleteSignal, this.terrainEntity.stageId)
   }
 
-  nextZone () {
+  nextZone(): void {
     const currentStageId = this.terrainEntity.stageId
     const ranges = zoneRanges()
-    const currentZoneIndex = ranges.findIndex(z => currentStageId >= z.start && currentStageId <= z.end)
-    this.moveTo(ranges[currentZoneIndex + 1].start)
+    const currentZoneIndex = ranges.findIndex(z => currentStageId >= (z.start ?? 0) && currentStageId <= (z.end ?? 0))
+    const nextZone = ranges[currentZoneIndex + 1]
+    if (nextZone?.start !== undefined) {
+      this.moveTo(nextZone.start)
+    }
   }
 
-  previousZone () {
+  previousZone(): void {
     const currentStageId = this.terrainEntity.stageId
     const ranges = zoneRanges()
-    const currentZoneIndex = ranges.findIndex(z => currentStageId >= z.start && currentStageId <= z.end)
-    this.moveTo(ranges[currentZoneIndex - 1].start)
+    const currentZoneIndex = ranges.findIndex(z => currentStageId >= (z.start ?? 0) && currentStageId <= (z.end ?? 0))
+    const prevZone = ranges[currentZoneIndex - 1]
+    if (prevZone?.start !== undefined) {
+      this.moveTo(prevZone.start)
+    }
   }
 
-  toggleDevlog () {
+  toggleDevlog(): void {
     this.devlogElement.classList.toggle('hide')
     this.devlogElement.innerHTML = ''
     const log = [...entries()].reverse()

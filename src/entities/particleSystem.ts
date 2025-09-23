@@ -1,13 +1,17 @@
 import type { Vec2 } from 'planck-js'
 import { Vec2 as Vec2Constructor } from 'planck-js'
-import { randomGenerator, randomRange, type RandomGenerator } from '../shared/random'
+import { randomGenerator, randomRange } from '../shared/random'
+
+interface RandomGenerator {
+  next(): number
+}
 
 const rand: RandomGenerator = randomGenerator('particles')
 
 interface Particle {
-  next?: Particle
+  next?: Particle | null
   set(startPosition: Vec2, endPosition: Vec2, alpha: number): void
-  setNext(next: Particle): void
+  setNext(next: Particle | null): void
   render(ctx: CanvasRenderingContext2D): void
 }
 

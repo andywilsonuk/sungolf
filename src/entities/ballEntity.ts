@@ -1,4 +1,5 @@
-import { Circle, Vec2 } from 'planck-js'
+import type { Body, Contact, Vec2 } from 'planck-js'
+import { Circle, Vec2 as Vec2Constructor } from 'planck-js'
 import { audioIds } from '../audio'
 import { Animation, easeInCubic, linear } from '../gameEngine/animation'
 import { addAnimation } from '../gameEngine/animator'
@@ -30,18 +31,26 @@ const largeParticleWater = 20
 const mediumParticleWater = 10
 
 export default class BallEntity {
-  constructor () {
-    this.tags = new Set([ballTag])
-    this.visible = false
+  public tags = new Set([ballTag])
+  public visible = false
+  private resetAnimFade: Animation
+  private resetAnimScale: Animation
+  private restoredPosition: Vec2 | null = null
+  private restoredStroke: Vec2 | null = null
+  private dirtyPosition: Vec2
+  private stageId: number | null = null
+  private ballBody!: Body
+  private terrainParticles!: ParticleSystem
+  private waterParticles!: ParticleSystem
+  private startPosition!: Vec2
+
+  constructor() {
     this.resetAnimFade = addAnimation(new Animation(easeInCubic, resetAnimDuration))
     this.resetAnimScale = addAnimation(new Animation(linear, resetAnimDuration))
-    this.restoredPosition = null
-    this.restoredStroke = null
-    this.dirtyPosition = Vec2.zero()
-    this.stageId = null
+    this.dirtyPosition = Vec2Constructor.zero()
   }
 
-  spawn () {
+  spawn(): void {
     this.terrainParticles = new ParticleSystem(largeParticleExplosion * 3, ParticleTerrain)
     this.terrainParticles.spreadMinMax = [0.2, 0.5]
     this.waterParticles = new ParticleSystem(largeParticleWater, ParticleWater)
@@ -50,7 +59,7 @@ export default class BallEntity {
     this.waterParticles.spreadMinMax = [0.2, 0.8]
   }
 
-  init () {
+  init(): void {
     subscribe(stageReadySignal, this.start.bind(this))
     subscribe(stageCompleteSignal, this.stop.bind(this))
     subscribe(stageTransitioningSignal, this.hide.bind(this))
@@ -69,22 +78,22 @@ export default class BallEntity {
     })
     ball.setMassData({
       mass: 0.0459,
-      center: Vec2.zero(),
+      center: Vec2Constructor.zero(),
       I: 1
     })
     this.ballBody = ball
   }
 
-  get dirty () {
-    return this.resetAnimScale.running || !Vec2.areEqual(this.ballBody.getPosition(), this.dirtyPosition)
+  get dirty(): boolean {
+    return this.resetAnimScale.running || !Vec2Constructor.areEqual(this.ballBody.getPosition(), this.dirtyPosition)
   }
 
-  setShot (position, force) {
+  setShot(position: Vec2, force: Vec2): void {
     this.restoredPosition = position
     this.restoredStroke = force
   }
 
-  renderOnCanvas (ctx) {
+  renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     if (!this.visible) { return }
 
     const { x, y } = this.ballBody.getPosition()
@@ -113,7 +122,7 @@ export default class BallEntity {
     this.dirtyPosition.set(x, y)
   }
 
-  outOfBounds () {
+  outOfBounds(): void {
     this.visible = false
     this.stop()
     if (this.stageId === finalStageId) {
@@ -122,7 +131,7 @@ export default class BallEntity {
     delay(this.reset.bind(this), 1000)
   }
 
-  reset () {
+  reset(): void {
     this.ballBody.setPosition(this.startPosition)
     this.ballBody.setActive(true)
     this.visible = true
@@ -131,13 +140,13 @@ export default class BallEntity {
     this.resetAnimFade.start(1, 0)
   }
 
-  start ({ stageId, startPosition }) {
-    this.startPosition = Vec2(startPosition.x + teeOffset, startPosition.y - radiusPhysics * 5)
+  start({ stageId, startPosition }: { stageId: number, startPosition: Vec2 }): void {
+    this.startPosition = Vec2Constructor(startPosition.x + teeOffset, startPosition.y - radiusPhysics * 5)
     const restoring = this.restoredPosition !== null
 
-    if (restoring) {
+    if (restoring && this.restoredPosition && this.restoredStroke) {
       this.ballBody.setPosition(this.restoredPosition)
-      this.ballBody.applyLinearImpulse(this.restoredStroke, Vec2.zero(), true)
+      this.ballBody.applyLinearImpulse(this.restoredStroke, Vec2Constructor.zero(), true)
     } else {
       this.ballBody.setPosition(this.startPosition)
       enqueueAudio(audioIds.stageStart)
@@ -149,23 +158,23 @@ export default class BallEntity {
     this.stageId = stageId
   }
 
-  stop () {
+  stop(): void {
     this.ballBody.setActive(false)
-    this.ballBody.setLinearVelocity(Vec2.zero())
-    this.ballBody.setPosition(Vec2.zero())
+    this.ballBody.setLinearVelocity(Vec2Constructor.zero())
+    this.ballBody.setPosition(Vec2Constructor.zero())
   }
 
-  hide () {
+  hide(): void {
     this.visible = false
   }
 
-  get isMoving () {
+  get isMoving(): boolean {
     return this.ballBody.getLinearVelocity().lengthSquared() > 0.5
   }
 
-  applyForce (force) {
+  applyForce(force: Vec2): void {
     if (!this.visible) { return }
-    this.ballBody.applyLinearImpulse(force, Vec2.zero(), true)
+    this.ballBody.applyLinearImpulse(force, Vec2Constructor.zero(), true)
     this.resetAnimFade.stop()
     this.resetAnimScale.stop()
 
@@ -178,7 +187,7 @@ export default class BallEntity {
     }
   }
 
-  onHit (contact) {
+  onHit(contact: Contact): void {
     if (!this.visible) { return }
 
     const target = contactOtherFixture(contact, this.ballBody)
@@ -207,7 +216,7 @@ export default class BallEntity {
     }
   }
 
-  showTerrainParticles (velocityUnit, position) {
+  showTerrainParticles(velocityUnit: Vec2, position: Vec2): void {
     const magnitude = velocityUnit.normalize()
     let count
 
@@ -224,7 +233,7 @@ export default class BallEntity {
     enqueueAudio(count === largeParticleExplosion ? audioIds.largeImpact : audioIds.smallImpact)
   }
 
-  showWaterParticles (velocityUnit, position) {
+  showWaterParticles(velocityUnit: Vec2, position: Vec2): void {
     const magnitude = velocityUnit.normalize()
     let count
 
