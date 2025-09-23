@@ -1,15 +1,22 @@
+import type { Vec2 } from 'planck-js'
+import { Vec2 as Vec2Constructor } from 'planck-js'
 import { loadState, saveState } from '../shared/statePersister'
 import { getOneEntityByTag } from '../gameEngine/world'
 import { ballStrokeSignal, ballTag, scoreTag, stageCompleteSignal, stageReadySignal, terrainTag, stateTag } from './constants'
 import { subscribe } from '../gameEngine/signalling'
-import { Vec2 } from 'planck-js'
 
 export default class StateEntity {
-  constructor () {
-    this.tags = new Set([stateTag])
-  }
+  public tags = new Set([stateTag])
+  private terrainEntity: any
+  private scoreEntity: any
+  private ballEntity: any
+  private stage!: number
+  private score!: number
+  private stroke!: number
+  private ballPosition!: [number, number] | null
+  private ballForce!: [number, number] | null
 
-  init () {
+  init(): void {
     this.terrainEntity = getOneEntityByTag(terrainTag)
     this.scoreEntity = getOneEntityByTag(scoreTag)
     this.ballEntity = getOneEntityByTag(ballTag)
@@ -18,11 +25,11 @@ export default class StateEntity {
     subscribe(ballStrokeSignal, this.onStroke.bind(this))
   }
 
-  renderInitial () {
+  renderInitial(): void {
     this.restoreState()
   }
 
-  restoreState () {
+  restoreState(): void {
     const { stage, score, stroke, ballPosition, ballForce } = loadState()
     this.stage = stage
     this.score = score
@@ -31,12 +38,12 @@ export default class StateEntity {
     this.ballForce = ballForce
     this.terrainEntity.setStage(stage)
     this.scoreEntity.setScore(score, stroke)
-    if (ballPosition) {
-      this.ballEntity.setShot(Vec2(ballPosition[0], ballPosition[1]), Vec2(ballForce[0], ballForce[1]))
+    if (ballPosition && ballForce) {
+      this.ballEntity.setShot(Vec2Constructor(ballPosition[0], ballPosition[1]), Vec2Constructor(ballForce[0], ballForce[1]))
     }
   }
 
-  stageReady ({ stageId }) {
+  stageReady({ stageId }: { stageId: number }): void {
     if (this.stage !== stageId) {
       this.ballPosition = null
       this.ballForce = null
@@ -45,7 +52,7 @@ export default class StateEntity {
     this.save()
   }
 
-  stageComplete (stageId) {
+  stageComplete(stageId: number): void {
     this.stage = stageId + 1
     this.score = this.score + this.stroke
     this.stroke = 0
@@ -54,19 +61,19 @@ export default class StateEntity {
     this.save()
   }
 
-  onStroke ({ position, stroke }) {
+  onStroke({ position, stroke }: { position: Vec2, stroke: Vec2 }): void {
     this.stroke += this.stage === 0 ? 0 : 1
     this.ballPosition = [position.x, position.y]
     this.ballForce = [stroke.x, stroke.y]
     this.save()
   }
 
-  save () {
+  save(): void {
     this.scoreEntity.setScore(this.score, this.stroke)
     saveState(this.stage, this.score, this.stroke, this.ballPosition, this.ballForce)
   }
 
-  reset () {
+  reset(): void {
     this.stage = 0
     this.score = 0
     this.stroke = 0
@@ -76,7 +83,7 @@ export default class StateEntity {
     this.restoreState()
   }
 
-  forceStroke (stroke) {
+  forceStroke(stroke: number): void {
     this.stroke += stroke
     this.save()
   }

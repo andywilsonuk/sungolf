@@ -5,6 +5,7 @@ declare module 'planck-js' {
     (x?: number, y?: number): Vec2
     zero(): Vec2
     add(a: Vec2, b: Vec2): Vec2
+    areEqual(a: Vec2, b: Vec2): boolean
   }
 
   export interface Vec2 {
@@ -16,8 +17,9 @@ declare module 'planck-js' {
     mul(scalar: number): Vec2
     length(): number
     lengthSquared(): number
-    normalize(): Vec2
+    normalize(): number
     clone(): Vec2
+    neg(): Vec2
   }
 
   export const Vec2: Vec2Constructor
@@ -37,6 +39,7 @@ declare module 'planck-js' {
     getUserData(): unknown
     applyLinearImpulse(impulse: Vec2, point?: Vec2, wake?: boolean): void
     getFixtureList(): Fixture | null
+    setMassData(massData: { mass: number, center: Vec2, I: number }): void
   }
 
   export interface FixtureOptions {
@@ -57,6 +60,7 @@ declare module 'planck-js' {
     getNext(): Fixture | null
     getType(): string
     _reset?(): void
+    getFilterCategoryBits(): number
   }
 
   export interface Shape {
@@ -97,6 +101,9 @@ declare module 'planck-js' {
     angle?: number
     userData?: unknown
     active?: boolean
+    bullet?: boolean
+    fixedRotation?: boolean
+    linearDamping?: number
   }
 
   export interface Settings {
