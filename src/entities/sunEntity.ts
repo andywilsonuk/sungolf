@@ -59,7 +59,7 @@ export default class SunEntity {
       ctx.stroke()
     }
 
-    circle(ctx, 24, x, y)
+    circle(ctx, 22, x, y)
     ctx.fillStyle = sunColor.asString(this.normalizedAlpha)
     ctx.fill()
     circle(ctx, 20, x, y)

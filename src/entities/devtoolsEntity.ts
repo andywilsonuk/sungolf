@@ -98,16 +98,20 @@ export default class DevtoolsEntity {
 
   moveNext(): void {
     if (!this.terrainEntity) return
+    if (this.terrainEntity.stageId === finalStageId) { return }
     this.terrainEntity.setStage(this.terrainEntity.stageId + 1)
   }
 
   movePrevious(): void {
     if (!this.terrainEntity) return
+    if (this.terrainEntity.stageId === 0) { return }
     this.terrainEntity.setStage(this.terrainEntity.stageId - 1)
   }
 
   moveTo(id: number): void {
     if (!this.terrainEntity) return
+    if (id < 0) { return }
+    if (id > finalStageId) { return }
     this.terrainEntity.setStage(id)
   }
 

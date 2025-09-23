@@ -20,6 +20,6 @@ export const waterCategory = 0x0008
 export const objectCategory = 0x0016
 export const boundaryCategory = 0x0032
 
-export const finalStageId = 1857
+export const finalStageId = 1000
 
 export const waterColor = new Hsl(200, 100, 44)

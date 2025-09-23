@@ -28,7 +28,6 @@ interface ZoneData {
 
 const defaultColor = new Hsl(43, 89, 38)
 const maxDrift = 800
-const midDrift = Math.floor(maxDrift * 0.5)
 const defaultBackgroundColor = new Hsl(34, 44, 69)
 const defaultBackgroundColorStop = 0.4
 const greenBackgroundColor = new Hsl(209, 43, 73)
@@ -151,7 +150,7 @@ const cloudZone = {
 const yellow1dZone = {
   ...yellow1cZone,
   name: 'Yellow1c',
-  duration: 104,
+  duration: 93,
 }
 const skullZone = {
   ...yellow1bZone,
@@ -168,9 +167,9 @@ const yellow1eZone = {
   name: 'Yellow1d',
   duration: 1,
 }
-const pink1aZone = {
-  name: 'Pink1a',
-  duration: 66,
+const redZone = {
+  name: 'Red',
+  duration: 20,
   color: new Hsl(6, 33, 48),
   backgroundColor: redBackgroundColor,
   backgroundColorStop: redBackgroundColorStop,
@@ -178,20 +177,8 @@ const pink1aZone = {
   driftMinMax: [maxDrift - 100, maxDrift],
   preferCrags: true,
 }
-const pink1bZone = {
-  ...pink1aZone,
-  name: 'Pink1b',
-  duration: 66,
-  color: new Hsl(356, 39, 48),
-}
-const pink1cZone = {
-  ...pink1aZone,
-  name: 'Pink1c',
-  duration: 66,
-  color: new Hsl(356, 69, 40),
-}
 const towerZone = {
-  ...pink1cZone,
+  ...redZone,
   name: 'Tower',
   duration: 1,
   specialFeature: {
@@ -200,21 +187,15 @@ const towerZone = {
     widthMinMax: [specialWidth, specialWidth],
   },
 }
-const pink1dZone = {
-  ...pink1aZone,
-  name: 'Pink1d',
-  duration: 49,
-  color: new Hsl(0, 74, 40),
-}
 const green1aZone = {
   name: 'Green1a',
   duration: 20,
-  color: new Hsl(89, 46, 46),
+  color: new Hsl(91, 53, 32),
   backgroundColor: greenBackgroundColor,
   backgroundColorStop: greenBackgroundColorStop,
-  depthMinMax: [floorDepth - 50, floorDepth],
+  depthMinMax: [floorDepth - 100, floorDepth],
   holeMinDistanceBias: 0.7,
-  driftMinMax: [0, 60],
+  driftMinMax: [0, 80],
   allowedFeatures: (_: number, randValue?: number) => oneIn(randValue ?? 0, 6) ? greenFeaturesPlus : greenFeatures,
   specialFeature: (_: number, randValue?: number, zone?: { depthMinMax?: number[] }) => {
     if (!oneIn(randValue ?? 0, 8) || (zone?.depthMinMax?.[1] ?? 0) < floorDepth - 10) { return }
@@ -226,79 +207,10 @@ const green1aZone = {
   },
   water: true,
 }
-const green1bZone = {
-  ...green1aZone,
-  name: 'Green1b',
-  duration: 20,
-  color: new Hsl(91, 50, 41),
-}
-const green1cZone = {
-  ...green1aZone,
-  name: 'Green1c',
-  duration: 30,
-  color: new Hsl(91, 53, 32),
-  depthMinMax: [floorDepth - 100, floorDepth],
-  driftMinMax: [60, 100],
-}
-const yellow2Zone = {
-  name: 'Yellow2',
-  duration: 150,
-  color: defaultColor,
-  depthMinMax: [ceilingDepth, floorDepth],
-  driftMinMax: [0, maxDrift],
-  specialFeature: (_: number, randValue?: number) => {
-    const chance = scaleInt(randValue ?? 0, 1, 60)
-    if (chance === 1) {
-      return {
-        feature: sinkholeName,
-        distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-        widthMinMax: [sinkholeWidthMin, sinkholeWidthMin],
-      }
-    } else if (chance === 2) {
-      return {
-        feature: mesaName,
-        distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-        widthMinMax: [mesaWidth, mesaWidth],
-      }
-    }
-  },
-  preferCrags: true,
-}
-const redZone = {
-  name: 'Red',
-  duration: 20,
-  color: new Hsl(356, 98, 21),
-  backgroundColor: redBackgroundColor,
-  backgroundColorStop: redBackgroundColorStop,
-  depthMinMax: [ceilingDepth, ceilingDepth + 100],
-  driftMinMax: [maxDrift, maxDrift],
-  preferCrags: true,
-}
-const gray1aZone = {
-  name: 'Gray1a',
-  duration: 20,
-  color: new Hsl(0, 27, 38),
-  backgroundColor: grayBackgroundColor,
-  backgroundColorStop: grayBackgroundColorStop,
-  depthMinMax: [ceilingDepth, floorDepth],
-  driftMinMax: [midDrift - 100, maxDrift],
-}
-const gray1bZone = {
-  ...gray1aZone,
-  name: 'Gray1b',
-  duration: 20,
-  color: new Hsl(12, 61, 30),
-}
-const gray1cZone = {
-  ...gray1aZone,
-  name: 'Gray1c',
-  duration: 20,
-  color: new Hsl(21, 36, 58),
-}
 const wet1aZone = {
   name: 'Wet1a',
   duration: 20,
-  color: new Hsl(36, 33, 53),
+  color: new Hsl(37, 33, 41),
   backgroundColor: grayBackgroundColor,
   backgroundColorStop: grayBackgroundColorStop,
   depthMinMax: [floorDepth - 150, floorDepth],
@@ -313,27 +225,9 @@ const wet1aZone = {
   holeMinDistanceBias: 0.6,
   water: true,
 }
-const wet1bZone = {
-  ...wet1aZone,
-  name: 'Wet1b',
-  duration: 20,
-  color: new Hsl(36, 33, 33),
-}
-const wet1cZone = {
-  ...wet1aZone,
-  name: 'Wet1c',
-  duration: 20,
-  color: new Hsl(37, 33, 41),
-}
-const wet1dZone = {
-  ...wet1aZone,
-  name: 'Wet1d',
-  duration: 20,
-  color: new Hsl(36, 33, 51),
-}
 const yellow3Zone = {
   name: 'Yellow3',
-  duration: 120,
+  duration: 20,
   color: defaultColor,
   depthMinMax: [ceilingDepth, floorDepth],
   driftMinMax: [0, maxDrift],
@@ -359,7 +253,7 @@ const yellow3Zone = {
 const endAZone = {
   ...yellow3Zone,
   name: 'endA',
-  duration: 1,
+  duration: 2,
   depthMinMax: [floorDepth - 10, floorDepth - 10],
   driftMinMax: [200, 200],
   color: new Hsl(19, 77, 19),
@@ -380,7 +274,7 @@ const endBZone = {
 }
 
 const transitionZoneName = 'transition'
-const transitionZone = (duration: number): ZoneData => ({ name: transitionZoneName, duration })
+const transitionZone = (duration: number): ZoneData => ({ name: transitionZoneName, duration, specialFeature: undefined })
 
 const zones: ZoneData[] = [
   trainingZone,
@@ -396,28 +290,12 @@ const zones: ZoneData[] = [
   skullZone,
   yellow1eZone,
   transitionZone(60),
-  pink1aZone,
-  pink1bZone,
-  pink1cZone,
+  redZone,
   towerZone,
-  pink1dZone,
   transitionZone(60),
   green1aZone,
-  green1bZone,
-  green1cZone,
-  transitionZone(60),
-  yellow2Zone,
-  transitionZone(60),
-  redZone,
-  transitionZone(60),
-  gray1aZone,
-  gray1bZone,
-  gray1cZone,
   transitionZone(60),
   wet1aZone,
-  wet1bZone,
-  wet1cZone,
-  wet1dZone,
   transitionZone(60),
   yellow3Zone,
   transitionZone(60),

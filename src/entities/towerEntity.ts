@@ -14,7 +14,7 @@ const fixtureOptions = {
   friction: 0.05,
   filterCategoryBits: objectCategory,
 }
-const offset = new Vec2Ctor(specialWidth * physicsScale * -0.5, -0.2)
+const offset = new Vec2Ctor(specialWidth * physicsScale * -1.5, -1.82)
 const colorString = new Hsl(10, 53, 28).asString()
 
 export default class TowerEntity implements SpecialObject {
