@@ -31,23 +31,3 @@
 .flushRight {
   margin-left: auto;
 }
-
-#loadingScreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #fefefe;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-#loadingText {
-  font-family: 'PT Sans Narrow', Arial, sans-serif;
-  font-size: 2em;
-  color: #b8860b;
-  font-weight: bold;
-}

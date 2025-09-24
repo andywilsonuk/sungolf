@@ -25,11 +25,10 @@
         }
     </script>
     <script type="module" src="/src/index.ts"></script>
-    <noscript>Sun Golf requires JavaScript and a modern browser</noscript>
-    <div id="loadingScreen">
-        <div id="loadingText">Loading Sungolf</div>
+    <div id="loadingScreen" style="font-family: sans-serif;">
+        <div>Loading Sungolf</div>
     </div>
-    <div id="gameArea" class="hide">
+    <div id="gameArea" style="display:none">
         <div id="background" class="layer inert"></div>
         <canvas id="topography" class="layer inert"></canvas>
         <canvas id="dynamics" class="layer inert"></canvas>
@@ -42,8 +41,8 @@
         <div id="title" class="layer"><div id="titleText" class="inert">Sun Golf</div></div>
     </div>
     <div id="devtools" class="dialog"></div>
-    <div id="optionsButton" class="hide"></div>
-    <div id="options" class="dialog hide">
+    <div id="optionsButton" style="display:none"></div>
+    <div id="options" class="dialog hide" style="display:none">
         <div class="flexRow"><span id="soundToggle" class="toggleButton"></span><span>Sound</span></div>
         <div class="flexRow"><span id="fullscreenToggle" class="toggleButton"></span><span>Fullscreen</span></div>
         <div class="flexRow">
