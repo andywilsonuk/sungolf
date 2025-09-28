@@ -3,7 +3,7 @@ import { clamp, oneIn, scaleInt, sinWave } from '../shared/utils'
 import { ceilingDepth, floorDepth, specialFeatureDistanceMax, specialFeatureDistanceMin, sinkholeWidthMin, mesaWidth, sinkholeWidthMax, specialWidth } from '../terrain/constants'
 import { cactusName, cloudName, earlyFeatures, endingName, greenFeatures, greenFeaturesPlus, mesaName, sinkholeName, skullName, standardFeatures, towerName, trainingFeatures } from '../terrain/features/names'
 
-interface SpecialFeature {
+export interface SpecialFeature {
   feature: string
   distanceMinMax: [number, number] | number[]
   widthMinMax: [number, number] | number[]

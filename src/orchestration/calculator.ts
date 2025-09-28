@@ -3,7 +3,7 @@ import HslClass from '../shared/hsl'
 import { randomFillArray, randomGenerator, randomInt } from '../shared/random'
 import { biasedInt, clamp, isFunction, lerp, lerpColor, lerpMinMax, normalize, scaleInt } from '../shared/utils'
 import { holeDistanceMax, holeDistanceMin } from '../terrain/constants'
-import data, { type ZoneData } from './data'
+import data, { type ZoneData, type SpecialFeature } from './data'
 
 const defaultColor = new HslClass(200, 50, 50)
 const defaultBackgroundColor = new HslClass(220, 30, 80)
@@ -108,7 +108,7 @@ export default (stageId: number): CalculatorResult => {
     [driftMin, driftMax] = lerpMinMax(lerpStart as [number, number], lerpEnd as [number, number], n)
   }
 
-  const expandedSpecialFeature = expandSpecial(functionExpander(specialFeature, randValues[9]), randValues[5], randValues[6])
+  const expandedSpecialFeature = expandSpecial(functionExpander(specialFeature, randValues[9]) as SpecialFeature | undefined, randValues[5], randValues[6])
 
   const result: CalculatorResult = {
     stageId,
@@ -136,19 +136,15 @@ export default (stageId: number): CalculatorResult => {
   return result
 }
 
-function expandSpecial(specialFeature: unknown, randValue1: number, randValue2: number): ExpandedSpecialFeature | undefined {
+function expandSpecial(specialFeature: SpecialFeature | undefined, randValue1: number, randValue2: number): ExpandedSpecialFeature | undefined {
   if (specialFeature === undefined) { return }
 
-  // Type guard to ensure specialFeature has the expected structure
-  if (typeof specialFeature === 'object' && specialFeature !== null && 'feature' in specialFeature) {
-    const sf = specialFeature as { feature: string, distanceMinMax: [number, number], widthMinMax: [number, number] }
-    const [distanceMin, distanceMax] = sf.distanceMinMax
-    const [widthMin, widthMax] = sf.widthMinMax
+  const [distanceMin, distanceMax] = specialFeature.distanceMinMax as [number, number]
+  const [widthMin, widthMax] = specialFeature.widthMinMax as [number, number]
 
-    return {
-      name: sf.feature,
-      distance: scaleInt(randValue1, distanceMin, distanceMax),
-      width: scaleInt(randValue2, widthMin, widthMax),
-    }
+  return {
+    name: specialFeature.feature,
+    distance: scaleInt(randValue1, distanceMin, distanceMax),
+    width: scaleInt(randValue2, widthMin, widthMax),
   }
 }
