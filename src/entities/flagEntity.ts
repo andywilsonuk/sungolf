@@ -9,6 +9,7 @@ import Hsl from '../shared/hsl'
 import { holeDepth, holeWidth } from '../terrain/constants'
 import { flipHorizontal, translatePhysics } from './canvasHelpers'
 import { finalStageId, stageCompleteSignal, stageReadySignal } from './constants'
+import type { StageReadyPayload } from '../types/stageReady'
 
 const flagColor = new Hsl(55, 100, 50).asString()
 const poleColor = new Hsl(0, 0, 4).asString()
@@ -44,14 +45,13 @@ export default class FlagEntity {
 
   init(): void {
     subscribeResize(this.onResize.bind(this))
-    subscribe(stageReadySignal, (...args: unknown[]) => {
-      const [payload] = args as [{ stageId: number, holePosition: Vec2 }]
-      this.show(payload)
+    subscribe(stageReadySignal, (payload) => {
+      this.show(payload as StageReadyPayload)
     })
     subscribe(stageCompleteSignal, this.hide.bind(this))
   }
 
-  show({ stageId, holePosition }: { stageId: number, holePosition: Vec2 }): void {
+  show({ stageId, holePosition }: StageReadyPayload): void {
     if (stageId === finalStageId) { return }
     const x = holePosition.x + holeWidth * -0.5 * physicsScale
     const y = holePosition.y

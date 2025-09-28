@@ -4,7 +4,7 @@ const svgRootId = 'scene'
 
 type AttributeRecord = Record<string, string | number>
 
-const applyAttributes = (element: SVGElement, attributes?: AttributeRecord): void => {
+const applyAttributes = (element: Element, attributes?: AttributeRecord): void => {
   if (attributes) {
     Object.entries(attributes).forEach(([key, value]) => { element.setAttribute(key, value.toString()) })
   }
@@ -84,7 +84,7 @@ export const polyline = (points: string, attributes?: AttributeRecord): SVGPolyl
 
 export const basicElement = (tag: string, attributes?: AttributeRecord): HTMLElement => {
   const element = document.createElement(tag)
-  applyAttributes(element as unknown as SVGElement, attributes)
+  applyAttributes(element, attributes)
   return element
 }
 
@@ -97,7 +97,10 @@ export const addClass = (element: Element, ...classNames: string[]): void => {
 export const removeClass = (element: Element, className: string): void => { element.classList.remove(className) }
 
 export const createTranslate = (element: SVGGraphicsElement, position: [number, number] = zero): SVGTransform => {
-  const svgElement = document.getElementById(svgRootId) as unknown as SVGSVGElement
+  const svgElement = document.getElementById(svgRootId)
+  if (!(svgElement instanceof SVGSVGElement)) {
+    throw new Error(`Element with id '${svgRootId}' is not an SVGSVGElement`)
+  }
   const transform = svgElement.createSVGTransform()
   transform.setTranslate(position[0], position[1])
   element.transform.baseVal.appendItem(transform)
@@ -105,7 +108,10 @@ export const createTranslate = (element: SVGGraphicsElement, position: [number, 
 }
 
 export const createRotate = (element: SVGGraphicsElement, angle = 0, position: [number, number] = zero): SVGTransform => {
-  const svgElement = document.getElementById(svgRootId) as unknown as SVGSVGElement
+  const svgElement = document.getElementById(svgRootId)
+  if (!(svgElement instanceof SVGSVGElement)) {
+    throw new Error(`Element with id '${svgRootId}' is not an SVGSVGElement`)
+  }
   const transform = svgElement.createSVGTransform()
   transform.setRotate(angle, position[0], position[1])
   element.transform.baseVal.appendItem(transform)

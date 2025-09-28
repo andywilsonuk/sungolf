@@ -54,7 +54,9 @@ export default class PullbackEntity {
 
   init(): void {
     this.ballEntity = getOneEntityByTag(ballTag) as BallPhysics
-    subscribe(stageReadySignal, this.start.bind(this))
+    subscribe(stageReadySignal, (_payload) => {
+      this.start()
+    })
     subscribe(stageCompleteSignal, this.stop.bind(this))
     subscribeResize(this.onResize.bind(this))
   }

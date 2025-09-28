@@ -7,6 +7,7 @@ import { subscribe } from '../gameEngine/signalling'
 import type { BallShot } from './ballEntity'
 import type { SetScore } from './scoreEntity'
 import type { SetStageTerrain } from './terrainEntity'
+import type { StageReadyPayload } from '../types/stageReady'
 
 export interface ResetState {
   reset: () => void
@@ -27,16 +28,14 @@ export default class StateEntity implements ResetState {
     this.terrainEntity = getOneEntityByTag(terrainTag) as SetStageTerrain
     this.scoreEntity = getOneEntityByTag(scoreTag) as SetScore
     this.ballEntity = getOneEntityByTag(ballTag) as BallShot
-    subscribe(stageCompleteSignal, (...args: unknown[]) => {
-      const [stageId] = args as [number]
-      this.stageComplete(stageId)
+    subscribe(stageCompleteSignal, (stageId) => {
+      this.stageComplete(stageId as number)
     })
-    subscribe(stageReadySignal, (...args: unknown[]) => {
-      const [{ stageId }] = args as [{ stageId: number }]
-      this.stageReady({ stageId })
+    subscribe(stageReadySignal, (payload) => {
+      this.stageReady(payload as StageReadyPayload)
     })
-    subscribe(ballStrokeSignal, (...args: unknown[]) => {
-      const [{ position, stroke }] = args as [{ position: Vec2, stroke: Vec2 }]
+    subscribe(ballStrokeSignal, (payload) => {
+      const { position, stroke } = payload as { position: Vec2, stroke: Vec2 }
       this.onStroke({ position, stroke })
     })
   }
@@ -63,7 +62,7 @@ export default class StateEntity implements ResetState {
     }
   }
 
-  stageReady({ stageId }: { stageId: number }): void {
+  stageReady({ stageId }: StageReadyPayload): void {
     if (this.stage !== stageId) {
       this.ballPosition = null
       this.ballForce = null

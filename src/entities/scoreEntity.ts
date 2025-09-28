@@ -2,6 +2,7 @@ import { deferUntilRender } from '../gameEngine/deferredRender'
 import { dispatchSignal, subscribe } from '../gameEngine/signalling'
 import { gamePausedSignal, gameResumedSignal, scoreTag, stageCompleteSignal, stageReadySignal } from './constants'
 import { addClass, removeClass } from './htmlHelpers'
+import type { StageReadyPayload } from '../types/stageReady'
 
 const strokesUntilSkippable = 20
 
@@ -28,9 +29,8 @@ export default class ScoreEntity implements SetScore {
   }
 
   init(): void {
-    subscribe(stageReadySignal, (...args: unknown[]) => {
-      const [{ stageId }] = args as [{ stageId: number }]
-      this.stageReady({ stageId })
+    subscribe(stageReadySignal, (payload) => {
+      this.stageReady(payload as StageReadyPayload)
     })
     subscribe(gamePausedSignal, this.toggleSkip.bind(this, false))
     subscribe(gameResumedSignal, this.toggleSkip.bind(this, true))
@@ -64,7 +64,7 @@ export default class ScoreEntity implements SetScore {
     deferUntilRender(this.renderScore.bind(this))
   }
 
-  stageReady({ stageId }: { stageId: number }): void {
+  stageReady({ stageId }: StageReadyPayload): void {
     this.stageId = stageId
     deferUntilRender(this.renderScore.bind(this))
   }

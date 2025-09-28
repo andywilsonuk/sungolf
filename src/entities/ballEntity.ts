@@ -16,6 +16,7 @@ import { ballCategory, ballStrokeSignal, ballTag, boundaryCategory, finalStageId
 import ParticleSystem from './particleSystem'
 import ParticleTerrain from './particleTerrain'
 import ParticleWater from './particleWater'
+import type { StageReadyPayload } from '../types/stageReady'
 
 const radius = 3
 const radiusPhysics = radius * physicsScale
@@ -69,9 +70,8 @@ export default class BallEntity implements BallPhysics, BallShot {
   }
 
   init(): void {
-    subscribe(stageReadySignal, (...args: unknown[]) => {
-      const [payload] = args as [{ stageId: number, startPosition: Vec2Type }]
-      this.start(payload)
+    subscribe(stageReadySignal, (payload) => {
+      this.start(payload as StageReadyPayload)
     })
     subscribe(stageCompleteSignal, this.stop.bind(this))
     subscribe(stageTransitioningSignal, this.hide.bind(this))
@@ -152,7 +152,7 @@ export default class BallEntity implements BallPhysics, BallShot {
     this.resetAnimFade.start(1, 0)
   }
 
-  start({ stageId, startPosition }: { stageId: number, startPosition: Vec2Type }): void {
+  start({ stageId, startPosition }: StageReadyPayload): void {
     this.startPosition = new Vec2(startPosition.x + teeOffset, startPosition.y - radiusPhysics * 5)
     const restoring = this.restoredPosition !== null
 

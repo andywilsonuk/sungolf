@@ -5,6 +5,7 @@ import Hsl from '../shared/hsl'
 import { holeDepth, holeTotalWidth } from '../terrain/constants'
 import { translatePhysics } from './canvasHelpers'
 import { stageCompleteSignal, stageReadySignal, stageTransitioningSignal, terrainCategory } from './constants'
+import type { StageReadyPayload } from '../types/stageReady'
 
 const colorString = new Hsl(0, 0, 67).asString()
 const teeWidth = holeTotalWidth * 0.5 * physicsScale
@@ -31,9 +32,8 @@ export default class TeeEntity {
       friction: 1,
       filterCategoryBits: terrainCategory,
     })
-    subscribe(stageReadySignal, (...args: unknown[]) => {
-      const [{ startPosition }] = args as [{ startPosition: Vec2 }]
-      this.start({ startPosition })
+    subscribe(stageReadySignal, (payload) => {
+      this.start(payload as StageReadyPayload)
     })
     subscribe(stageCompleteSignal, this.stop.bind(this))
     subscribe(stageTransitioningSignal, this.hide.bind(this))
@@ -51,7 +51,7 @@ export default class TeeEntity {
     ctx.restore()
   }
 
-  start({ startPosition }: { startPosition: Vec2 }): void {
+  start({ startPosition }: StageReadyPayload): void {
     this.teeBody.setPosition(startPosition)
     this.teeBody.setActive(true)
     this.visible = true

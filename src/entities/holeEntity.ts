@@ -1,10 +1,11 @@
-import type { Body, Contact, Vec2 as Vec2Type } from 'planck'
+import type { Body, Contact } from 'planck'
 import { Box, Vec2 } from 'planck'
 import { getTimestamp } from '../gameEngine/gameLoop'
 import { createBody, registerBeginContact, registerEndContact, physicsScale } from '../gameEngine/physics'
 import { dispatchSignal, subscribe } from '../gameEngine/signalling'
 import { holeDepth, holeTotalWidth } from '../terrain/constants'
 import { finalStageId, stageCompleteSignal, stageReadySignal } from './constants'
+import type { StageReadyPayload } from '../types/stageReady'
 
 const delayBeforeComplete = 0.5 * 1000
 
@@ -26,16 +27,15 @@ export default class HoleEntity {
       isSensor: true,
     })
 
-    subscribe(stageReadySignal, (...args: unknown[]) => {
-      const [{ stageId, holePosition }] = args as [{ stageId: number, holePosition: Vec2Type }]
-      this.enableHole({ stageId, holePosition })
+    subscribe(stageReadySignal, (payload) => {
+      this.enableHole(payload as StageReadyPayload)
     })
     subscribe(stageCompleteSignal, this.disableHole.bind(this))
     registerBeginContact(this.contactTest.bind(this))
     registerEndContact(this.endContactTest.bind(this))
   }
 
-  enableHole({ stageId, holePosition }: { stageId: number, holePosition: Vec2Type }): void {
+  enableHole({ stageId, holePosition }: StageReadyPayload): void {
     if (stageId === finalStageId) { return }
     this.stageId = stageId
     this.holeBody.setPosition(holePosition)

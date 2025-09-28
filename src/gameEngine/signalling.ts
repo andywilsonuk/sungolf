@@ -1,15 +1,18 @@
 import { clearArray } from '../shared/utils'
 
-type SignalCallback = (...args: unknown[]) => void
+type SignalCallback = (payload?: unknown) => void
 type UnsubscribeFunction = () => void
+type DispatchQueueItem = [string | undefined, unknown]
+type UnsubscribeQueueItem = [string | undefined, SignalCallback | undefined]
 
 const signals = new Map<string, SignalCallback[]>()
-const emptyItemFn = (): [string | undefined, SignalCallback | undefined] => [undefined, undefined]
-const dispatchQueueA = Array.from({ length: 15 }, emptyItemFn)
-const dispatchQueueB = Array.from({ length: 15 }, emptyItemFn)
+const emptyDispatchItemFn = (): DispatchQueueItem => [undefined, undefined]
+const emptyUnsubscribeItemFn = (): UnsubscribeQueueItem => [undefined, undefined]
+const dispatchQueueA = Array.from({ length: 15 }, emptyDispatchItemFn)
+const dispatchQueueB = Array.from({ length: 15 }, emptyDispatchItemFn)
 let dispatchQueueLength = 0
 let dispatchQueue = dispatchQueueA
-const unsubscribeQueue = Array.from({ length: 5 }, emptyItemFn)
+const unsubscribeQueue = Array.from({ length: 5 }, emptyUnsubscribeItemFn)
 let unsubscribeQueueLength = 0
 
 const unsubscribe = (signal: string, callback: SignalCallback): void => {
@@ -28,10 +31,10 @@ export const subscribe = (signal: string, callback: SignalCallback): Unsubscribe
   return () => { unsubscribe(signal, callback) }
 }
 
-export const dispatchSignal = (signal: string, ...args: unknown[]): void => {
+export const dispatchSignal = (signal: string, payload?: unknown): void => {
   if (dispatchQueueLength >= dispatchQueue.length) { throw new Error('Maxed queue: signalling') }
   dispatchQueue[dispatchQueueLength][0] = signal
-  dispatchQueue[dispatchQueueLength][1] = args as unknown as SignalCallback
+  dispatchQueue[dispatchQueueLength][1] = payload
   dispatchQueueLength += 1
 }
 
@@ -58,12 +61,12 @@ const dispatchPending = (): void => {
   dispatchQueueLength = 0
 
   for (let i = 0; i < currentQueueLength; i++) {
-    const [signal, args] = currentQueue[i]
+    const [signal, payload] = currentQueue[i]
     if (!signal) continue
     const subscribers = signals.get(signal)
     if (subscribers === undefined) { continue }
     for (const subscriber of subscribers) {
-      subscriber(...(args as unknown as unknown[]))
+      subscriber(payload)
     }
   }
 }
@@ -75,8 +78,8 @@ const update = (): void => {
 
 const clear = (): void => {
   signals.clear()
-  clearArray(dispatchQueue, emptyItemFn)
-  clearArray(unsubscribeQueue, emptyItemFn)
+  clearArray(dispatchQueue, emptyDispatchItemFn)
+  clearArray(unsubscribeQueue, emptyUnsubscribeItemFn)
   dispatchQueueLength = 0
   unsubscribeQueueLength = 0
 }

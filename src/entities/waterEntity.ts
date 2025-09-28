@@ -8,6 +8,7 @@ import { updateBoxFixtureVertices } from '../shared/planckHelpers'
 import { absoluteFloorDepth } from '../terrain/constants'
 import { scalePhysics, translateHeightPadding } from './canvasHelpers'
 import { stageReadySignal, waterCategory, waterColor } from './constants'
+import type { StageReadyPayload } from '../types/stageReady'
 
 const colorString = waterColor.asString()
 const visibleOffset = 12 * physicsScale
@@ -39,9 +40,8 @@ export default class WaterEntity {
     this.waterBoundary = createBoundaryBox(this.waterBody)
 
     subscribeResize(this.onResize.bind(this))
-    subscribe(stageReadySignal, (...args: unknown[]) => {
-      const [{ stageId }] = args as [{ stageId: number }]
-      this.stageReady({ stageId })
+    subscribe(stageReadySignal, (payload) => {
+      this.stageReady(payload as StageReadyPayload)
     })
   }
 
@@ -51,7 +51,7 @@ export default class WaterEntity {
     updateBoxFixtureVertices(this.waterBoundary, this.width, boundaryThickness, 0, this.y)
   }
 
-  stageReady({ stageId }: { stageId: number }): void {
+  stageReady({ stageId }: StageReadyPayload): void {
     this.visible = orchestration(stageId - 1).water || orchestration(stageId).water || orchestration(stageId + 1).water
     this.waterBody.setActive(this.visible)
     this.dirty = true

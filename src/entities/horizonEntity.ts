@@ -3,6 +3,7 @@ import { subscribeResize } from '../gameEngine/renderCanvas'
 import { stageReadySignal, terrainTag } from './constants'
 import type { TerrainEntityColor } from './terrainEntity'
 import { subscribe } from '../gameEngine/signalling'
+import type { StageReadyPayload } from '../types/stageReady'
 
 export default class HorizonEntity {
   public dirty = true
@@ -12,7 +13,9 @@ export default class HorizonEntity {
 
   init(): void {
     subscribeResize(this.onResize.bind(this))
-    subscribe(stageReadySignal, this.stageReady.bind(this))
+    subscribe(stageReadySignal, (payload) => {
+      this.stageReady(payload as StageReadyPayload)
+    })
     this.terrain = (getOneEntityByTag(terrainTag) as TerrainEntityColor)
   }
 
@@ -42,7 +45,7 @@ export default class HorizonEntity {
     this.dirty = false
   }
 
-  stageReady(): void {
+  stageReady(_payload: StageReadyPayload): void {
     this.dirty = true
   }
 }

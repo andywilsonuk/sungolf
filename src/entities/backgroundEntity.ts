@@ -2,6 +2,7 @@ import { subscribe } from '../gameEngine/signalling'
 import orchestration from '../orchestration'
 import Hsl from '../shared/hsl'
 import { stageReadySignal } from './constants'
+import type { StageReadyPayload } from '../types/stageReady'
 
 export default class BackgroundEntity {
   stage: number | null
@@ -18,13 +19,12 @@ export default class BackgroundEntity {
   }
 
   init(): void {
-    subscribe(stageReadySignal, (...args: unknown[]) => {
-      const [payload] = args as [{ stageId: number }]
-      this.stageReady(payload)
+    subscribe(stageReadySignal, (payload) => {
+      this.stageReady(payload as StageReadyPayload)
     })
   }
 
-  stageReady({ stageId }: { stageId: number }): void {
+  stageReady({ stageId }: StageReadyPayload): void {
     const orchestrated = orchestration(stageId)
     this.stage = stageId
     this.backgroundColor = orchestrated.backgroundColor

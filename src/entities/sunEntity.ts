@@ -3,6 +3,7 @@ import Hsl from '../shared/hsl'
 import { lerp, normalize } from '../shared/utils'
 import { circle } from './canvasHelpers'
 import { finalStageId, stageReadySignal } from './constants'
+import type { StageReadyPayload } from '../types/stageReady'
 
 const debug = false
 const degreesToRadians = (degrees: number): number => degrees * (Math.PI / 180)
@@ -14,15 +15,14 @@ export default class SunEntity {
   private normalizedAlpha = 0
 
   init(): void {
-    subscribe(stageReadySignal, (...args: unknown[]) => {
-      const [{ stageId }] = args as [{ stageId: number }]
-      this.stageReady({ stageId })
+    subscribe(stageReadySignal, (payload) => {
+      this.stageReady(payload as StageReadyPayload)
     })
     this.normalizedAngle = 0
     this.normalizedAlpha = 0
   }
 
-  stageReady({ stageId }: { stageId: number }): void {
+  stageReady({ stageId }: StageReadyPayload): void {
     const sunDownStart = finalStageId - 50
     const initial = -55
     const stop = -170
