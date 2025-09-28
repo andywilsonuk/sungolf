@@ -9,7 +9,7 @@ interface SpecialFeature {
   widthMinMax: [number, number] | number[]
 }
 
-interface ZoneData {
+export interface ZoneData {
   name: string
   duration: number
   start?: number
@@ -20,8 +20,8 @@ interface ZoneData {
   depthMinMax?: [number, number] | number[] | ((relativeStageId: number, randValue: number) => [number, number] | number[])
   driftMinMax?: [number, number] | number[] | ((relativeStageId: number, randValue?: number) => [number, number] | number[])
   holeMinDistanceBias?: number
-  allowedFeatures?: string[] | ((relativeStageId: number, randValue?: number, zone?: unknown) => string[])
-  specialFeature?: SpecialFeature | ((relativeStageId: number, randValue?: number, zone?: unknown) => SpecialFeature | undefined) | undefined
+  allowedFeatures?: string[] | ((relativeStageId: number, randValue?: number, zone?: ZoneData) => string[])
+  specialFeature?: SpecialFeature | ((relativeStageId: number, randValue?: number, zone?: ZoneData) => SpecialFeature | undefined) | undefined
   preferCrags?: boolean | ((relativeStageId: number, randValue?: number) => boolean)
   water?: boolean | ((relativeStageId: number, randValue?: number) => boolean)
 }
@@ -197,7 +197,7 @@ const green1aZone = {
   holeMinDistanceBias: 0.7,
   driftMinMax: [0, 80],
   allowedFeatures: (_: number, randValue?: number) => oneIn(randValue ?? 0, 6) ? greenFeaturesPlus : greenFeatures,
-  specialFeature: (_: number, randValue?: number, zone?: { depthMinMax?: number[] }) => {
+  specialFeature: (_: number, randValue?: number, zone?: ZoneData) => {
     if (!oneIn(randValue ?? 0, 8) || (zone?.depthMinMax?.[1] ?? 0) < floorDepth - 10) { return }
     return {
       feature: sinkholeName,

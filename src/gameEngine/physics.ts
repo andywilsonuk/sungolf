@@ -20,11 +20,11 @@ export const createDynamicBody = (props: BodyDef): Body => {
 }
 
 export const registerBeginContact = (callback: (contact: Contact) => void): void => {
-  worldOrThrow().on('begin-contact', callback as (...args: unknown[]) => void)
+  worldOrThrow().on('begin-contact', callback)
 }
 
 export const registerEndContact = (callback: (contact: Contact) => void): void => {
-  worldOrThrow().on('end-contact', callback as (...args: unknown[]) => void)
+  worldOrThrow().on('end-contact', callback)
 }
 
 export const rayCast = (p1: Vec2, p2: Vec2, callback: (fixture: Fixture, point: Vec2, normal: Vec2, fraction: number) => number): void => {

@@ -3,7 +3,7 @@ import HslClass from '../shared/hsl'
 import { randomFillArray, randomGenerator, randomInt } from '../shared/random'
 import { biasedInt, clamp, isFunction, lerp, lerpColor, lerpMinMax, normalize, scaleInt } from '../shared/utils'
 import { holeDistanceMax, holeDistanceMin } from '../terrain/constants'
-import data from './data'
+import data, { type ZoneData } from './data'
 
 const defaultColor = new HslClass(200, 50, 50)
 const defaultBackgroundColor = new HslClass(220, 30, 80)
@@ -32,7 +32,7 @@ interface CalculatorResult {
 
 type FunctionExpanderValue = unknown
 
-const expandFunction = (relativeStageId: number, zone?: unknown) =>
+const expandFunction = (relativeStageId: number, zone?: ZoneData) =>
   (value: FunctionExpanderValue, r?: number) =>
     isFunction(value) ? value(relativeStageId, r, zone) : value
 
