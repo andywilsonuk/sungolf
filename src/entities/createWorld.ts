@@ -10,6 +10,7 @@ import OptionsEntity from './optionsEntity'
 import BackgroundEntity from './backgroundEntity'
 import TopographyEntity from './topographyEntity'
 import HoleEntity from './holeEntity'
+import HorizonEntity from './horizonEntity'
 
 export default (): void => {
   addEntity(new StateEntity())
@@ -18,6 +19,7 @@ export default (): void => {
   addEntity(new BackgroundEntity())
   addEntity(new TopographyEntity())
   addEntity(new DynamicsEntity())
+  addEntity(new HorizonEntity())
   addEntity(new PullbackEntity())
   addEntity(new ScoreEntity())
   addEntity(new OptionsEntity())

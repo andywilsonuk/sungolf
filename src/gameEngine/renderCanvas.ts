@@ -9,12 +9,15 @@ let expandedWidthPercent = 1
 let expandedHeightPercent = 1
 let gameAreaElement: HTMLElement
 let renderWidth: number, renderHeight: number
+let gameAreaWidth: number, gameAreaHeight: number
 
 interface ResizePayload {
   width: number
   height: number
   renderWidth: number
   renderHeight: number
+  gameAreaWidth: number
+  gameAreaHeight: number
 }
 
 type ResizeCallback = (payload: ResizePayload) => void
@@ -76,6 +79,8 @@ const updateSize = (): void => {
     expandedHeightPercent = 1
   }
 
+  gameAreaWidth = newWidth
+  gameAreaHeight = newHeight
   gameAreaElement.style.width = `${newWidth}px`
   gameAreaElement.style.height = `${newHeight}px`
 
@@ -111,6 +116,8 @@ const notifySubscribers = (): void => {
     height: referenceHeight * expandedHeightPercent,
     renderWidth,
     renderHeight,
+    gameAreaWidth,
+    gameAreaHeight,
   }
   for (const subscriberCallback of resizeSubscribers) {
     subscriberCallback(payload)

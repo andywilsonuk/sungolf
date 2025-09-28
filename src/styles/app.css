@@ -16,10 +16,14 @@ body {
   color: var(--black);
   background-color: var(--black);
   font-family: 'Main', helvetica, sans-serif;
-  font-weight: 400;  
+  font-weight: 400;
+  width: 100vw;
+  height: 100vh;
 }
 #gameArea {
   position: relative;
+  width: 100vw;
+  height: 100vh;
 }
 .layer {
   position: absolute;

@@ -42,3 +42,10 @@
   text-transform: lowercase;
   user-select: none;
 }
+#horizon {
+  filter: blur(20px);
+  position: absolute;
+  top: 1vh;
+  right: -2vw;
+  height: 110vh;
+}
