@@ -46,6 +46,7 @@
   filter: blur(20px);
   position: absolute;
   top: 1vh;
+  left: auto;
   right: -2vw;
   height: 110vh;
 }

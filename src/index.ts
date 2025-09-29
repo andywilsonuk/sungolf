@@ -10,6 +10,9 @@ const showGameUI = (): void => {
   const gameArea = document.getElementById('gameArea')
   const optionsButton = document.getElementById('optionsButton')
   const options = document.getElementById('options')
+  const horizon = document.getElementById('horizon')
+  const scoreOuter = document.getElementById('scoreOuter')
+  const title = document.getElementById('title')
 
   if (loadingScreen) {
     loadingScreen.style.display = 'none'
@@ -22,6 +25,15 @@ const showGameUI = (): void => {
   }
   if (options) {
     options.style.display = ''
+  }
+  if (horizon) {
+    horizon.style.display = ''
+  }
+  if (scoreOuter) {
+    scoreOuter.style.display = ''
+  }
+  if (title) {
+    title.style.display = ''
   }
 }
 
