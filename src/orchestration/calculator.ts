@@ -30,7 +30,7 @@ interface CalculatorResult {
   specialFeature?: ExpandedSpecialFeature
 }
 
-type FunctionExpanderValue = unknown
+type FunctionExpanderValue = ZoneData['depthMinMax'] | ZoneData['driftMinMax'] | ZoneData['allowedFeatures'] | ZoneData['specialFeature'] | ZoneData['preferCrags'] | ZoneData['water']
 
 const expandFunction = (relativeStageId: number, zone?: ZoneData) =>
   (value: FunctionExpanderValue, r?: number) =>

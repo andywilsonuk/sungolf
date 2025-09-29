@@ -5,8 +5,8 @@ import { cactusName, cloudName, earlyFeatures, endingName, greenFeatures, greenF
 
 export interface SpecialFeature {
   feature: string
-  distanceMinMax: [number, number] | number[]
-  widthMinMax: [number, number] | number[]
+  distanceMinMax: [number, number]
+  widthMinMax: [number, number]
 }
 
 export interface ZoneData {
@@ -17,11 +17,11 @@ export interface ZoneData {
   color?: Hsl
   backgroundColor?: Hsl
   backgroundColorStop?: number
-  depthMinMax?: [number, number] | number[] | ((relativeStageId: number, randValue: number) => [number, number] | number[])
-  driftMinMax?: [number, number] | number[] | ((relativeStageId: number, randValue?: number) => [number, number] | number[])
+  depthMinMax?: [number, number] | ((relativeStageId: number, randValue: number) => [number, number])
+  driftMinMax?: [number, number] | ((relativeStageId: number, randValue?: number) => [number, number])
   holeMinDistanceBias?: number
   allowedFeatures?: string[] | ((relativeStageId: number, randValue?: number, zone?: ZoneData) => string[])
-  specialFeature?: SpecialFeature | ((relativeStageId: number, randValue?: number, zone?: ZoneData) => SpecialFeature | undefined) | undefined
+  specialFeature?: SpecialFeature | ((relativeStageId: number, randValue?: number, zone?: ZoneData) => SpecialFeature | undefined)
   preferCrags?: boolean | ((relativeStageId: number, randValue?: number) => boolean)
   water?: boolean | ((relativeStageId: number, randValue?: number) => boolean)
 }
@@ -83,7 +83,7 @@ const cactusZone: ZoneData = {
   depthMinMax: [floorDepth - 50, floorDepth - 50],
   driftMinMax: [0, 0],
   holeMinDistanceBias: 0,
-  specialFeature: (relativeStageId) => relativeStageId === 0 || relativeStageId === 4
+  specialFeature: (relativeStageId, _randValue, _zone) => relativeStageId === 0 || relativeStageId === 4
     ? {
         feature: cactusName,
         distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
@@ -91,28 +91,28 @@ const cactusZone: ZoneData = {
       }
     : undefined,
 }
-const yellow1aZone = {
+const yellow1aZone: ZoneData = {
   name: 'Yellow1a',
   duration: 19,
   depthMinMax: [ceilingDepth + 100, floorDepth - 100],
   driftMinMax: [150, 350],
   holeMinDistanceBias: 0.5,
 }
-const flatZone = {
+const flatZone: ZoneData = {
   name: 'Flat',
   duration: 2,
   depthMinMax: [300, 300],
   driftMinMax: [0, 0],
   allowedFeatures: trainingFeatures,
 }
-const yellow1bZone = {
+const yellow1bZone: ZoneData = {
   name: 'Yellow1b',
   duration: 119,
   depthMinMax: [ceilingDepth + 100, floorDepth - 100],
   driftMinMax: [150, 350],
   holeMinDistanceBias: 0.5,
 }
-const initialSinkholeZone = {
+const initialSinkholeZone: ZoneData = {
   name: 'Sinkhole',
   duration: 1,
   depthMinMax: [floorDepth - 50, floorDepth - 50],
@@ -124,7 +124,7 @@ const initialSinkholeZone = {
     widthMinMax: [sinkholeWidthMin, sinkholeWidthMin],
   },
 }
-const yellow1cZone = {
+const yellow1cZone: ZoneData = {
   name: 'Yellow1c',
   duration: 63,
   depthMinMax: [ceilingDepth + 100, floorDepth],
@@ -137,7 +137,7 @@ const yellow1cZone = {
       }
     : undefined,
 }
-const cloudZone = {
+const cloudZone: ZoneData = {
   ...yellow1bZone,
   name: 'Cloud',
   duration: 1,
@@ -147,12 +147,12 @@ const cloudZone = {
     widthMinMax: [specialWidth, specialWidth],
   },
 }
-const yellow1dZone = {
+const yellow1dZone: ZoneData = {
   ...yellow1cZone,
   name: 'Yellow1c',
   duration: 93,
 }
-const skullZone = {
+const skullZone: ZoneData = {
   ...yellow1bZone,
   name: 'Skull',
   duration: 1,
@@ -162,12 +162,12 @@ const skullZone = {
     widthMinMax: [specialWidth, specialWidth],
   },
 }
-const yellow1eZone = {
+const yellow1eZone: ZoneData = {
   ...yellow1cZone,
   name: 'Yellow1d',
   duration: 1,
 }
-const redZone = {
+const redZone: ZoneData = {
   name: 'Red',
   duration: 20,
   color: new Hsl(6, 33, 48),
@@ -177,7 +177,7 @@ const redZone = {
   driftMinMax: [maxDrift - 100, maxDrift],
   preferCrags: true,
 }
-const towerZone = {
+const towerZone: ZoneData = {
   ...redZone,
   name: 'Tower',
   duration: 1,
@@ -187,7 +187,7 @@ const towerZone = {
     widthMinMax: [specialWidth, specialWidth],
   },
 }
-const green1aZone = {
+const green1aZone: ZoneData = {
   name: 'Green1a',
   duration: 20,
   color: new Hsl(91, 53, 32),
@@ -207,7 +207,7 @@ const green1aZone = {
   },
   water: true,
 }
-const wet1aZone = {
+const wet1aZone: ZoneData = {
   name: 'Wet1a',
   duration: 20,
   color: new Hsl(37, 33, 41),
@@ -225,7 +225,7 @@ const wet1aZone = {
   holeMinDistanceBias: 0.6,
   water: true,
 }
-const yellow3Zone = {
+const yellow3Zone: ZoneData = {
   name: 'Yellow3',
   duration: 20,
   color: defaultColor,
@@ -250,7 +250,7 @@ const yellow3Zone = {
   preferCrags: (_: number, randValue?: number) => oneIn(randValue ?? 0, 3),
   water: (_: number, randValue?: number) => oneIn(randValue ?? 0, 40),
 }
-const endAZone = {
+const endAZone: ZoneData = {
   ...yellow3Zone,
   name: 'endA',
   duration: 2,
@@ -262,7 +262,7 @@ const endAZone = {
   specialFeature: undefined,
   water: true,
 }
-const endBZone = {
+const endBZone: ZoneData = {
   ...endAZone,
   name: 'endB',
   driftMinMax: [0, 0],
