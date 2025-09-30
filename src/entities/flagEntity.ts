@@ -3,7 +3,7 @@ import { Vec2 as Vec2Ctor } from 'planck'
 import { EasingAnimation, linear } from '../gameEngine/easingAnimation'
 import { addAnimation } from '../gameEngine/animator'
 import { physicsScale, rayCast } from '../gameEngine/physics'
-import { subscribeResize } from '../gameEngine/renderCanvas'
+import { subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
 import { subscribe } from '../gameEngine/signalling'
 import Hsl from '../shared/hsl'
 import { holeDepth, holeWidth } from '../terrain/constants'
@@ -94,7 +94,7 @@ export default class FlagEntity {
     return 0
   }
 
-  onResize({ width }: { width: number }): void {
+  onResize({ width }: ResizePayload): void {
     this.boundaryRight = width * physicsScale
   }
 

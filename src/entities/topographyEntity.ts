@@ -2,7 +2,7 @@ import TerrainEntity from './terrainEntity'
 import FlagEntity from './flagEntity'
 import { addEntity } from '../gameEngine/world'
 import TeeEntity from './teeEntity'
-import { applyPixelScale, applyRatioScale, subscribeResize } from '../gameEngine/renderCanvas'
+import { applyPixelScale, applyRatioScale, subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
 import WaterEntity from './waterEntity'
 import PaletteEntity from './paletteEntity'
 import { translateHeightPadding } from './canvasHelpers'
@@ -32,7 +32,7 @@ export default class TopographyEntity {
     subscribeResize(this.onResize.bind(this))
   }
 
-  onResize({ renderWidth, renderHeight }: { renderWidth: number, renderHeight: number }): void {
+  onResize({ renderWidth, renderHeight }: ResizePayload): void {
     const canvasElement = document.getElementById('topography')
     if (!canvasElement) {
       throw new Error('Canvas element with id "topography" not found')

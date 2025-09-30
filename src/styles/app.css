@@ -10,11 +10,12 @@
   --white: hsl(0, 17%, 98%);
   --dialogBackground: hsla(0, 0%, 90%, 0.98);
   --dialogBorder: hsla(225, 6%, 13%, 0.8);
+  --background: hsl(240, 6%, 23%);
 }
 body {
   position: fixed;
   color: var(--black);
-  background-color: var(--black);
+  background-color: var(--background);
   font-family: 'Main', helvetica, sans-serif;
   font-weight: 400;
   width: 100vw;

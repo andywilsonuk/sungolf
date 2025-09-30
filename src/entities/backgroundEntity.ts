@@ -3,6 +3,7 @@ import orchestration from '../orchestration'
 import Hsl from '../shared/hsl'
 import { stageReadySignal } from './constants'
 import type { StageReadyPayload } from '../types/stageReady'
+import { subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
 
 export default class BackgroundEntity {
   stage: number | null
@@ -10,6 +11,7 @@ export default class BackgroundEntity {
   backgroundColor: Hsl | null
   backgroundColorStop: number | null
   backgroundElement!: HTMLElement
+  height: number | null = null
 
   constructor() {
     this.stage = null
@@ -19,6 +21,7 @@ export default class BackgroundEntity {
   }
 
   init(): void {
+    subscribeResize(this.onResize.bind(this))
     subscribe(stageReadySignal, (...args: unknown[]) => {
       const [payload] = args as [StageReadyPayload]
       this.stageReady(payload)
@@ -33,6 +36,11 @@ export default class BackgroundEntity {
     this.dirty = true
   }
 
+  onResize({ gameAreaHeight }: ResizePayload): void {
+    this.height = gameAreaHeight
+    this.dirty = true
+  }
+
   renderInitial(): void {
     const element = document.getElementById('background')
     if (!element) {
@@ -42,11 +50,20 @@ export default class BackgroundEntity {
   }
 
   render(): void {
-    if (!this.dirty || !this.backgroundColor || this.backgroundColorStop === null) { return }
+    if (!this.dirty) { return }
 
-    const initialStopColorString = new Hsl(0, 0, 90).asString()
+    this.backgroundElement.style.height = `${this.height}px`
 
-    this.backgroundElement.style.background = `linear-gradient(${initialStopColorString}, ${this.backgroundColorStop * 100}%, ${this.backgroundColor.asString()} )`
+    if (this.backgroundColor && this.backgroundColorStop !== null) {
+      const initialStopColorString = new Hsl(0, 0, 90).asString()
+      const gradient = [
+        initialStopColorString,
+        `${this.backgroundColorStop * 100}%`,
+        `${this.backgroundColor.asString()} 98%`,
+        `var(--background) 100%`,
+      ]
+      this.backgroundElement.style.background = `linear-gradient(${gradient.join(',')})`
+    }
 
     this.dirty = false
   }

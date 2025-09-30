@@ -11,7 +11,7 @@ let gameAreaElement: HTMLElement
 let renderWidth: number, renderHeight: number
 let gameAreaWidth: number, gameAreaHeight: number
 
-interface ResizePayload {
+export interface ResizePayload {
   width: number
   height: number
   renderWidth: number
@@ -20,7 +20,7 @@ interface ResizePayload {
   gameAreaHeight: number
 }
 
-type ResizeCallback = (payload: ResizePayload) => void
+export type ResizeCallback = (payload: ResizePayload) => void
 
 const resizeSubscribers: ResizeCallback[] = []
 

@@ -1,6 +1,6 @@
 import { Polygon, Vec2, type Body, type Fixture } from 'planck'
 import { createBody, physicsScale } from '../gameEngine/physics'
-import { subscribeResize } from '../gameEngine/renderCanvas'
+import { subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
 import { updateBoxFixtureVertices } from '../shared/planckHelpers'
 import { boundaryCategory } from './constants'
 
@@ -27,7 +27,7 @@ export default class BoundaryEntity {
     subscribeResize(this.onResize.bind(this))
   }
 
-  onResize({ width, height }: { width: number, height: number }): void {
+  onResize({ width, height }: ResizePayload): void {
     const sceneWidth = width * physicsScale
     const sceneHeight = height * physicsScale
     const boundaryThickness = 50 * physicsScale

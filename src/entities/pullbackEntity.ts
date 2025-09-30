@@ -5,7 +5,7 @@ import { clamp, normalize } from '../shared/utils'
 import { ballTag, stageCompleteSignal, stageReadySignal } from './constants'
 import type { StageReadyPayload } from '../types/stageReady'
 import { inputState } from '../gameEngine/inputManager'
-import { subscribeResize } from '../gameEngine/renderCanvas'
+import { subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
 import { scalePixelRatio } from './canvasHelpers'
 import Hsl from '../shared/hsl'
 import type { BallPhysics } from './ballEntity'
@@ -94,7 +94,7 @@ export default class PullbackEntity {
     }
   }
 
-  onResize({ renderWidth, renderHeight }: { renderWidth: number, renderHeight: number }): void {
+  onResize({ renderWidth, renderHeight }: ResizePayload): void {
     const canvasElement = document.getElementById('pullback')
     if (!canvasElement) {
       throw new Error('Canvas element with id "pullback" not found')

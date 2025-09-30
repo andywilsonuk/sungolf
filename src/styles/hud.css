@@ -43,10 +43,14 @@
   user-select: none;
 }
 #horizon {
-  filter: blur(20px);
-  position: absolute;
-  top: 1vh;
+  top: 0;
   left: auto;
-  right: -2vw;
-  height: 110vh;
+  right: -1vw;
+  overflow-y: clip;
+}
+#horizonBlur {
+  filter: blur(10px);
+  top:1vh;
+  left:1vw;
+  height: 110%;
 }

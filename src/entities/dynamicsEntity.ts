@@ -1,4 +1,4 @@
-import { applyPixelScale, applyRatioScale, subscribeResize } from '../gameEngine/renderCanvas'
+import { applyPixelScale, applyRatioScale, subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
 import { addEntity } from '../gameEngine/world'
 import BallEntity from './ballEntity'
 import type ParticleSystem from './particleSystem'
@@ -21,7 +21,7 @@ export default class DynamicsEntity {
     this.waterParticlesEntity = this.ballEntity.waterParticles
   }
 
-  onResize({ renderWidth, renderHeight }: { renderWidth: number, renderHeight: number }): void {
+  onResize({ renderWidth, renderHeight }: ResizePayload): void {
     const canvasElement = document.getElementById('dynamics')
     if (!canvasElement) {
       throw new Error('Canvas element with id "dynamics" not found')

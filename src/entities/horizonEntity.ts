@@ -1,5 +1,5 @@
 import { getOneEntityByTag } from '../gameEngine/world'
-import { subscribeResize } from '../gameEngine/renderCanvas'
+import { subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
 import { stageReadySignal, terrainTag } from './constants'
 import type { TerrainEntityColor } from './terrainEntity'
 import { subscribe } from '../gameEngine/signalling'
@@ -8,7 +8,9 @@ import type { StageReadyPayload } from '../types/stageReady'
 export default class HorizonEntity {
   public dirty = true
   private width: number | null = null
-  private element!: HTMLElement
+  private height: number | null = null
+  private horizonElement!: HTMLElement
+  private horizonBlurElement!: HTMLElement
   private terrain: TerrainEntityColor | null = null
 
   init(): void {
@@ -20,17 +22,20 @@ export default class HorizonEntity {
     this.terrain = (getOneEntityByTag(terrainTag) as TerrainEntityColor)
   }
 
-  onResize({ gameAreaWidth }: { gameAreaWidth: number }): void {
+  onResize({ gameAreaWidth, gameAreaHeight }: ResizePayload): void {
     this.width = gameAreaWidth
+    this.height = gameAreaHeight
     this.dirty = true
   }
 
   renderInitial(): void {
-    const element = document.getElementById('horizon')
-    if (!element) {
+    const horizonElement = document.getElementById('horizon')
+    const horizonBlurElement = document.getElementById('horizonBlur')
+    if (!horizonElement || !horizonBlurElement) {
       throw new Error('Background element not found')
     }
-    this.element = element
+    this.horizonElement = horizonElement
+    this.horizonBlurElement = horizonBlurElement
   }
 
   render(): void {
@@ -40,8 +45,9 @@ export default class HorizonEntity {
 
     const color = this.terrain.terrainColor.asString()
 
-    this.element.style.width = `calc(100vw - ${this.width ?? 0}px + 4vw)`
-    this.element.style.backgroundColor = color
+    this.horizonElement.style.width = `calc(100vw - ${this.width ?? 0}px + 4vw)`
+    this.horizonElement.style.height = `${this.height}px`
+    this.horizonBlurElement.style.backgroundColor = color
 
     this.dirty = false
   }

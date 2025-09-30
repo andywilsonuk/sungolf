@@ -1,7 +1,7 @@
 import type { Body, Fixture } from 'planck'
 import { Polygon, Vec2 } from 'planck'
 import { createBody, physicsScale } from '../gameEngine/physics'
-import { subscribeResize } from '../gameEngine/renderCanvas'
+import { subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
 import { subscribe } from '../gameEngine/signalling'
 import orchestration from '../orchestration'
 import { updateBoxFixtureVertices } from '../shared/planckHelpers'
@@ -46,7 +46,7 @@ export default class WaterEntity {
     })
   }
 
-  onResize({ width }: { width: number }): void {
+  onResize({ width }: ResizePayload): void {
     this.width = width * physicsScale
     this.y = absoluteFloorDepth * physicsScale - visibleOffset
     updateBoxFixtureVertices(this.waterBoundary, this.width, boundaryThickness, 0, this.y)
