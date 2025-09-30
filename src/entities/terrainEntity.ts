@@ -18,8 +18,7 @@ import { addEntity } from '../gameEngine/world'
 import SkullEntity from './skullEntity'
 import CloudEntity from './cloudEntity'
 import CactusEntity from './cactusEntity'
-import { cactusName, cloudName, skullName, towerName } from '../terrain/features/names'
-import TowerEntity from './towerEntity'
+import { cactusName, cloudName, skullName } from '../terrain/features/names'
 import type { SpecialObject } from '@/terrain/features/types'
 
 const bodyOptions = {
@@ -62,7 +61,6 @@ export default class TerrainEntity implements TerrainEntityColor, SetStageTerrai
       [cloudName, addEntity(new CloudEntity()) as SpecialObject],
       [cactusName, addEntity(new CactusEntity()) as SpecialObject],
       [skullName, addEntity(new SkullEntity()) as SpecialObject],
-      [towerName, addEntity(new TowerEntity()) as SpecialObject],
     ])
   }
 

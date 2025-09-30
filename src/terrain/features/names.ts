@@ -19,7 +19,6 @@ export const mesaName = 'mesa'
 export const skullName = 'skull'
 export const cloudName = 'cloud'
 export const cactusName = 'cactus'
-export const towerName = 'tower'
 export const endingName = 'ending'
 
 export const standardFeatures = [

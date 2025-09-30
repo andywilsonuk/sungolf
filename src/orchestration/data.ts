@@ -1,7 +1,7 @@
 import Hsl from '../shared/hsl'
 import { clamp, oneIn, scaleInt, sinWave } from '../shared/utils'
 import { ceilingDepth, floorDepth, specialFeatureDistanceMax, specialFeatureDistanceMin, sinkholeWidthMin, mesaWidth, sinkholeWidthMax, specialWidth } from '../terrain/constants'
-import { cactusName, cloudName, earlyFeatures, endingName, greenFeatures, greenFeaturesPlus, mesaName, sinkholeName, skullName, standardFeatures, towerName, trainingFeatures } from '../terrain/features/names'
+import { cactusName, cloudName, earlyFeatures, endingName, greenFeatures, greenFeaturesPlus, mesaName, sinkholeName, skullName, standardFeatures, trainingFeatures } from '../terrain/features/names'
 
 export interface SpecialFeature {
   feature: string
@@ -60,7 +60,7 @@ const trainingZone: ZoneData = {
 }
 const initialZone: ZoneData = {
   name: 'Initial',
-  duration: 310,
+  duration: 98,
   depthMinMax: (relativeStageId: number, randValue: number) => {
     if (relativeStageId > 20 && oneIn(randValue, 10)) {
       return [ceilingDepth, ceilingDepth + 100]
@@ -93,7 +93,7 @@ const cactusZone: ZoneData = {
 }
 const yellow1aZone: ZoneData = {
   name: 'Yellow1a',
-  duration: 19,
+  duration: 91,
   depthMinMax: [ceilingDepth + 100, floorDepth - 100],
   driftMinMax: [150, 350],
   holeMinDistanceBias: 0.5,
@@ -107,7 +107,7 @@ const flatZone: ZoneData = {
 }
 const yellow1bZone: ZoneData = {
   name: 'Yellow1b',
-  duration: 119,
+  duration: 69,
   depthMinMax: [ceilingDepth + 100, floorDepth - 100],
   driftMinMax: [150, 350],
   holeMinDistanceBias: 0.5,
@@ -126,7 +126,7 @@ const initialSinkholeZone: ZoneData = {
 }
 const yellow1cZone: ZoneData = {
   name: 'Yellow1c',
-  duration: 63,
+  duration: 113,
   depthMinMax: [ceilingDepth + 100, floorDepth],
   driftMinMax: [150, 400],
   specialFeature: (_: number, randValue?: number) => oneIn(randValue ?? 0, 30)
@@ -152,8 +152,18 @@ const yellow1dZone: ZoneData = {
   name: 'Yellow1c',
   duration: 93,
 }
+const redAZone: ZoneData = {
+  name: 'RedA',
+  duration: 121,
+  color: new Hsl(6, 33, 48),
+  backgroundColor: redBackgroundColor,
+  backgroundColorStop: redBackgroundColorStop,
+  depthMinMax: [floorDepth - 100, ceilingDepth + 100],
+  driftMinMax: [maxDrift, maxDrift],
+  preferCrags: true,
+}
 const skullZone: ZoneData = {
-  ...yellow1bZone,
+  ...redAZone,
   name: 'Skull',
   duration: 1,
   specialFeature: {
@@ -162,33 +172,13 @@ const skullZone: ZoneData = {
     widthMinMax: [specialWidth, specialWidth],
   },
 }
-const yellow1eZone: ZoneData = {
-  ...yellow1cZone,
-  name: 'Yellow1d',
+const redBZone: ZoneData = {
+  ...redAZone,
+  name: 'RedB',
   duration: 1,
 }
-const redZone: ZoneData = {
-  name: 'Red',
-  duration: 20,
-  color: new Hsl(6, 33, 48),
-  backgroundColor: redBackgroundColor,
-  backgroundColorStop: redBackgroundColorStop,
-  depthMinMax: [ceilingDepth, ceilingDepth + 100],
-  driftMinMax: [maxDrift - 100, maxDrift],
-  preferCrags: true,
-}
-const towerZone: ZoneData = {
-  ...redZone,
-  name: 'Tower',
-  duration: 1,
-  specialFeature: {
-    feature: towerName,
-    distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-    widthMinMax: [specialWidth, specialWidth],
-  },
-}
-const green1aZone: ZoneData = {
-  name: 'Green1a',
+const greenZone: ZoneData = {
+  name: 'Green',
   duration: 20,
   color: new Hsl(91, 53, 32),
   backgroundColor: greenBackgroundColor,
@@ -207,8 +197,8 @@ const green1aZone: ZoneData = {
   },
   water: true,
 }
-const wet1aZone: ZoneData = {
-  name: 'Wet1a',
+const wetZone: ZoneData = {
+  name: 'Wet',
   duration: 20,
   color: new Hsl(37, 33, 41),
   backgroundColor: grayBackgroundColor,
@@ -225,8 +215,8 @@ const wet1aZone: ZoneData = {
   holeMinDistanceBias: 0.6,
   water: true,
 }
-const yellow3Zone: ZoneData = {
-  name: 'Yellow3',
+const yellow2Zone: ZoneData = {
+  name: 'Yellow2',
   duration: 60,
   color: defaultColor,
   depthMinMax: [ceilingDepth, floorDepth],
@@ -251,7 +241,7 @@ const yellow3Zone: ZoneData = {
   water: false,
 }
 const endAZone: ZoneData = {
-  ...yellow3Zone,
+  ...yellow2Zone,
   name: 'endA',
   duration: 2,
   depthMinMax: [floorDepth - 10, floorDepth - 10],
@@ -287,18 +277,17 @@ const zones: ZoneData[] = [
   yellow1cZone,
   cloudZone,
   yellow1dZone,
+  transitionZone(60),
+  redAZone,
   skullZone,
-  yellow1eZone,
+  redBZone,
   transitionZone(60),
-  redZone,
-  towerZone,
+  greenZone,
   transitionZone(60),
-  green1aZone,
+  wetZone,
   transitionZone(60),
-  wet1aZone,
+  yellow2Zone,
   transitionZone(60),
-  yellow3Zone,
-  transitionZone(20),
   endAZone,
   endBZone,
 ]

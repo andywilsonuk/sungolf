@@ -17,7 +17,6 @@ import hole from './hole'
 import skull from './skull'
 import cloud from './cloud'
 import cactus from './cactus'
-import tower from './tower'
 import ending from './ending'
 
 export default [
@@ -40,6 +39,5 @@ export default [
   skull,
   cloud,
   cactus,
-  tower,
   ending,
 ]

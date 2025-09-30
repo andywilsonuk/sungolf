@@ -139,8 +139,8 @@ export default (stageId: number): CalculatorResult => {
 function expandSpecial(specialFeature: SpecialFeature | undefined, randValue1: number, randValue2: number): ExpandedSpecialFeature | undefined {
   if (specialFeature === undefined) { return }
 
-  const [distanceMin, distanceMax] = specialFeature.distanceMinMax as [number, number]
-  const [widthMin, widthMax] = specialFeature.widthMinMax as [number, number]
+  const [distanceMin, distanceMax] = specialFeature.distanceMinMax
+  const [widthMin, widthMax] = specialFeature.widthMinMax
 
   return {
     name: specialFeature.feature,
