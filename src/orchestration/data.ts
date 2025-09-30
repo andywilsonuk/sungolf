@@ -227,13 +227,13 @@ const wet1aZone: ZoneData = {
 }
 const yellow3Zone: ZoneData = {
   name: 'Yellow3',
-  duration: 20,
+  duration: 60,
   color: defaultColor,
   depthMinMax: [ceilingDepth, floorDepth],
   driftMinMax: [0, maxDrift],
   specialFeature: (_: number, randValue?: number) => {
     const chance = scaleInt(randValue ?? 0, 1, 60)
-    if (chance === 1) {
+    if (chance < 30) {
       return {
         feature: sinkholeName,
         distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
@@ -247,8 +247,8 @@ const yellow3Zone: ZoneData = {
       }
     }
   },
-  preferCrags: (_: number, randValue?: number) => oneIn(randValue ?? 0, 3),
-  water: (_: number, randValue?: number) => oneIn(randValue ?? 0, 40),
+  preferCrags: true,
+  water: false,
 }
 const endAZone: ZoneData = {
   ...yellow3Zone,
@@ -298,7 +298,7 @@ const zones: ZoneData[] = [
   wet1aZone,
   transitionZone(60),
   yellow3Zone,
-  transitionZone(60),
+  transitionZone(20),
   endAZone,
   endBZone,
 ]
