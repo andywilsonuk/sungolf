@@ -15,8 +15,9 @@ export default class SunEntity {
   private normalizedAlpha = 0
 
   init(): void {
-    subscribe(stageReadySignal, (payload) => {
-      this.stageReady(payload as StageReadyPayload)
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [payload] = args as [StageReadyPayload]
+      this.stageReady(payload)
     })
     this.normalizedAngle = 0
     this.normalizedAlpha = 0

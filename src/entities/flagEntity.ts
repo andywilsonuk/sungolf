@@ -45,8 +45,9 @@ export default class FlagEntity {
 
   init(): void {
     subscribeResize(this.onResize.bind(this))
-    subscribe(stageReadySignal, (payload) => {
-      this.show(payload as StageReadyPayload)
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [payload] = args as [StageReadyPayload]
+      this.show(payload)
     })
     subscribe(stageCompleteSignal, this.hide.bind(this))
   }

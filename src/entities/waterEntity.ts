@@ -40,8 +40,9 @@ export default class WaterEntity {
     this.waterBoundary = createBoundaryBox(this.waterBody)
 
     subscribeResize(this.onResize.bind(this))
-    subscribe(stageReadySignal, (payload) => {
-      this.stageReady(payload as StageReadyPayload)
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [payload] = args as [StageReadyPayload]
+      this.stageReady(payload)
     })
   }
 

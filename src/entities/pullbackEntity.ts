@@ -3,6 +3,7 @@ import { subscribe } from '../gameEngine/signalling'
 import { getOneEntityByTag } from '../gameEngine/world'
 import { clamp, normalize } from '../shared/utils'
 import { ballTag, stageCompleteSignal, stageReadySignal } from './constants'
+import type { StageReadyPayload } from '../types/stageReady'
 import { inputState } from '../gameEngine/inputManager'
 import { subscribeResize } from '../gameEngine/renderCanvas'
 import { scalePixelRatio } from './canvasHelpers'
@@ -54,7 +55,8 @@ export default class PullbackEntity {
 
   init(): void {
     this.ballEntity = getOneEntityByTag(ballTag) as BallPhysics
-    subscribe(stageReadySignal, (_payload) => {
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [_payload] = args as [StageReadyPayload]
       this.start()
     })
     subscribe(stageCompleteSignal, this.stop.bind(this))

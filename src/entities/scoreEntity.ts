@@ -29,8 +29,9 @@ export default class ScoreEntity implements SetScore {
   }
 
   init(): void {
-    subscribe(stageReadySignal, (payload) => {
-      this.stageReady(payload as StageReadyPayload)
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [payload] = args as [StageReadyPayload]
+      this.stageReady(payload)
     })
     subscribe(gamePausedSignal, this.toggleSkip.bind(this, false))
     subscribe(gameResumedSignal, this.toggleSkip.bind(this, true))

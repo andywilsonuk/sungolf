@@ -19,8 +19,9 @@ export default class BackgroundEntity {
   }
 
   init(): void {
-    subscribe(stageReadySignal, (payload) => {
-      this.stageReady(payload as StageReadyPayload)
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [payload] = args as [StageReadyPayload]
+      this.stageReady(payload)
     })
   }
 

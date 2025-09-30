@@ -28,14 +28,16 @@ export default class StateEntity implements ResetState {
     this.terrainEntity = getOneEntityByTag(terrainTag) as SetStageTerrain
     this.scoreEntity = getOneEntityByTag(scoreTag) as SetScore
     this.ballEntity = getOneEntityByTag(ballTag) as BallShot
-    subscribe(stageCompleteSignal, (stageId) => {
-      this.stageComplete(stageId as number)
+    subscribe(stageCompleteSignal, (...args: unknown[]) => {
+      const [stageId] = args as [number]
+      this.stageComplete(stageId)
     })
-    subscribe(stageReadySignal, (payload) => {
-      this.stageReady(payload as StageReadyPayload)
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [payload] = args as [StageReadyPayload]
+      this.stageReady(payload)
     })
-    subscribe(ballStrokeSignal, (payload) => {
-      const { position, stroke } = payload as { position: Vec2, stroke: Vec2 }
+    subscribe(ballStrokeSignal, (...args: unknown[]) => {
+      const [{ position, stroke }] = args as [{ position: Vec2, stroke: Vec2 }]
       this.onStroke({ position, stroke })
     })
   }

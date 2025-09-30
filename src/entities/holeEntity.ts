@@ -27,8 +27,9 @@ export default class HoleEntity {
       isSensor: true,
     })
 
-    subscribe(stageReadySignal, (payload) => {
-      this.enableHole(payload as StageReadyPayload)
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [payload] = args as [StageReadyPayload]
+      this.enableHole(payload)
     })
     subscribe(stageCompleteSignal, this.disableHole.bind(this))
     registerBeginContact(this.contactTest.bind(this))

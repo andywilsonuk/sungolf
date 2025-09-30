@@ -70,8 +70,9 @@ export default class BallEntity implements BallPhysics, BallShot {
   }
 
   init(): void {
-    subscribe(stageReadySignal, (payload) => {
-      this.start(payload as StageReadyPayload)
+    subscribe(stageReadySignal, (...args: unknown[]) => {
+      const [payload] = args as [StageReadyPayload]
+      this.start(payload)
     })
     subscribe(stageCompleteSignal, this.stop.bind(this))
     subscribe(stageTransitioningSignal, this.hide.bind(this))
