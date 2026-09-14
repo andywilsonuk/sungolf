@@ -9,7 +9,7 @@ import type { FullscreenOptions } from './optionsEntity'
 export default class TitlesEntity {
   private options: FullscreenOptions | null = null
   private titleElement!: HTMLElement
-  private callback!: () => void
+  private callback!: (event: Event) => void
 
   init(): void {
     this.options = getOneEntityByTag(optionsTag) as FullscreenOptions
@@ -21,7 +21,9 @@ export default class TitlesEntity {
       throw new Error('Title element not found')
     }
     this.titleElement = titleElement
-    this.callback = () => {
+    this.callback = (event: Event) => {
+      event.stopPropagation()
+      event.preventDefault()
       this.onPlay().catch(() => {})
     }
 

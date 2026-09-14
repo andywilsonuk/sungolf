@@ -95,6 +95,13 @@ export default class OptionsEntity implements FullscreenOptions {
 
     this.toggleSound(this.soundOn)
     this.toggleFullscreen(this.fullscreenOn).catch(() => {})
+
+    if (!this.isFullscreenAvailable()) {
+      const fullscreenRow = this.fullscreenToggleElement.parentElement
+      if (fullscreenRow) {
+        addClass(fullscreenRow, 'hide')
+      }
+    }
   }
 
   show(): void {
@@ -118,6 +125,10 @@ export default class OptionsEntity implements FullscreenOptions {
     } else {
       this.hide()
     }
+  }
+
+  isFullscreenAvailable(): boolean {
+    return document.body.requestFullscreen !== undefined || document.body.webkitRequestFullscreen !== undefined
   }
 
   save(): void {

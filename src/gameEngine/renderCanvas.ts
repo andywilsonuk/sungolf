@@ -1,6 +1,6 @@
 export const referenceWidth = 800
 export const referenceHeight = 600
-const expandedWidthMax = 1.5
+const expandedWidthMax = 2
 const expandedHeightMax = 1.8
 
 let ratio = referenceWidth / referenceHeight

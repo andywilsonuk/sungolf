@@ -44,13 +44,13 @@
 }
 #horizon {
   top: 0;
-  left: auto;
-  right: -1vw;
+  left: 0;
+  right: auto;
   overflow-y: clip;
 }
 #horizonBlur {
   filter: blur(10px);
-  top:1vh;
+  top:0;
   left:1vw;
   height: 110%;
 }

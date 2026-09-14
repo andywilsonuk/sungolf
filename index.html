@@ -29,31 +29,31 @@
         <div>Loading Sungolf</div>
     </div>
     <div id="background" class="layer inert"></div>
-    <div id="gameArea" style="display:none">
+    <div id="gameArea" style="display:none; z-index: 100;">
         <canvas id="topography" class="layer inert"></canvas>
         <canvas id="dynamics" class="layer inert"></canvas>
         <canvas id="pullback" class="layer"></canvas>
     </div>
     <div id="fixtures" class="layer inert" style="display:none">
         <div id="horizon" class="layer inert">
-            <div id="horizonBlur" class="layer inert"></div>
+            <div id="horizonBlur" class="layer inert" style="z-index:500"></div>
         </div>
-        <div id="scoreOuter">
+        <div id="scoreOuter" style="z-index:550">
             <div id="score" class="inert"></div>
             <div id="stroke" class="inert"></div>
             <div id="skip">Skip</div>
         </div>
     </div>
-    <div id="title" class="layer" style="display:none">
+    <div id="title" class="layer" style="display:none; z-index: 1000; pointer-events: auto">
         <div id="titleText" class="inert">Sun Golf</div>
     </div>
-    <div id="devtools" class="dialog"></div>
-    <div id="optionsButton" style="display:none"></div>
-    <div id="options" class="dialog hide" style="display:none">
+    <div id="devtools" class="dialog" style="z-index: 750; pointer-events: auto; opacity: 0.7"></div>
+    <div id="optionsButton" style="display:none; z-index: 600; pointer-events: auto"></div>
+    <div id="options" class="dialog hide" style="display:none; z-index: 2000; pointer-events: auto">
         <div class="flexRow"><span id="soundToggle" class="toggleButton"></span><span>Sound</span></div>
         <div class="flexRow"><span id="fullscreenToggle" class="toggleButton"></span><span>Fullscreen</span></div>
         <div class="flexRow">
-            <span>v2.0.0</span>
+            <span>v2.1.0</span>
             <span id="startOverConfirm" class="button flushRight hide">Confirm</span>
             <span id="startOver" class="button">Start over</span></div>
         <hr />
