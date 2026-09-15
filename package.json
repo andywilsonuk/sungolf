@@ -9,16 +9,17 @@
         "url": "https://github.com/andywilsonuk/sungolf"
     },
     "type": "module",
+    "packageManager": "pnpm@11.12.0",
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "prepreview": "npm run build",
+        "prepreview": "pnpm run build",
         "preview": "vite preview",
         "type-check": "tsc --noEmit",
         "lint": "biome check .",
         "lint-fix": "biome check --write .",
-        "update-packages": "npx npm-check-updates -u && npm install",
-        "checks": "npm run type-check && npm run lint-fix && npm run build",
+        "update-packages": "pnpm up --latest",
+        "checks": "pnpm run type-check && pnpm run lint-fix && pnpm run build",
         "terraincheck": "playwright test terrainCheck.spec.ts"
     },
     "author": "andywilsonuk",

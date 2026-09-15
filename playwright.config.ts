@@ -25,7 +25,7 @@ export default defineConfig({
   ],
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : [['dot'], ['html']],
   webServer: {
-    command: 'npm run preview',
+    command: 'pnpm run preview',
     url: baseUrl,
     reuseExistingServer: false,
   },
