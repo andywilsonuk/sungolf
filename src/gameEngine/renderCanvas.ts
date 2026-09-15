@@ -25,15 +25,15 @@ export type ResizeCallback = (payload: ResizePayload) => void
 const resizeSubscribers: ResizeCallback[] = []
 
 const init = (): void => {
-  const element = document.getElementById('gameArea')
+  const element = document.getElementById("gameArea")
   if (!element) {
-    throw new Error('Game area element not found')
+    throw new Error("Game area element not found")
   }
   gameAreaElement = element
-  window.addEventListener('resize', debouncedResize, false)
+  window.addEventListener("resize", debouncedResize, false)
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (window.screen.orientation) {
-    window.screen.orientation.addEventListener('change', debouncedResize, false)
+    window.screen.orientation.addEventListener("change", debouncedResize, false)
   }
 }
 
@@ -44,7 +44,9 @@ const renderInitial = (): void => {
 let pending = false
 
 const debouncedResize = (): void => {
-  if (pending) { return }
+  if (pending) {
+    return
+  }
   pending = true
   window.requestAnimationFrame(updateSize)
 }
@@ -102,7 +104,9 @@ export const applyRatioScale = (ctx2: CanvasRenderingContext2D): void => {
 }
 
 export const heightPadding = (): number => {
-  if (expandedHeightPercent === 1) { return 0 }
+  if (expandedHeightPercent === 1) {
+    return 0
+  }
   return referenceHeight * (1 - expandedHeightPercent)
 }
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { zoneColors } from '../orchestration'
+import { zoneColors } from "../orchestration"
 
 const debug = false
 
@@ -7,7 +7,9 @@ export default class PaletteEntity {
   tags?: string[] | Set<string>
 
   renderOnCanvas(ctx: CanvasRenderingContext2D): void {
-    if (!debug) { return }
+    if (!debug) {
+      return
+    }
 
     const size = 15
     ctx.save()

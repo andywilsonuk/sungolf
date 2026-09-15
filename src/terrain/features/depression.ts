@@ -1,14 +1,16 @@
-import { randomInt } from '../../shared/random'
-import { floorDepth } from '../constants'
-import { depressionName } from './names'
-import type { TerrainFeature } from './types'
+import { randomInt } from "../../shared/random"
+import { floorDepth } from "../constants"
+import { depressionName } from "./names"
+import type { TerrainFeature } from "./types"
 
 const depression: TerrainFeature = {
   get name() {
     return depressionName
   },
   allowed({ previous, y, relativeY }) {
-    if (previous?.segment?.name === depressionName) { return false }
+    if (previous?.segment?.name === depressionName) {
+      return false
+    }
     return relativeY > -10 && relativeY < 10 && y < floorDepth - 90
   },
   apply(layout, { relativeX, relativeY }, rand) {

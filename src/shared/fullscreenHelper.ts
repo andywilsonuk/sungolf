@@ -1,4 +1,4 @@
-import debugLog from '../gameEngine/debugLog'
+import debugLog from "../gameEngine/debugLog"
 
 // Extend Document interface for webkit fullscreen
 declare global {
@@ -15,9 +15,9 @@ declare global {
 export const goFullscreen = async (): Promise<void> => {
   try {
     if (document.body.webkitRequestFullscreen) {
-      document.body.webkitRequestFullscreen({ navigationUI: 'hide' })
+      document.body.webkitRequestFullscreen({ navigationUI: "hide" })
     } else {
-      await document.body.requestFullscreen({ navigationUI: 'hide' })
+      await document.body.requestFullscreen({ navigationUI: "hide" })
     }
   } catch (error) {
     debugLog(error)

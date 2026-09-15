@@ -63,7 +63,9 @@ const init = (): void => {
   let nextSpawn = entities.filter((en) => en.spawn !== undefined).filter((en) => !spawned.includes(en))
   while (nextSpawn.length !== 0) {
     nextSpawn.forEach((en) => {
-      if (en.spawn === undefined) { return }
+      if (en.spawn === undefined) {
+        return
+      }
       en.spawn()
     })
     spawned.push(...nextSpawn)
@@ -71,14 +73,18 @@ const init = (): void => {
   }
 
   entities.forEach((en) => {
-    if (en.init === undefined) { return }
+    if (en.init === undefined) {
+      return
+    }
     en.init()
   })
 }
 
 const renderInitial = (): void => {
   entities.forEach((en) => {
-    if (en.renderInitial === undefined) { return }
+    if (en.renderInitial === undefined) {
+      return
+    }
     en.renderInitial()
   })
 }
@@ -117,7 +123,9 @@ const endFrame = (): void => {
 
 const clear = (): void => {
   entities.forEach((en) => {
-    if (en.destroy === undefined) { return }
+    if (en.destroy === undefined) {
+      return
+    }
     en.destroy()
   })
   entities.length = 0

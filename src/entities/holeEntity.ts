@@ -1,11 +1,11 @@
-import type { Body, Contact } from 'planck'
-import { Box, Vec2 } from 'planck'
-import { getTimestamp } from '../gameEngine/gameLoop'
-import { createBody, registerBeginContact, registerEndContact, physicsScale } from '../gameEngine/physics'
-import { dispatchSignal, subscribe } from '../gameEngine/signalling'
-import { holeDepth, holeTotalWidth } from '../terrain/constants'
-import { finalStageId, stageCompleteSignal, stageReadySignal } from './constants'
-import type { StageReadyPayload } from '../types/stageReady'
+import type { Body, Contact } from "planck"
+import { Box, Vec2 } from "planck"
+import { getTimestamp } from "../gameEngine/gameLoop"
+import { createBody, registerBeginContact, registerEndContact, physicsScale } from "../gameEngine/physics"
+import { dispatchSignal, subscribe } from "../gameEngine/signalling"
+import { holeDepth, holeTotalWidth } from "../terrain/constants"
+import { finalStageId, stageCompleteSignal, stageReadySignal } from "./constants"
+import type { StageReadyPayload } from "../types/stageReady"
 
 const delayBeforeComplete = 0.5 * 1000
 
@@ -37,7 +37,9 @@ export default class HoleEntity {
   }
 
   enableHole({ stageId, holePosition }: StageReadyPayload): void {
-    if (stageId === finalStageId) { return }
+    if (stageId === finalStageId) {
+      return
+    }
     this.stageId = stageId
     this.holeBody.setPosition(holePosition)
     this.holeBody.setActive(true)
@@ -48,7 +50,9 @@ export default class HoleEntity {
   }
 
   beginFrame(timestamp: number): void {
-    if (this.completeTimestamp === null || timestamp < this.completeTimestamp) { return }
+    if (this.completeTimestamp === null || timestamp < this.completeTimestamp) {
+      return
+    }
     this.holeComplete()
   }
 

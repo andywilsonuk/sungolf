@@ -1,8 +1,8 @@
-import { Polygon, Vec2, type Body, type Fixture } from 'planck'
-import { createBody, physicsScale } from '../gameEngine/physics'
-import { subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
-import { updateBoxFixtureVertices } from '../shared/planckHelpers'
-import { boundaryCategory } from './constants'
+import { Polygon, Vec2, type Body, type Fixture } from "planck"
+import { createBody, physicsScale } from "../gameEngine/physics"
+import { subscribeResize, type ResizePayload } from "../gameEngine/renderCanvas"
+import { updateBoxFixtureVertices } from "../shared/planckHelpers"
+import { boundaryCategory } from "./constants"
 
 const createBoundaryBox = (body: Body): Fixture =>
   body.createFixture(new Polygon([Vec2.zero(), Vec2.zero(), Vec2.zero(), Vec2.zero()]), {
@@ -18,7 +18,7 @@ export default class BoundaryEntity {
   bottomBoundary!: Fixture
 
   init(): void {
-    this.boundaryBody = createBody({ })
+    this.boundaryBody = createBody({})
     this.leftBoundary = createBoundaryBox(this.boundaryBody)
     this.rightBoundary = createBoundaryBox(this.boundaryBody)
     this.topBoundary = createBoundaryBox(this.boundaryBody)

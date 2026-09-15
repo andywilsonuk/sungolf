@@ -1,5 +1,5 @@
-import { flatName } from './names'
-import type { TerrainFeature } from './types'
+import { flatName } from "./names"
+import type { TerrainFeature } from "./types"
 
 const flat: TerrainFeature = {
   get name() {

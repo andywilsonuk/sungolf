@@ -1,0 +1,55 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "off"
+			}
+		}
+	},
+	"formatter": {
+		"lineWidth": 300,
+		"lineEnding": "lf"
+	},
+	"javascript": {
+		"formatter": {
+			"semicolons": "asNeeded",
+			"indentStyle": "space",
+			"bracketSameLine": true
+		}
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	},
+	"linter": {
+		"rules": {
+			"performance": {
+				"noBarrelFile": "error",
+				"noAwaitInLoops": "error",
+				"noNamespaceImport": "error",
+				"noReExportAll": "error"
+			},
+			"a11y": {
+				"useAriaPropsSupportedByRole": "error",
+				"useSemanticElements": "off",
+				"useAriaPropsForRole": "error",
+				"noSvgWithoutTitle": "off",
+				"noNoninteractiveElementToInteractiveRole": "off",
+				"noStaticElementInteractions": "off"
+			},
+			"suspicious": {
+				"useAwait": "error",
+				"noConstantBinaryExpressions": "error",
+				"noAlert": "error",
+				"noVar": "error",
+				"useErrorMessage": "error"
+			}
+		}
+	},
+	"files": {
+		"includes": ["src/**", "!!**/*.css"],
+		"ignoreUnknown": true
+	}
+}

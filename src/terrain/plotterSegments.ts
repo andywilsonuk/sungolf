@@ -1,7 +1,7 @@
-import { randomInt, type RandomGenerator } from '../shared/random'
-import { segmentDistanceMax, segmentDistanceMin } from './constants'
-import type { Plotter } from './plotter'
-import type { TerrainFeature } from './features/types'
+import { randomInt, type RandomGenerator } from "../shared/random"
+import { segmentDistanceMax, segmentDistanceMin } from "./constants"
+import type { Plotter } from "./plotter"
+import type { TerrainFeature } from "./features/types"
 
 interface SegmentMarker {
   segment: TerrainFeature

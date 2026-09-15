@@ -1,4 +1,4 @@
-import { clearArray } from '../shared/utils'
+import { clearArray } from "../shared/utils"
 
 type SignalCallback = (payload?: unknown) => void
 type UnsubscribeFunction = () => void
@@ -28,19 +28,27 @@ export const subscribe = (signal: string, callback: SignalCallback): Unsubscribe
     signals.set(signal, subscribers)
   }
   subscribers.push(callback)
-  return () => { unsubscribe(signal, callback) }
+  return () => {
+    unsubscribe(signal, callback)
+  }
 }
 
 export const dispatchSignal = (signal: string, payload?: unknown): void => {
-  if (dispatchQueueLength >= dispatchQueue.length) { throw new Error('Maxed queue: signalling') }
+  if (dispatchQueueLength >= dispatchQueue.length) {
+    throw new Error("Maxed queue: signalling")
+  }
   dispatchQueue[dispatchQueueLength][0] = signal
   dispatchQueue[dispatchQueueLength][1] = payload
   dispatchQueueLength += 1
 }
 
 const unsubscribePending = (): void => {
-  if (unsubscribeQueueLength === 0) { return }
-  if (unsubscribeQueueLength >= unsubscribeQueue.length) { throw new Error('Maxed queue: signalling') }
+  if (unsubscribeQueueLength === 0) {
+    return
+  }
+  if (unsubscribeQueueLength >= unsubscribeQueue.length) {
+    throw new Error("Maxed queue: signalling")
+  }
 
   for (let i = 0; i < unsubscribeQueueLength; i++) {
     const [signal, callback] = unsubscribeQueue[i]
@@ -48,7 +56,9 @@ const unsubscribePending = (): void => {
     const subscribers = signals.get(signal)
     if (!subscribers) continue
     const index = subscribers.indexOf(callback)
-    if (index === -1) { return }
+    if (index === -1) {
+      return
+    }
     subscribers.splice(index, 1)
   }
 }
@@ -56,7 +66,9 @@ const unsubscribePending = (): void => {
 const dispatchPending = (): void => {
   const currentQueue = dispatchQueue
   const currentQueueLength = dispatchQueueLength
-  if (currentQueueLength === 0) { return }
+  if (currentQueueLength === 0) {
+    return
+  }
   dispatchQueue = currentQueue === dispatchQueueA ? dispatchQueueB : dispatchQueueA
   dispatchQueueLength = 0
 
@@ -64,7 +76,9 @@ const dispatchPending = (): void => {
     const [signal, payload] = currentQueue[i]
     if (!signal) continue
     const subscribers = signals.get(signal)
-    if (subscribers === undefined) { continue }
+    if (subscribers === undefined) {
+      continue
+    }
     for (const subscriber of subscribers) {
       subscriber(payload)
     }

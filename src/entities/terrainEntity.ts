@@ -1,25 +1,25 @@
-import { Polygon as PolygonCtor, Vec2 as Vec2Ctor } from 'planck'
-import type Hsl from '../shared/hsl'
-import { finalStageId, stageCompleteSignal, stageReadySignal, stageTransitioningSignal, terrainCategory, terrainTag } from './constants'
-import terrainGen from '../terrain'
-import { createBody, physicsScale } from '../gameEngine/physics'
-import { dispatchSignal, subscribe } from '../gameEngine/signalling'
-import TerrainManager, { TerrainData } from './terrainManager'
-import { holeDepth, holeTotalWidth, teeWidth as teeWidthBase, teeX } from '../terrain/constants'
-import { enqueueAudio } from '../gameEngine/audioManager'
-import { audioIds } from '../audio'
-import { delay } from '../gameEngine/delay'
-import { debugBodyRender, translatePhysics } from './canvasHelpers'
-import terrainParser from '../terrainParser'
-import { EasingAnimation, linear } from '../gameEngine/easingAnimation'
-import { addAnimation } from '../gameEngine/animator'
-import orchestration from '../orchestration'
-import { addEntity } from '../gameEngine/world'
-import SkullEntity from './skullEntity'
-import CloudEntity from './cloudEntity'
-import CactusEntity from './cactusEntity'
-import { cactusName, cloudName, skullName } from '../terrain/features/names'
-import type { SpecialObject } from '@/terrain/features/types'
+import { Polygon as PolygonCtor, Vec2 as Vec2Ctor } from "planck"
+import type Hsl from "../shared/hsl"
+import { finalStageId, stageCompleteSignal, stageReadySignal, stageTransitioningSignal, terrainCategory, terrainTag } from "./constants"
+import terrainGen from "../terrain"
+import { createBody, physicsScale } from "../gameEngine/physics"
+import { dispatchSignal, subscribe } from "../gameEngine/signalling"
+import TerrainManager, { TerrainData } from "./terrainManager"
+import { holeDepth, holeTotalWidth, teeWidth as teeWidthBase, teeX } from "../terrain/constants"
+import { enqueueAudio } from "../gameEngine/audioManager"
+import { audioIds } from "../audio"
+import { delay } from "../gameEngine/delay"
+import { debugBodyRender, translatePhysics } from "./canvasHelpers"
+import terrainParser from "../terrainParser"
+import { EasingAnimation, linear } from "../gameEngine/easingAnimation"
+import { addAnimation } from "../gameEngine/animator"
+import orchestration from "../orchestration"
+import { addEntity } from "../gameEngine/world"
+import SkullEntity from "./skullEntity"
+import CloudEntity from "./cloudEntity"
+import CactusEntity from "./cactusEntity"
+import { cactusName, cloudName, skullName } from "../terrain/features/names"
+import type { SpecialObject } from "@/terrain/features/types"
 
 const bodyOptions = {
   active: false,
@@ -73,7 +73,7 @@ export default class TerrainEntity implements TerrainEntityColor, SetStageTerrai
     const body = createBody(bodyOptions)
 
     if (stageId > finalStageId) {
-      this.terrain.add(new TerrainData('', startY * physicsScale, 0, body, undefined))
+      this.terrain.add(new TerrainData("", startY * physicsScale, 0, body, undefined))
       return
     }
 
@@ -89,7 +89,7 @@ export default class TerrainEntity implements TerrainEntityColor, SetStageTerrai
     })
     body.setUserData(stageId)
 
-    const specialObject = this.specialObjects.get(special?.name ?? '')
+    const specialObject = this.specialObjects.get(special?.name ?? "")
     specialObject?.show(new Vec2Ctor((special?.x ?? 0) * physicsScale, (special?.y ?? 0) * physicsScale))
     this.terrain.add(new TerrainData(path, startY * physicsScale, (distance - 1) * physicsScale, body, specialObject))
   }
@@ -101,14 +101,16 @@ export default class TerrainEntity implements TerrainEntityColor, SetStageTerrai
 
   renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     this.dirty = this.transitionAnim.running
-    if (!this.stageLoaded) { return }
+    if (!this.stageLoaded) {
+      return
+    }
 
     const definitions = this.terrain.definitions
     const transitionAnim = this.transitionAnim
     const offsetX = transitionAnim.running ? transitionAnim.current : this.terrain.offsetX
 
     ctx.save()
-    ctx.fillStyle = this.terrainColor?.asString() ?? ''
+    ctx.fillStyle = this.terrainColor?.asString() ?? ""
 
     translatePhysics(ctx, offsetX, 0)
 
@@ -130,7 +132,9 @@ export default class TerrainEntity implements TerrainEntityColor, SetStageTerrai
 
     ctx.restore()
 
-    if (!this.wireframe) { return }
+    if (!this.wireframe) {
+      return
+    }
     for (const definition of definitions) {
       debugBodyRender(ctx, definition.body, true)
     }

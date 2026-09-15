@@ -1,15 +1,15 @@
-import type { Vec2 } from 'planck'
-import { addAnimation } from '../gameEngine/animator'
-import { EasingAnimation, easeInCubic, easeOutCubic, linear } from '../gameEngine/easingAnimation'
-import { circle, translateHeightPadding, physicsScaleInverse } from './canvasHelpers'
-import { waterColor } from './constants'
-import type { RandomGenerator } from '../shared/random'
-import { randomGenerator, randomRange } from '../shared/random'
-import type Hsl from '../shared/hsl'
+import type { Vec2 } from "planck"
+import { addAnimation } from "../gameEngine/animator"
+import { EasingAnimation, easeInCubic, easeOutCubic, linear } from "../gameEngine/easingAnimation"
+import { circle, translateHeightPadding, physicsScaleInverse } from "./canvasHelpers"
+import { waterColor } from "./constants"
+import type { RandomGenerator } from "../shared/random"
+import { randomGenerator, randomRange } from "../shared/random"
+import type Hsl from "../shared/hsl"
 
 const duration = 0.6 * 1000
 const radius = 1.4
-const rand: RandomGenerator = randomGenerator('particles')
+const rand: RandomGenerator = randomGenerator("particles")
 
 export default class ParticleWater {
   private effectAnimX: EasingAnimation

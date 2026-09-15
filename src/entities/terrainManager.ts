@@ -1,6 +1,6 @@
-import type { SpecialObject } from '@/terrain/features/types'
-import type { Body } from 'planck'
-import { Vec2 as Vec2Ctor } from 'planck'
+import type { SpecialObject } from "@/terrain/features/types"
+import type { Body } from "planck"
+import { Vec2 as Vec2Ctor } from "planck"
 
 export class TerrainData {
   renderPath: Path2D
@@ -33,7 +33,9 @@ export default class TerrainManager {
 
   removeHead(): void {
     const discard = this.definitions.shift()
-    if (discard === undefined) { return }
+    if (discard === undefined) {
+      return
+    }
     const world = discard.body.getWorld()
     world.destroyBody(discard.body)
     discard.specialObject?.hide()

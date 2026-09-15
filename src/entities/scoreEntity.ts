@@ -1,8 +1,8 @@
-import { deferUntilRender } from '../gameEngine/deferredRender'
-import { dispatchSignal, subscribe } from '../gameEngine/signalling'
-import { gamePausedSignal, gameResumedSignal, scoreTag, stageCompleteSignal, stageReadySignal } from './constants'
-import { addClass, removeClass } from './htmlHelpers'
-import type { StageReadyPayload } from '../types/stageReady'
+import { deferUntilRender } from "../gameEngine/deferredRender"
+import { dispatchSignal, subscribe } from "../gameEngine/signalling"
+import { gamePausedSignal, gameResumedSignal, scoreTag, stageCompleteSignal, stageReadySignal } from "./constants"
+import { addClass, removeClass } from "./htmlHelpers"
+import type { StageReadyPayload } from "../types/stageReady"
 
 const strokesUntilSkippable = 20
 
@@ -38,25 +38,25 @@ export default class ScoreEntity implements SetScore {
   }
 
   renderInitial(): void {
-    const scoreElement = document.getElementById('score')
+    const scoreElement = document.getElementById("score")
     if (!scoreElement) {
-      throw new Error('Score element not found')
+      throw new Error("Score element not found")
     }
     this.scoreElement = scoreElement
 
-    const strokeElement = document.getElementById('stroke')
+    const strokeElement = document.getElementById("stroke")
     if (!strokeElement) {
-      throw new Error('Stroke element not found')
+      throw new Error("Stroke element not found")
     }
     this.strokeElement = strokeElement
 
-    const skipElement = document.getElementById('skip')
+    const skipElement = document.getElementById("skip")
     if (!skipElement) {
-      throw new Error('Skip element not found')
+      throw new Error("Skip element not found")
     }
     this.skipElement = skipElement
-    addClass(this.skipElement, 'hide')
-    this.skipElement.addEventListener('click', this.skipStage.bind(this))
+    addClass(this.skipElement, "hide")
+    this.skipElement.addEventListener("click", this.skipStage.bind(this))
   }
 
   setScore(score: number, stroke: number): void {
@@ -84,19 +84,19 @@ export default class ScoreEntity implements SetScore {
     this.strokeElement.innerText = `+${this.stroke}`
 
     if (this.stageId === 0) {
-      addClass(this.scoreElement, 'hide')
+      addClass(this.scoreElement, "hide")
     } else {
-      removeClass(this.scoreElement, 'hide')
+      removeClass(this.scoreElement, "hide")
     }
     if (this.stroke === 0) {
-      addClass(this.strokeElement, 'hide')
-      addClass(this.skipElement, 'hide')
+      addClass(this.strokeElement, "hide")
+      addClass(this.skipElement, "hide")
     } else {
-      removeClass(this.strokeElement, 'hide')
+      removeClass(this.strokeElement, "hide")
       if (this.skipVisible && this.stroke >= strokesUntilSkippable) {
-        removeClass(this.skipElement, 'hide')
+        removeClass(this.skipElement, "hide")
       } else {
-        addClass(this.skipElement, 'hide')
+        addClass(this.skipElement, "hide")
       }
     }
   }

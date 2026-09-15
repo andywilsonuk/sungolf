@@ -33,7 +33,9 @@ export default class SoundFxInstance {
 
   stop(retainOffset = false): void {
     const { source } = this
-    if (source === null) { return }
+    if (source === null) {
+      return
+    }
     source.stop()
     this.offset = retainOffset && this.startTime !== null ? source.context.currentTime - this.startTime : 0
     this.startTime = null
@@ -43,7 +45,7 @@ export default class SoundFxInstance {
 
   modifyPlaybackRate(increase: number): void {
     if (!this.source) {
-      throw new Error('Source not available')
+      throw new Error("Source not available")
     }
     const current = this.source.playbackRate.value
     this.source.playbackRate.value = Math.max(Math.min(current + increase, 2), -2)

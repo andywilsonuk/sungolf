@@ -1,8 +1,8 @@
-import { Settings, Vec2 } from 'planck'
-import { quickDecomp, removeCollinearPoints } from 'poly-decomp'
-import debugLog from '../gameEngine/debugLog'
-import { physicsScale } from '../gameEngine/physics'
-import { absoluteFloorDepth } from '../terrain/constants'
+import { Settings, Vec2 } from "planck"
+import { quickDecomp, removeCollinearPoints } from "poly-decomp"
+import debugLog from "../gameEngine/debugLog"
+import { physicsScale } from "../gameEngine/physics"
+import { absoluteFloorDepth } from "../terrain/constants"
 
 // References:
 // https://github.com/liabru/matter-js/blob/master/src/factory/Bodies.js
@@ -16,21 +16,21 @@ interface PathCommand {
 
 type Point = [number, number]
 
-const svgNS = 'http://www.w3.org/2000/svg'
-const curved = new Set(['C', 'T', 'S', 'Q', 'A'])
+const svgNS = "http://www.w3.org/2000/svg"
+const curved = new Set(["C", "T", "S", "Q", "A"])
 const lineSampleLength = 50
 const curveSampleLength = 19
 const minimumArea = 45
 
 const commandsToPoints = (commands: PathCommand[]): Point[] => {
-  const element = document.createElementNS(svgNS, 'path')
+  const element = document.createElementNS(svgNS, "path")
   const points: Point[] = []
   let previousLength = 0
-  let currentPath = ''
+  let currentPath = ""
 
   commands.forEach(({ command, x, y }) => {
     currentPath += command
-    element.setAttribute('d', currentPath)
+    element.setAttribute("d", currentPath)
     const commandLetter = command[0]
     const isCurved = curved.has(commandLetter)
     const newLength = element.getTotalLength()

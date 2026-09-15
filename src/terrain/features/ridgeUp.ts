@@ -1,6 +1,6 @@
-import { randomInt } from '../../shared/random'
-import { ridgeUpName } from './names'
-import type { TerrainFeature } from './types'
+import { randomInt } from "../../shared/random"
+import { ridgeUpName } from "./names"
+import type { TerrainFeature } from "./types"
 
 const ridgeUp: TerrainFeature = {
   get name() {

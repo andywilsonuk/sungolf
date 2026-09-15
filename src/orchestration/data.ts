@@ -1,7 +1,7 @@
-import Hsl from '../shared/hsl'
-import { clamp, oneIn, scaleInt, sinWave } from '../shared/utils'
-import { ceilingDepth, floorDepth, specialFeatureDistanceMax, specialFeatureDistanceMin, sinkholeWidthMin, mesaWidth, sinkholeWidthMax, specialWidth } from '../terrain/constants'
-import { cactusName, cloudName, earlyFeatures, endingName, greenFeatures, greenFeaturesPlus, mesaName, sinkholeName, skullName, standardFeatures, trainingFeatures } from '../terrain/features/names'
+import Hsl from "../shared/hsl"
+import { clamp, oneIn, scaleInt, sinWave } from "../shared/utils"
+import { ceilingDepth, floorDepth, specialFeatureDistanceMax, specialFeatureDistanceMin, sinkholeWidthMin, mesaWidth, sinkholeWidthMax, specialWidth } from "../terrain/constants"
+import { cactusName, cloudName, earlyFeatures, endingName, greenFeatures, greenFeaturesPlus, mesaName, sinkholeName, skullName, standardFeatures, trainingFeatures } from "../terrain/features/names"
 
 export interface SpecialFeature {
   feature: string
@@ -51,15 +51,15 @@ const defaultValues: Partial<ZoneData> = {
 }
 
 const trainingZone: ZoneData = {
-  name: 'Training',
+  name: "Training",
   duration: 2,
-  depthMinMax: (relativeStageId) => relativeStageId <= 0 ? [floorDepth - 200, floorDepth - 200] : [floorDepth - 205, floorDepth - 205],
-  driftMinMax: (relativeStageId) => relativeStageId <= 0 ? [0, 0] : [20, 20],
+  depthMinMax: (relativeStageId) => (relativeStageId <= 0 ? [floorDepth - 200, floorDepth - 200] : [floorDepth - 205, floorDepth - 205]),
+  driftMinMax: (relativeStageId) => (relativeStageId <= 0 ? [0, 0] : [20, 20]),
   holeMinDistanceBias: 1,
   allowedFeatures: trainingFeatures,
 }
 const initialZone: ZoneData = {
-  name: 'Initial',
+  name: "Initial",
   duration: 98,
   depthMinMax: (relativeStageId: number, randValue: number) => {
     if (relativeStageId > 20 && oneIn(randValue, 10)) {
@@ -70,50 +70,48 @@ const initialZone: ZoneData = {
     const sin = sinWave(relativeStageId, 30, mid, max)
     return [sin - 30, sin]
   },
-  driftMinMax: (relativeStageId: number, randValue?: number) =>
-    relativeStageId > 10 && oneIn(randValue ?? 0, 5)
-      ? [300, 300]
-      : [100, clamp(100, maxDrift, relativeStageId * 4)],
+  driftMinMax: (relativeStageId: number, randValue?: number) => (relativeStageId > 10 && oneIn(randValue ?? 0, 5) ? [300, 300] : [100, clamp(100, maxDrift, relativeStageId * 4)]),
   holeMinDistanceBias: 1,
-  allowedFeatures: (relativeStageId) => relativeStageId <= 5 ? earlyFeatures : standardFeatures,
+  allowedFeatures: (relativeStageId) => (relativeStageId <= 5 ? earlyFeatures : standardFeatures),
 }
 const cactusZone: ZoneData = {
-  name: 'Cactus',
+  name: "Cactus",
   duration: 5,
   depthMinMax: [floorDepth - 50, floorDepth - 50],
   driftMinMax: [0, 0],
   holeMinDistanceBias: 0,
-  specialFeature: (relativeStageId, _randValue, _zone) => relativeStageId === 0 || relativeStageId === 4
-    ? {
-        feature: cactusName,
-        distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-        widthMinMax: [specialWidth, specialWidth],
-      }
-    : undefined,
+  specialFeature: (relativeStageId, _randValue, _zone) =>
+    relativeStageId === 0 || relativeStageId === 4
+      ? {
+          feature: cactusName,
+          distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
+          widthMinMax: [specialWidth, specialWidth],
+        }
+      : undefined,
 }
 const yellow1aZone: ZoneData = {
-  name: 'Yellow1a',
+  name: "Yellow1a",
   duration: 91,
   depthMinMax: [ceilingDepth + 100, floorDepth - 100],
   driftMinMax: [150, 350],
   holeMinDistanceBias: 0.5,
 }
 const flatZone: ZoneData = {
-  name: 'Flat',
+  name: "Flat",
   duration: 2,
   depthMinMax: [300, 300],
   driftMinMax: [0, 0],
   allowedFeatures: trainingFeatures,
 }
 const yellow1bZone: ZoneData = {
-  name: 'Yellow1b',
+  name: "Yellow1b",
   duration: 69,
   depthMinMax: [ceilingDepth + 100, floorDepth - 100],
   driftMinMax: [150, 350],
   holeMinDistanceBias: 0.5,
 }
 const initialSinkholeZone: ZoneData = {
-  name: 'Sinkhole',
+  name: "Sinkhole",
   duration: 1,
   depthMinMax: [floorDepth - 50, floorDepth - 50],
   driftMinMax: [100, 100],
@@ -125,21 +123,22 @@ const initialSinkholeZone: ZoneData = {
   },
 }
 const yellow1cZone: ZoneData = {
-  name: 'Yellow1c',
+  name: "Yellow1c",
   duration: 113,
   depthMinMax: [ceilingDepth + 100, floorDepth],
   driftMinMax: [150, 400],
-  specialFeature: (_: number, randValue?: number) => oneIn(randValue ?? 0, 30)
-    ? {
-        feature: sinkholeName,
-        distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-        widthMinMax: [sinkholeWidthMin, sinkholeWidthMin],
-      }
-    : undefined,
+  specialFeature: (_: number, randValue?: number) =>
+    oneIn(randValue ?? 0, 30)
+      ? {
+          feature: sinkholeName,
+          distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
+          widthMinMax: [sinkholeWidthMin, sinkholeWidthMin],
+        }
+      : undefined,
 }
 const cloudZone: ZoneData = {
   ...yellow1bZone,
-  name: 'Cloud',
+  name: "Cloud",
   duration: 1,
   specialFeature: {
     feature: cloudName,
@@ -149,11 +148,11 @@ const cloudZone: ZoneData = {
 }
 const yellow1dZone: ZoneData = {
   ...yellow1cZone,
-  name: 'Yellow1c',
+  name: "Yellow1c",
   duration: 93,
 }
 const redAZone: ZoneData = {
-  name: 'RedA',
+  name: "RedA",
   duration: 121,
   color: new Hsl(6, 33, 48),
   backgroundColor: redBackgroundColor,
@@ -164,7 +163,7 @@ const redAZone: ZoneData = {
 }
 const skullZone: ZoneData = {
   ...redAZone,
-  name: 'Skull',
+  name: "Skull",
   duration: 1,
   specialFeature: {
     feature: skullName,
@@ -174,11 +173,11 @@ const skullZone: ZoneData = {
 }
 const redBZone: ZoneData = {
   ...redAZone,
-  name: 'RedB',
+  name: "RedB",
   duration: 1,
 }
 const greenZone: ZoneData = {
-  name: 'Green',
+  name: "Green",
   duration: 20,
   color: new Hsl(91, 53, 32),
   backgroundColor: greenBackgroundColor,
@@ -186,9 +185,11 @@ const greenZone: ZoneData = {
   depthMinMax: [floorDepth - 100, floorDepth],
   holeMinDistanceBias: 0.7,
   driftMinMax: [0, 80],
-  allowedFeatures: (_: number, randValue?: number) => oneIn(randValue ?? 0, 6) ? greenFeaturesPlus : greenFeatures,
+  allowedFeatures: (_: number, randValue?: number) => (oneIn(randValue ?? 0, 6) ? greenFeaturesPlus : greenFeatures),
   specialFeature: (_: number, randValue?: number, zone?: ZoneData) => {
-    if (!oneIn(randValue ?? 0, 8) || (zone?.depthMinMax?.[1] ?? 0) < floorDepth - 10) { return }
+    if (!oneIn(randValue ?? 0, 8) || (zone?.depthMinMax?.[1] ?? 0) < floorDepth - 10) {
+      return
+    }
     return {
       feature: sinkholeName,
       distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
@@ -198,25 +199,26 @@ const greenZone: ZoneData = {
   water: true,
 }
 const wetZone: ZoneData = {
-  name: 'Wet',
+  name: "Wet",
   duration: 20,
   color: new Hsl(37, 33, 41),
   backgroundColor: grayBackgroundColor,
   backgroundColorStop: grayBackgroundColorStop,
   depthMinMax: [floorDepth - 150, floorDepth],
-  driftMinMax: (_: number, randValue?: number) => oneIn(randValue ?? 0, 5) ? [50, 100] : [0, 0],
-  specialFeature: (_: number, randValue?: number) => oneIn(randValue ?? 0, 5)
-    ? {
-        feature: sinkholeName,
-        distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
-        widthMinMax: [sinkholeWidthMin, sinkholeWidthMax],
-      }
-    : undefined,
+  driftMinMax: (_: number, randValue?: number) => (oneIn(randValue ?? 0, 5) ? [50, 100] : [0, 0]),
+  specialFeature: (_: number, randValue?: number) =>
+    oneIn(randValue ?? 0, 5)
+      ? {
+          feature: sinkholeName,
+          distanceMinMax: [specialFeatureDistanceMin, specialFeatureDistanceMax],
+          widthMinMax: [sinkholeWidthMin, sinkholeWidthMax],
+        }
+      : undefined,
   holeMinDistanceBias: 0.6,
   water: true,
 }
 const yellow2Zone: ZoneData = {
-  name: 'Yellow2',
+  name: "Yellow2",
   duration: 60,
   color: defaultColor,
   depthMinMax: [ceilingDepth, floorDepth],
@@ -242,7 +244,7 @@ const yellow2Zone: ZoneData = {
 }
 const endAZone: ZoneData = {
   ...yellow2Zone,
-  name: 'endA',
+  name: "endA",
   duration: 2,
   depthMinMax: [floorDepth - 10, floorDepth - 10],
   driftMinMax: [200, 200],
@@ -254,7 +256,7 @@ const endAZone: ZoneData = {
 }
 const endBZone: ZoneData = {
   ...endAZone,
-  name: 'endB',
+  name: "endB",
   driftMinMax: [0, 0],
   specialFeature: {
     feature: endingName,
@@ -263,7 +265,7 @@ const endBZone: ZoneData = {
   },
 }
 
-const transitionZoneName = 'transition'
+const transitionZoneName = "transition"
 const transitionZone = (duration: number): ZoneData => ({ name: transitionZoneName, duration, specialFeature: undefined })
 
 const zones: ZoneData[] = [

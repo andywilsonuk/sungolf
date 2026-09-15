@@ -1,4 +1,4 @@
-import type { TerrainFeature } from './features/types'
+import type { TerrainFeature } from "./features/types"
 
 export class PlotterPoint {
   absolute: [number, number]
@@ -15,17 +15,29 @@ export class PlotterPoint {
     this.segment = null
   }
 
-  get x(): number { return this.absolute[0] }
+  get x(): number {
+    return this.absolute[0]
+  }
 
-  get y(): number { return this.absolute[1] }
+  get y(): number {
+    return this.absolute[1]
+  }
 
-  get relativeX(): number { return this.relative[0] }
+  get relativeX(): number {
+    return this.relative[0]
+  }
 
-  get relativeY(): number { return this.relative[1] }
+  get relativeY(): number {
+    return this.relative[1]
+  }
 
-  get isFirst(): boolean { return this.previous === null }
+  get isFirst(): boolean {
+    return this.previous === null
+  }
 
-  get startY(): number { return this.y + this.relativeY * -1 }
+  get startY(): number {
+    return this.y + this.relativeY * -1
+  }
 
   recalcRelative(): void {
     const x = this.x - (this.previous?.x ?? 0)

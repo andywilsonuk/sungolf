@@ -41,12 +41,24 @@ export const addService = (service: GameService): void => {
 }
 
 const init = (): void => {
-  serviceList.filter((s) => s.init).forEach((s) => { s.init?.() })
-  serviceList.filter((s) => s.renderInitial).forEach((s) => { s.renderInitial?.() })
+  serviceList
+    .filter((s) => s.init)
+    .forEach((s) => {
+      s.init?.()
+    })
+  serviceList
+    .filter((s) => s.renderInitial)
+    .forEach((s) => {
+      s.renderInitial?.()
+    })
 }
 
 const clear = (): void => {
-  serviceList.filter((s) => s.clear).forEach((s) => { s.clear?.() })
+  serviceList
+    .filter((s) => s.clear)
+    .forEach((s) => {
+      s.clear?.()
+    })
 }
 
 const beginFrame = (timestamp: number): void => {

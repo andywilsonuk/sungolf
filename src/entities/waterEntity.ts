@@ -1,14 +1,14 @@
-import type { Body, Fixture } from 'planck'
-import { Polygon, Vec2 } from 'planck'
-import { createBody, physicsScale } from '../gameEngine/physics'
-import { subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
-import { subscribe } from '../gameEngine/signalling'
-import orchestration from '../orchestration'
-import { updateBoxFixtureVertices } from '../shared/planckHelpers'
-import { absoluteFloorDepth } from '../terrain/constants'
-import { scalePhysics, translateHeightPadding } from './canvasHelpers'
-import { stageReadySignal, waterCategory, waterColor } from './constants'
-import type { StageReadyPayload } from '../types/stageReady'
+import type { Body, Fixture } from "planck"
+import { Polygon, Vec2 } from "planck"
+import { createBody, physicsScale } from "../gameEngine/physics"
+import { subscribeResize, type ResizePayload } from "../gameEngine/renderCanvas"
+import { subscribe } from "../gameEngine/signalling"
+import orchestration from "../orchestration"
+import { updateBoxFixtureVertices } from "../shared/planckHelpers"
+import { absoluteFloorDepth } from "../terrain/constants"
+import { scalePhysics, translateHeightPadding } from "./canvasHelpers"
+import { stageReadySignal, waterCategory, waterColor } from "./constants"
+import type { StageReadyPayload } from "../types/stageReady"
 
 const colorString = waterColor.asString()
 const visibleOffset = 12 * physicsScale
@@ -60,7 +60,9 @@ export default class WaterEntity {
 
   renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     this.dirty = false
-    if (!this.visible || this.width === null || this.y === null) { return }
+    if (!this.visible || this.width === null || this.y === null) {
+      return
+    }
 
     ctx.save()
     translateHeightPadding(ctx)

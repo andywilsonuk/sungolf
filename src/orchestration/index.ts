@@ -1,6 +1,6 @@
-import type Hsl from '../shared/hsl'
-import calculator from './calculator'
-import data from './data'
+import type Hsl from "../shared/hsl"
+import calculator from "./calculator"
+import data from "./data"
 
 interface CachedResult {
   stageId: number
@@ -27,7 +27,9 @@ const cache: CachedResult[] = []
 
 const getFromCache = (id: number): CachedResult | undefined => {
   for (const result of cache) {
-    if (result.stageId === id) { return result }
+    if (result.stageId === id) {
+      return result
+    }
   }
   return undefined
 }
@@ -41,16 +43,20 @@ const setCache = (d: CachedResult): void => {
 
 export default (stageId: number): CachedResult => {
   const cached = getFromCache(stageId)
-  if (cached !== undefined) { return cached }
+  if (cached !== undefined) {
+    return cached
+  }
   const result = calculator(stageId)
   setCache(result)
   return result
 }
 
 export const zoneColors = (): (Hsl | undefined)[] => data.map(({ color }) => color)
-export const zoneRanges = (): { start: number | undefined, end: number | undefined }[] => data.map(({ start, end }) => ({ start, end }))
+export const zoneRanges = (): { start: number | undefined; end: number | undefined }[] => data.map(({ start, end }) => ({ start, end }))
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 if (debug) {
-  data.forEach((zone) => { console.log(`${zone.name}@${zone.start} for ${zone.duration}`) })
+  data.forEach((zone) => {
+    console.log(`${zone.name}@${zone.start} for ${zone.duration}`)
+  })
 }

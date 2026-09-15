@@ -1,15 +1,15 @@
-﻿import type { Vec2 } from 'planck'
-import { Vec2 as Vec2Ctor } from 'planck'
-import { EasingAnimation, linear } from '../gameEngine/easingAnimation'
-import { addAnimation } from '../gameEngine/animator'
-import { physicsScale, rayCast } from '../gameEngine/physics'
-import { subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
-import { subscribe } from '../gameEngine/signalling'
-import Hsl from '../shared/hsl'
-import { holeDepth, holeWidth } from '../terrain/constants'
-import { flipHorizontal, translatePhysics } from './canvasHelpers'
-import { finalStageId, stageCompleteSignal, stageReadySignal } from './constants'
-import type { StageReadyPayload } from '../types/stageReady'
+﻿import type { Vec2 } from "planck"
+import { Vec2 as Vec2Ctor } from "planck"
+import { EasingAnimation, linear } from "../gameEngine/easingAnimation"
+import { addAnimation } from "../gameEngine/animator"
+import { physicsScale, rayCast } from "../gameEngine/physics"
+import { subscribeResize, type ResizePayload } from "../gameEngine/renderCanvas"
+import { subscribe } from "../gameEngine/signalling"
+import Hsl from "../shared/hsl"
+import { holeDepth, holeWidth } from "../terrain/constants"
+import { flipHorizontal, translatePhysics } from "./canvasHelpers"
+import { finalStageId, stageCompleteSignal, stageReadySignal } from "./constants"
+import type { StageReadyPayload } from "../types/stageReady"
 
 const flagColor = new Hsl(55, 100, 50).asString()
 const poleColor = new Hsl(0, 0, 4).asString()
@@ -53,7 +53,9 @@ export default class FlagEntity {
   }
 
   show({ stageId, holePosition }: StageReadyPayload): void {
-    if (stageId === finalStageId) { return }
+    if (stageId === finalStageId) {
+      return
+    }
     const x = holePosition.x + holeWidth * -0.5 * physicsScale
     const y = holePosition.y
     this.visible = true
@@ -100,7 +102,9 @@ export default class FlagEntity {
 
   renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     this.dirty = this.flagRaiseAnimY.running
-    if (!this.visible || !this.position) { return }
+    if (!this.visible || !this.position) {
+      return
+    }
     ctx.save()
     translatePhysics(ctx, this.position.x, this.position.y + (this.flagRaiseAnimY.final ?? 0))
 
@@ -109,15 +113,17 @@ export default class FlagEntity {
     ctx.fillStyle = poleColor
     ctx.fillRect(-poleWidth, -1, poleWidth, poleHeight)
 
-    const flagText = this.stageId === 0 ? ' ' : String(this.stageId)
+    const flagText = this.stageId === 0 ? " " : String(this.stageId)
     const poleEdge = leftDirection ? -poleWidth * physicsScale : 0
     translatePhysics(ctx, poleEdge, this.flagRaiseAnimY.current - (this.flagRaiseAnimY.final ?? 0))
 
     ctx.font = `${height}px Main`
-    ctx.textBaseline = 'middle'
+    ctx.textBaseline = "middle"
     const width = ctx.measureText(flagText).width + flagPointOffset
 
-    if (leftDirection) { flipHorizontal(ctx) }
+    if (leftDirection) {
+      flipHorizontal(ctx)
+    }
     ctx.beginPath()
     ctx.moveTo(0, 0)
     ctx.lineTo(width, 0)
@@ -128,7 +134,9 @@ export default class FlagEntity {
     ctx.fillStyle = flagColor
     ctx.fill()
 
-    if (leftDirection) { flipHorizontal(ctx) }
+    if (leftDirection) {
+      flipHorizontal(ctx)
+    }
     const textX = leftDirection ? width * -1 - 1 : 1
     ctx.fillStyle = poleColor
     ctx.fillText(flagText, textX, height * 0.5)

@@ -1,9 +1,9 @@
-import { subscribe } from '../gameEngine/signalling'
-import Hsl from '../shared/hsl'
-import { lerp, normalize } from '../shared/utils'
-import { circle } from './canvasHelpers'
-import { finalStageId, stageReadySignal } from './constants'
-import type { StageReadyPayload } from '../types/stageReady'
+import { subscribe } from "../gameEngine/signalling"
+import Hsl from "../shared/hsl"
+import { lerp, normalize } from "../shared/utils"
+import { circle } from "./canvasHelpers"
+import { finalStageId, stageReadySignal } from "./constants"
+import type { StageReadyPayload } from "../types/stageReady"
 
 const debug = false
 const degreesToRadians = (degrees: number): number => degrees * (Math.PI / 180)

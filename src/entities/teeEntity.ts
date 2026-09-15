@@ -1,11 +1,11 @@
-import { Box as BoxCtor, Vec2 as Vec2Ctor, type Body, type Vec2 } from 'planck'
-import { createBody, physicsScale } from '../gameEngine/physics'
-import { subscribe } from '../gameEngine/signalling'
-import Hsl from '../shared/hsl'
-import { holeDepth, holeTotalWidth } from '../terrain/constants'
-import { translatePhysics } from './canvasHelpers'
-import { stageCompleteSignal, stageReadySignal, stageTransitioningSignal, terrainCategory } from './constants'
-import type { StageReadyPayload } from '../types/stageReady'
+import { Box as BoxCtor, Vec2 as Vec2Ctor, type Body, type Vec2 } from "planck"
+import { createBody, physicsScale } from "../gameEngine/physics"
+import { subscribe } from "../gameEngine/signalling"
+import Hsl from "../shared/hsl"
+import { holeDepth, holeTotalWidth } from "../terrain/constants"
+import { translatePhysics } from "./canvasHelpers"
+import { stageCompleteSignal, stageReadySignal, stageTransitioningSignal, terrainCategory } from "./constants"
+import type { StageReadyPayload } from "../types/stageReady"
 
 const colorString = new Hsl(0, 0, 67).asString()
 const teeWidth = holeTotalWidth * 0.5 * physicsScale
@@ -42,7 +42,9 @@ export default class TeeEntity {
 
   renderOnCanvas(ctx: CanvasRenderingContext2D): void {
     this.dirty = false
-    if (!this.visible) { return }
+    if (!this.visible) {
+      return
+    }
 
     const { x, y } = this.teeBody.getPosition()
     ctx.save()

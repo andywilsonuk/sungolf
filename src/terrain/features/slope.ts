@@ -1,5 +1,5 @@
-import { slopeName, spurRightName } from './names'
-import type { TerrainFeature } from './types'
+import { slopeName, spurRightName } from "./names"
+import type { TerrainFeature } from "./types"
 
 const side = 0.5
 
@@ -8,8 +8,12 @@ const slope: TerrainFeature = {
     return slopeName
   },
   allowed({ relativeX, relativeY, previous }) {
-    if (relativeY === 0) { return false }
-    if (previous?.segment?.name === spurRightName && relativeX < 75 && relativeY < -20) { return false }
+    if (relativeY === 0) {
+      return false
+    }
+    if (previous?.segment?.name === spurRightName && relativeX < 75 && relativeY < -20) {
+      return false
+    }
     return true
   },
   apply(layout, { relativeX, relativeY }, _rand) {

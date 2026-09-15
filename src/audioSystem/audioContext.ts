@@ -28,7 +28,7 @@ let muted = false
 
 const createGainNode = (gain: number): GainNode => {
   if (!context) {
-    throw new Error('Audio context not initialized')
+    throw new Error("Audio context not initialized")
   }
   const GainNodeConstructor = getGainNode()
   return new GainNodeConstructor(context, {
@@ -42,7 +42,7 @@ export const ensureContext = (): AudioContext => {
     context = new AudioContextConstructor()
     masterGain = createGainNode(muted ? 0 : 1)
   }
-  if (context.state === 'suspended') {
+  if (context.state === "suspended") {
     context.resume().catch(() => {
       return null
     })
@@ -58,7 +58,7 @@ export const createGain = (gain: number): GainNode => {
 export const createFromAudio = (audio: HTMLAudioElement, node: GainNode): MediaElementAudioSourceNode => {
   ensureContext()
   if (!context || !masterGain) {
-    throw new Error('Audio context not initialized')
+    throw new Error("Audio context not initialized")
   }
   const source = context.createMediaElementSource(audio)
   source.connect(node).connect(masterGain).connect(context.destination)
@@ -68,7 +68,7 @@ export const createFromAudio = (audio: HTMLAudioElement, node: GainNode): MediaE
 export const createFromBuffer = (buffer: AudioBuffer, gain: GainNode): AudioBufferSourceNode => {
   ensureContext()
   if (!context || !masterGain) {
-    throw new Error('Audio context not initialized')
+    throw new Error("Audio context not initialized")
   }
   const AudioBufferSourceNodeConstructor = getAudioBufferSourceNode()
   const source = new AudioBufferSourceNodeConstructor(context, {
@@ -79,14 +79,18 @@ export const createFromBuffer = (buffer: AudioBuffer, gain: GainNode): AudioBuff
 }
 
 export const pause = (): void => {
-  if (context === undefined) { return }
+  if (context === undefined) {
+    return
+  }
   context.suspend().catch(() => {
     return null
   })
 }
 
 export const resume = (): void => {
-  if (context === undefined) { return }
+  if (context === undefined) {
+    return
+  }
   context.resume().catch(() => {
     return null
   })
@@ -94,13 +98,15 @@ export const resume = (): void => {
 
 export const setMasterVolume = (volume: number): void => {
   muted = volume === 0
-  if (masterGain === undefined) { return }
+  if (masterGain === undefined) {
+    return
+  }
   masterGain.gain.value = volume
 }
 
 export const now = (): number => {
   if (!context) {
-    throw new Error('Audio context not initialized')
+    throw new Error("Audio context not initialized")
   }
   return context.currentTime
 }

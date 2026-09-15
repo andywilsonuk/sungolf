@@ -1,11 +1,15 @@
-import type { Contact, Body, Fixture, Box } from 'planck'
+import type { Contact, Body, Fixture, Box } from "planck"
 
 export const contactOtherFixture = (contact: Contact, knownBody: Body): Fixture | undefined => {
   const fixtureA = contact.getFixtureA()
   const fixtureB = contact.getFixtureB()
 
-  if (fixtureA.getBody() === knownBody) { return fixtureB }
-  if (fixtureB.getBody() === knownBody) { return fixtureA }
+  if (fixtureA.getBody() === knownBody) {
+    return fixtureB
+  }
+  if (fixtureB.getBody() === knownBody) {
+    return fixtureA
+  }
   return undefined
 }
 

@@ -1,5 +1,5 @@
 // Type definitions for alea library
-declare module 'alea' {
+declare module "alea" {
   interface AleaGenerator {
     next(): number
     (): number

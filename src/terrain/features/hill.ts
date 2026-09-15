@@ -1,8 +1,8 @@
-import { randomInt } from '../../shared/random'
-import { clamp } from '../../shared/utils'
-import { ceilingDepth } from '../constants'
-import { hillName, spurRightName } from './names'
-import type { TerrainFeature } from './types'
+import { randomInt } from "../../shared/random"
+import { clamp } from "../../shared/utils"
+import { ceilingDepth } from "../constants"
+import { hillName, spurRightName } from "./names"
+import type { TerrainFeature } from "./types"
 
 const side = 1
 
@@ -11,8 +11,12 @@ const hill: TerrainFeature = {
     return hillName
   },
   allowed({ previous, y, relativeY }) {
-    if (previous?.segment?.name === spurRightName) { return false }
-    if (previous?.segment?.name === hillName) { return false }
+    if (previous?.segment?.name === spurRightName) {
+      return false
+    }
+    if (previous?.segment?.name === hillName) {
+      return false
+    }
     return relativeY > -10 && relativeY < 10 && y - 50 > ceilingDepth
   },
   apply(layout, { relativeX, relativeY, startY }, rand) {

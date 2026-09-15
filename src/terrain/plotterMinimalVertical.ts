@@ -1,12 +1,12 @@
-import debugLog from '../gameEngine/debugLog'
-import { randomInt, randomShuffle, type RandomGenerator } from '../shared/random'
-import { sequence } from '../shared/utils'
-import type { Plotter } from './plotter'
+import debugLog from "../gameEngine/debugLog"
+import { randomInt, randomShuffle, type RandomGenerator } from "../shared/random"
+import { sequence } from "../shared/utils"
+import type { Plotter } from "./plotter"
 
 export default (plotter: Plotter, targetY: number, rand: RandomGenerator): void => {
   const firstPoint = plotter.first
   if (!firstPoint) {
-    throw new Error('Plotter has no first point')
+    throw new Error("Plotter has no first point")
   }
   const delta = targetY - firstPoint.y
 
@@ -20,20 +20,26 @@ export default (plotter: Plotter, targetY: number, rand: RandomGenerator): void 
 
     for (const index of indexes) {
       const point = plotter.getByIndex(index)
-      if (point.segment?.isSpecial) { continue }
+      if (point.segment?.isSpecial) {
+        continue
+      }
 
       const pointRemainingY = plotter.availableYDistance(point, sign === 1)
-      if (pointRemainingY === 0) { continue }
+      if (pointRemainingY === 0) {
+        continue
+      }
 
       const value = randomInt(rand, 1, Math.min(remaining, pointRemainingY)) * sign
       point.shiftByDelta(0, value)
 
       remaining -= Math.abs(value)
-      if (remaining === 0) { break }
+      if (remaining === 0) {
+        break
+      }
     }
 
     if (remaining === loopRemaining) {
-      debugLog('Minimal vertical maxed')
+      debugLog("Minimal vertical maxed")
       return
     }
   }

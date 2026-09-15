@@ -1,5 +1,5 @@
-import { cloudName } from './names'
-import type { TerrainFeature } from './types'
+import { cloudName } from "./names"
+import type { TerrainFeature } from "./types"
 
 const cloud: TerrainFeature = {
   get name() {
@@ -9,7 +9,7 @@ const cloud: TerrainFeature = {
     return true
   },
   allowed() {
-    throw new Error('Not implemented')
+    throw new Error("Not implemented")
   },
   apply(layout, { relativeX, relativeY }) {
     layout.line(relativeX, relativeY)

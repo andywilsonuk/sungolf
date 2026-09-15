@@ -1,4 +1,4 @@
-import type { Vec2 } from 'planck'
+import type { Vec2 } from "planck"
 
 export interface StageReadyPayload {
   stageId: number

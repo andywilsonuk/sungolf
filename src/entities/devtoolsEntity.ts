@@ -1,10 +1,10 @@
-import { entries } from '../gameEngine/debugLog'
-import { dispatchSignal } from '../gameEngine/signalling'
-import { getOneEntityByTag } from '../gameEngine/world'
-import { zoneRanges } from '../orchestration'
-import { randomGenerator, randomInt } from '../shared/random'
-import { finalStageId, stageCompleteSignal, stateTag, terrainTag } from './constants'
-import { addClass, basicElement } from './htmlHelpers'
+import { entries } from "../gameEngine/debugLog"
+import { dispatchSignal } from "../gameEngine/signalling"
+import { getOneEntityByTag } from "../gameEngine/world"
+import { zoneRanges } from "../orchestration"
+import { randomGenerator, randomInt } from "../shared/random"
+import { finalStageId, stageCompleteSignal, stateTag, terrainTag } from "./constants"
+import { addClass, basicElement } from "./htmlHelpers"
 
 interface RandomGenerator {
   next(): number
@@ -21,18 +21,20 @@ interface StateEntity {
   forceStroke: (value: number) => void
 }
 
-const enabled = window.location.hash === '#devtools'
+const enabled = window.location.hash === "#devtools"
 
 const button = (text: string, action: () => void, id?: string): HTMLButtonElement => {
-  const button = basicElement('button', id ? { id } : {}) as HTMLButtonElement
+  const button = basicElement("button", id ? { id } : {}) as HTMLButtonElement
   button.innerText = text
-  button.addEventListener('click', action)
+  button.addEventListener("click", action)
   return button
 }
 
-const input = (action: (value: number) => void, id = ''): HTMLInputElement => {
-  const input = basicElement('input', { type: 'text', id }) as HTMLInputElement
-  input.addEventListener('change', (event) => { action(Number((event.target as HTMLInputElement).value)) })
+const input = (action: (value: number) => void, id = ""): HTMLInputElement => {
+  const input = basicElement("input", { type: "text", id }) as HTMLInputElement
+  input.addEventListener("change", (event) => {
+    action(Number((event.target as HTMLInputElement).value))
+  })
   return input
 }
 
@@ -44,8 +46,10 @@ export default class DevtoolsEntity {
   private devlogElement!: HTMLElement
 
   init(): void {
-    if (!enabled) { return }
-    document.addEventListener('keydown', this.keyPress.bind(this))
+    if (!enabled) {
+      return
+    }
+    document.addEventListener("keydown", this.keyPress.bind(this))
     this.terrainEntity = getOneEntityByTag(terrainTag) as TerrainEntity
     this.stateEntity = getOneEntityByTag(stateTag) as StateEntity
     this.rand = randomGenerator(Math.random())
@@ -53,43 +57,56 @@ export default class DevtoolsEntity {
   }
 
   beginFrame(): void {
-    if (this.keyCode === null) { return }
+    if (this.keyCode === null) {
+      return
+    }
     switch (this.keyCode) {
-      case 'ArrowLeft': this.movePrevious(); break
-      case 'ArrowRight': this.moveNext(); break
-      case 'KeyR': this.moveRandom(); break
-      default: return
+      case "ArrowLeft":
+        this.movePrevious()
+        break
+      case "ArrowRight":
+        this.moveNext()
+        break
+      case "KeyR":
+        this.moveRandom()
+        break
+      default:
+        return
     }
     this.keyCode = null
   }
 
   renderInitial(): void {
-    const devToolsElement = document.getElementById('devtools')
+    const devToolsElement = document.getElementById("devtools")
     if (!enabled) {
       devToolsElement?.parentElement?.removeChild(devToolsElement)
       return
     }
     if (!devToolsElement) return
 
-    devToolsElement.appendChild(button('Previous stage', this.movePrevious.bind(this)))
-    devToolsElement.appendChild(button('Next stage', this.moveNext.bind(this)))
-    devToolsElement.appendChild(button('Advance stage', this.advance.bind(this)))
-    devToolsElement.appendChild(button('Random stage', this.moveRandom.bind(this)))
-    devToolsElement.appendChild(input(this.moveTo.bind(this), 'moveTo'))
-    devToolsElement.appendChild(button('Previous zone', this.previousZone.bind(this)))
-    devToolsElement.appendChild(button('Next zone', this.nextZone.bind(this)))
-    devToolsElement.appendChild(button('Wireframe', this.wireframe.bind(this), 'wireframes'))
-    devToolsElement.appendChild(button('Reset', () => {
-      if (this.stateEntity) this.stateEntity.reset()
-    }))
-    devToolsElement.appendChild(button('Stroke skippable', () => {
-      if (this.stateEntity) this.stateEntity.forceStroke(20)
-    }))
-    devToolsElement.appendChild(button('Devlog', this.toggleDevlog.bind(this)))
+    devToolsElement.appendChild(button("Previous stage", this.movePrevious.bind(this)))
+    devToolsElement.appendChild(button("Next stage", this.moveNext.bind(this)))
+    devToolsElement.appendChild(button("Advance stage", this.advance.bind(this)))
+    devToolsElement.appendChild(button("Random stage", this.moveRandom.bind(this)))
+    devToolsElement.appendChild(input(this.moveTo.bind(this), "moveTo"))
+    devToolsElement.appendChild(button("Previous zone", this.previousZone.bind(this)))
+    devToolsElement.appendChild(button("Next zone", this.nextZone.bind(this)))
+    devToolsElement.appendChild(button("Wireframe", this.wireframe.bind(this), "wireframes"))
+    devToolsElement.appendChild(
+      button("Reset", () => {
+        if (this.stateEntity) this.stateEntity.reset()
+      }),
+    )
+    devToolsElement.appendChild(
+      button("Stroke skippable", () => {
+        if (this.stateEntity) this.stateEntity.forceStroke(20)
+      }),
+    )
+    devToolsElement.appendChild(button("Devlog", this.toggleDevlog.bind(this)))
 
-    this.devlogElement = basicElement('div', { id: 'devlog' })
+    this.devlogElement = basicElement("div", { id: "devlog" })
     devToolsElement.parentNode?.insertBefore(this.devlogElement, devToolsElement)
-    addClass(this.devlogElement, 'dialog', 'hide')
+    addClass(this.devlogElement, "dialog", "hide")
   }
 
   keyPress({ code }: { code: string }): void {
@@ -98,20 +115,28 @@ export default class DevtoolsEntity {
 
   moveNext(): void {
     if (!this.terrainEntity) return
-    if (this.terrainEntity.stageId === finalStageId) { return }
+    if (this.terrainEntity.stageId === finalStageId) {
+      return
+    }
     this.terrainEntity.setStage(this.terrainEntity.stageId + 1)
   }
 
   movePrevious(): void {
     if (!this.terrainEntity) return
-    if (this.terrainEntity.stageId === 0) { return }
+    if (this.terrainEntity.stageId === 0) {
+      return
+    }
     this.terrainEntity.setStage(this.terrainEntity.stageId - 1)
   }
 
   moveTo(id: number): void {
     if (!this.terrainEntity) return
-    if (id < 0) { return }
-    if (id > finalStageId) { return }
+    if (id < 0) {
+      return
+    }
+    if (id > finalStageId) {
+      return
+    }
     this.terrainEntity.setStage(id)
   }
 
@@ -153,11 +178,11 @@ export default class DevtoolsEntity {
   }
 
   toggleDevlog(): void {
-    this.devlogElement.classList.toggle('hide')
-    this.devlogElement.innerHTML = ''
+    this.devlogElement.classList.toggle("hide")
+    this.devlogElement.innerHTML = ""
     const log = [...entries()].reverse()
     log.forEach((l) => {
-      const el = basicElement('div')
+      const el = basicElement("div")
       el.innerText = l
       this.devlogElement.appendChild(el)
     })

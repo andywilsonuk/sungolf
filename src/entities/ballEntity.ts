@@ -1,22 +1,22 @@
-﻿import type { Body, Contact, Vec2 as Vec2Type } from 'planck'
-import { Circle, Vec2 } from 'planck'
-import { audioIds } from '../audio'
-import { EasingAnimation, easeInCubic, linear } from '../gameEngine/easingAnimation'
-import { addAnimation } from '../gameEngine/animator'
-import { enqueueAudio } from '../gameEngine/audioManager'
-import { delay } from '../gameEngine/delay'
-import { createDynamicBody, physicsScale, registerBeginContact } from '../gameEngine/physics'
-import { dispatchSignal, subscribe } from '../gameEngine/signalling'
-import Hsl from '../shared/hsl'
-import { contactOtherFixture } from '../shared/planckHelpers'
-import { clamp } from '../shared/utils'
-import { holeTotalWidth } from '../terrain/constants'
-import { circle, physicsScaleInverse, translateHeightPadding } from './canvasHelpers'
-import { ballCategory, ballStrokeSignal, ballTag, boundaryCategory, finalStageId, stageCompleteSignal, stageReadySignal, stageTransitioningSignal, terrainCategory, waterCategory } from './constants'
-import ParticleSystem from './particleSystem'
-import ParticleTerrain from './particleTerrain'
-import ParticleWater from './particleWater'
-import type { StageReadyPayload } from '../types/stageReady'
+﻿import type { Body, Contact, Vec2 as Vec2Type } from "planck"
+import { Circle, Vec2 } from "planck"
+import { audioIds } from "../audio"
+import { EasingAnimation, easeInCubic, linear } from "../gameEngine/easingAnimation"
+import { addAnimation } from "../gameEngine/animator"
+import { enqueueAudio } from "../gameEngine/audioManager"
+import { delay } from "../gameEngine/delay"
+import { createDynamicBody, physicsScale, registerBeginContact } from "../gameEngine/physics"
+import { dispatchSignal, subscribe } from "../gameEngine/signalling"
+import Hsl from "../shared/hsl"
+import { contactOtherFixture } from "../shared/planckHelpers"
+import { clamp } from "../shared/utils"
+import { holeTotalWidth } from "../terrain/constants"
+import { circle, physicsScaleInverse, translateHeightPadding } from "./canvasHelpers"
+import { ballCategory, ballStrokeSignal, ballTag, boundaryCategory, finalStageId, stageCompleteSignal, stageReadySignal, stageTransitioningSignal, terrainCategory, waterCategory } from "./constants"
+import ParticleSystem from "./particleSystem"
+import ParticleTerrain from "./particleTerrain"
+import ParticleWater from "./particleWater"
+import type { StageReadyPayload } from "../types/stageReady"
 
 const radius = 3
 const radiusPhysics = radius * physicsScale
@@ -107,7 +107,9 @@ export default class BallEntity implements BallPhysics, BallShot {
   }
 
   renderOnCanvas(ctx: CanvasRenderingContext2D): void {
-    if (!this.visible) { return }
+    if (!this.visible) {
+      return
+    }
 
     const { x, y } = this.ballBody.getPosition()
     const centerX = x * physicsScaleInverse + radius * 0.5
@@ -186,7 +188,9 @@ export default class BallEntity implements BallPhysics, BallShot {
   }
 
   applyForce(force: Vec2Type): void {
-    if (!this.visible) { return }
+    if (!this.visible) {
+      return
+    }
     this.ballBody.applyLinearImpulse(force, Vec2.zero(), true)
     this.resetAnimFade.stop()
     this.resetAnimScale.stop()
@@ -201,10 +205,14 @@ export default class BallEntity implements BallPhysics, BallShot {
   }
 
   onHit(contact: Contact): void {
-    if (!this.visible) { return }
+    if (!this.visible) {
+      return
+    }
 
     const target = contactOtherFixture(contact, this.ballBody)
-    if (target === undefined) { return }
+    if (target === undefined) {
+      return
+    }
     const category = target.getFilterCategoryBits()
 
     const isBoundaryHit = category === boundaryCategory
@@ -216,7 +224,9 @@ export default class BallEntity implements BallPhysics, BallShot {
       delay(this.outOfBounds.bind(this), 0)
       return
     }
-    if (!isTerrainHit && !isWaterHit) { return }
+    if (!isTerrainHit && !isWaterHit) {
+      return
+    }
 
     const velocityUnit = this.ballBody.getLinearVelocity().clone().neg()
     const position = this.ballBody.getPosition().clone()
@@ -233,7 +243,9 @@ export default class BallEntity implements BallPhysics, BallShot {
     const magnitude = velocityUnit.normalize()
     let count = 0
 
-    if (magnitude < 4) { return }
+    if (magnitude < 4) {
+      return
+    }
 
     if (magnitude > 10) {
       count = largeParticleExplosion

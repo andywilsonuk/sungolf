@@ -1,13 +1,13 @@
-import { absoluteFloorDepth } from '../constants'
-import { endingName } from './names'
-import type { TerrainFeature } from './types'
+import { absoluteFloorDepth } from "../constants"
+import { endingName } from "./names"
+import type { TerrainFeature } from "./types"
 
 const ending: TerrainFeature = {
   get name() {
     return endingName
   },
   allowed() {
-    throw new Error('Not implemented')
+    throw new Error("Not implemented")
   },
   apply(layout, { relativeX, startY }, _rand) {
     const slope = 6

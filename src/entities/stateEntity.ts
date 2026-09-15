@@ -1,13 +1,13 @@
-import type { Vec2 } from 'planck'
-import { Vec2 as Vec2Ctor } from 'planck'
-import { loadState, saveState } from '../shared/statePersister'
-import { getOneEntityByTag } from '../gameEngine/world'
-import { ballStrokeSignal, ballTag, scoreTag, stageCompleteSignal, stageReadySignal, terrainTag, stateTag } from './constants'
-import { subscribe } from '../gameEngine/signalling'
-import type { BallShot } from './ballEntity'
-import type { SetScore } from './scoreEntity'
-import type { SetStageTerrain } from './terrainEntity'
-import type { StageReadyPayload } from '../types/stageReady'
+import type { Vec2 } from "planck"
+import { Vec2 as Vec2Ctor } from "planck"
+import { loadState, saveState } from "../shared/statePersister"
+import { getOneEntityByTag } from "../gameEngine/world"
+import { ballStrokeSignal, ballTag, scoreTag, stageCompleteSignal, stageReadySignal, terrainTag, stateTag } from "./constants"
+import { subscribe } from "../gameEngine/signalling"
+import type { BallShot } from "./ballEntity"
+import type { SetScore } from "./scoreEntity"
+import type { SetStageTerrain } from "./terrainEntity"
+import type { StageReadyPayload } from "../types/stageReady"
 
 export interface ResetState {
   reset: () => void
@@ -37,7 +37,7 @@ export default class StateEntity implements ResetState {
       this.stageReady(payload)
     })
     subscribe(ballStrokeSignal, (...args: unknown[]) => {
-      const [{ position, stroke }] = args as [{ position: Vec2, stroke: Vec2 }]
+      const [{ position, stroke }] = args as [{ position: Vec2; stroke: Vec2 }]
       this.onStroke({ position, stroke })
     })
   }
@@ -82,7 +82,7 @@ export default class StateEntity implements ResetState {
     this.save()
   }
 
-  onStroke({ position, stroke }: { position: Vec2, stroke: Vec2 }): void {
+  onStroke({ position, stroke }: { position: Vec2; stroke: Vec2 }): void {
     this.stroke += this.stage === 0 ? 0 : 1
     this.ballPosition = [position.x, position.y]
     this.ballForce = [stroke.x, stroke.y]

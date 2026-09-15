@@ -1,7 +1,7 @@
-import { applyPixelScale, applyRatioScale, subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
-import { addEntity } from '../gameEngine/world'
-import BallEntity from './ballEntity'
-import type ParticleSystem from './particleSystem'
+import { applyPixelScale, applyRatioScale, subscribeResize, type ResizePayload } from "../gameEngine/renderCanvas"
+import { addEntity } from "../gameEngine/world"
+import BallEntity from "./ballEntity"
+import type ParticleSystem from "./particleSystem"
 
 export default class DynamicsEntity {
   private ballEntity!: BallEntity
@@ -22,7 +22,7 @@ export default class DynamicsEntity {
   }
 
   onResize({ renderWidth, renderHeight }: ResizePayload): void {
-    const canvasElement = document.getElementById('dynamics')
+    const canvasElement = document.getElementById("dynamics")
     if (!canvasElement) {
       throw new Error('Canvas element with id "dynamics" not found')
     }
@@ -33,9 +33,9 @@ export default class DynamicsEntity {
   }
 
   renderInitial(): void {
-    const ctx = this.canvasElement.getContext('2d')
+    const ctx = this.canvasElement.getContext("2d")
     if (!ctx) {
-      throw new Error('Could not get 2d context from canvas')
+      throw new Error("Could not get 2d context from canvas")
     }
     this.ctx = ctx
   }

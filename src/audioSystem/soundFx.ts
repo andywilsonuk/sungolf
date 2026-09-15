@@ -1,5 +1,5 @@
-import { createFromBuffer, createGain, ensureContext } from './audioContext'
-import SoundFxInstance from './soundFxInstance'
+import { createFromBuffer, createGain, ensureContext } from "./audioContext"
+import SoundFxInstance from "./soundFxInstance"
 
 const maxInstances = 5
 
@@ -38,7 +38,9 @@ export default class SoundFx {
 
   resume(): void {
     for (const instance of this.instances) {
-      if (!instance.paused) { continue }
+      if (!instance.paused) {
+        continue
+      }
       instance.start(this.connectTrack(instance), this.loop)
     }
   }
@@ -50,7 +52,9 @@ export default class SoundFx {
     }
     ensureContext()
     for (const instance of this.instances) {
-      if (!instance.available) { continue }
+      if (!instance.available) {
+        continue
+      }
       instance.start(this.connectTrack(instance), this.loop)
       return instance
     }
@@ -64,7 +68,9 @@ export default class SoundFx {
   }
 
   ended(instance: SoundFxInstance): void {
-    if (instance.source === null) { return }
+    if (instance.source === null) {
+      return
+    }
     const looping = this.loop && instance.looping
     const playbackRate = instance.source.playbackRate.value
     instance.stop()
@@ -83,10 +89,10 @@ export default class SoundFx {
 
   connectTrack(instance: SoundFxInstance): AudioBufferSourceNode {
     if (!this.audioBuffer || !this.audioGain) {
-      throw new Error('Audio buffer or gain not initialized')
+      throw new Error("Audio buffer or gain not initialized")
     }
     const source = createFromBuffer(this.audioBuffer, this.audioGain)
-    source.addEventListener('ended', this.ended.bind(this, instance))
+    source.addEventListener("ended", this.ended.bind(this, instance))
     return source
   }
 

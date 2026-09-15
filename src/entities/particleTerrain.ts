@@ -1,11 +1,11 @@
-import type { Vec2 } from 'planck'
-import { addAnimation } from '../gameEngine/animator'
-import { EasingAnimation, easeInCubic, easeOutCubic } from '../gameEngine/easingAnimation'
-import { circle, translateHeightPadding, physicsScaleInverse } from './canvasHelpers'
-import { getOneEntityByTag } from '../gameEngine/world'
-import { terrainTag } from './constants'
-import type Hsl from '../shared/hsl'
-import type { TerrainEntityColor } from './terrainEntity'
+import type { Vec2 } from "planck"
+import { addAnimation } from "../gameEngine/animator"
+import { EasingAnimation, easeInCubic, easeOutCubic } from "../gameEngine/easingAnimation"
+import { circle, translateHeightPadding, physicsScaleInverse } from "./canvasHelpers"
+import { getOneEntityByTag } from "../gameEngine/world"
+import { terrainTag } from "./constants"
+import type Hsl from "../shared/hsl"
+import type { TerrainEntityColor } from "./terrainEntity"
 
 const duration = 0.5 * 1000
 const radius = 1

@@ -1,9 +1,9 @@
-import { subscribe } from '../gameEngine/signalling'
-import orchestration from '../orchestration'
-import Hsl from '../shared/hsl'
-import { stageReadySignal } from './constants'
-import type { StageReadyPayload } from '../types/stageReady'
-import { subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
+import { subscribe } from "../gameEngine/signalling"
+import orchestration from "../orchestration"
+import Hsl from "../shared/hsl"
+import { stageReadySignal } from "./constants"
+import type { StageReadyPayload } from "../types/stageReady"
+import { subscribeResize, type ResizePayload } from "../gameEngine/renderCanvas"
 
 export default class BackgroundEntity {
   stage: number | null
@@ -42,27 +42,24 @@ export default class BackgroundEntity {
   }
 
   renderInitial(): void {
-    const element = document.getElementById('background')
+    const element = document.getElementById("background")
     if (!element) {
-      throw new Error('Background element not found')
+      throw new Error("Background element not found")
     }
     this.backgroundElement = element
   }
 
   render(): void {
-    if (!this.dirty) { return }
+    if (!this.dirty) {
+      return
+    }
 
     this.backgroundElement.style.height = `${this.height}px`
 
     if (this.backgroundColor && this.backgroundColorStop !== null) {
       const initialStopColorString = new Hsl(0, 0, 90).asString()
-      const gradient = [
-        initialStopColorString,
-        `${this.backgroundColorStop * 100}%`,
-        `${this.backgroundColor.asString()} 98%`,
-        `var(--background) 100%`,
-      ]
-      this.backgroundElement.style.background = `linear-gradient(${gradient.join(',')})`
+      const gradient = [initialStopColorString, `${this.backgroundColorStop * 100}%`, `${this.backgroundColor.asString()} 98%`, `var(--background) 100%`]
+      this.backgroundElement.style.background = `linear-gradient(${gradient.join(",")})`
     }
 
     this.dirty = false

@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { finalStageId } from '../entities/constants'
-import { randomGenerator, randomItem } from '../shared/random'
-import { segmentDepthMax, ceilingDepth, floorDepth, holeTotalWidth } from './constants'
-import terrainFeatures from './features'
-import crag from './features/crag'
-import { holeName } from './features/names'
-import type { TerrainFeature } from './features/types'
-import { Layout } from './layout'
-import { Plotter } from './plotter'
-import plotterDrift from './plotterDrift'
-import plotterMinimalVertical from './plotterMinimalVertical'
-import plotterSegments from './plotterSegments'
+import { finalStageId } from "../entities/constants"
+import { randomGenerator, randomItem } from "../shared/random"
+import { segmentDepthMax, ceilingDepth, floorDepth, holeTotalWidth } from "./constants"
+import terrainFeatures from "./features"
+import crag from "./features/crag"
+import { holeName } from "./features/names"
+import type { TerrainFeature } from "./features/types"
+import { Layout } from "./layout"
+import { Plotter } from "./plotter"
+import plotterDrift from "./plotterDrift"
+import plotterMinimalVertical from "./plotterMinimalVertical"
+import plotterSegments from "./plotterSegments"
 
 const debug = false
 const featureMap = new Map(terrainFeatures.map((f) => [f.name, f]))
@@ -55,7 +55,9 @@ export class Stage {
   }
 
   layoutSegments(): void {
-    if (debug) { console.log(`---> stage ${this.id}`, Object.entries(this.parameters)) }
+    if (debug) {
+      console.log(`---> stage ${this.id}`, Object.entries(this.parameters))
+    }
     const { holeDepth, holeDistance, drift, allowedFeatures, preferCrags, specialFeature } = this.parameters
     const features = allowedFeatures.map((name) => featureMap.get(name)).filter((f): f is TerrainFeature => Boolean(f))
 
@@ -78,7 +80,11 @@ export class Stage {
         distance2 = holeDistance - width
       }
       segmentMarkers.push({
-        segment: featureMap.get(name) ?? (() => { throw new Error(`Feature ${name} not found`) })(),
+        segment:
+          featureMap.get(name) ??
+          (() => {
+            throw new Error(`Feature ${name} not found`)
+          })(),
         distance: distance2,
         relativeX: width,
       })
@@ -91,14 +97,15 @@ export class Stage {
 
     const randSelection = randomGenerator(`selection${this.id}`)
 
-    for (let i = 1; i < this.plotter.count; i++) { // skip the initial point
+    for (let i = 1; i < this.plotter.count; i++) {
+      // skip the initial point
       const p = this.plotter.getByIndex(i)
       let { segment } = p
 
       if (segment === null) {
         const allowed = features.filter((s) => s.allowed(p))
         if (allowed.length === 0) {
-          console.warn('No features allowed', p)
+          console.warn("No features allowed", p)
           continue
         }
         const cragSegment = preferCrags ? allowed.find((x) => x === crag) : undefined
@@ -113,13 +120,17 @@ export class Stage {
         if (segment.isSpecial) {
           this.specialFeaturePlacement = { name: segment.name, x: p.x, y: p.y }
         }
-        if (debug) { console.log(`${segment.name} w${p.relativeX} h${p.relativeY} x${p.x} y${p.y}`) }
+        if (debug) {
+          console.log(`${segment.name} w${p.relativeX} h${p.relativeY} x${p.x} y${p.y}`)
+        }
       }
     }
 
     this.layout.finalise()
 
-    if (debug) { console.log(this.layout.commands) }
+    if (debug) {
+      console.log(this.layout.commands)
+    }
   }
 
   get distance(): number {
@@ -127,7 +138,7 @@ export class Stage {
     return lastPoint ? lastPoint.x : 0
   }
 
-  get commands(): { command: string, x: number, y: number }[] {
+  get commands(): { command: string; x: number; y: number }[] {
     return this.layout.commands
   }
 }

@@ -1,5 +1,5 @@
-import { skullName } from './names'
-import type { TerrainFeature } from './types'
+import { skullName } from "./names"
+import type { TerrainFeature } from "./types"
 
 const skull: TerrainFeature = {
   get name() {
@@ -9,7 +9,7 @@ const skull: TerrainFeature = {
     return true
   },
   allowed() {
-    throw new Error('Not implemented')
+    throw new Error("Not implemented")
   },
   apply(layout, { relativeX, relativeY }) {
     layout.line(relativeX, relativeY)

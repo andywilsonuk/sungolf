@@ -1,8 +1,8 @@
-import { randomInt } from '../../shared/random'
-import { clamp } from '../../shared/utils'
-import { ceilingDepth, floorDepth } from '../constants'
-import { cragName } from './names'
-import type { TerrainFeature } from './types'
+import { randomInt } from "../../shared/random"
+import { clamp } from "../../shared/utils"
+import { ceilingDepth, floorDepth } from "../constants"
+import { cragName } from "./names"
+import type { TerrainFeature } from "./types"
 
 const crag: TerrainFeature = {
   get name() {

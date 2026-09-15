@@ -1,12 +1,12 @@
-import TerrainEntity from './terrainEntity'
-import FlagEntity from './flagEntity'
-import { addEntity } from '../gameEngine/world'
-import TeeEntity from './teeEntity'
-import { applyPixelScale, applyRatioScale, subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
-import WaterEntity from './waterEntity'
-import PaletteEntity from './paletteEntity'
-import { translateHeightPadding } from './canvasHelpers'
-import SunEntity from './sunEntity'
+import TerrainEntity from "./terrainEntity"
+import FlagEntity from "./flagEntity"
+import { addEntity } from "../gameEngine/world"
+import TeeEntity from "./teeEntity"
+import { applyPixelScale, applyRatioScale, subscribeResize, type ResizePayload } from "../gameEngine/renderCanvas"
+import WaterEntity from "./waterEntity"
+import PaletteEntity from "./paletteEntity"
+import { translateHeightPadding } from "./canvasHelpers"
+import SunEntity from "./sunEntity"
 
 export default class TopographyEntity {
   private waterEntity!: WaterEntity
@@ -33,7 +33,7 @@ export default class TopographyEntity {
   }
 
   onResize({ renderWidth, renderHeight }: ResizePayload): void {
-    const canvasElement = document.getElementById('topography')
+    const canvasElement = document.getElementById("topography")
     if (!canvasElement) {
       throw new Error('Canvas element with id "topography" not found')
     }
@@ -44,9 +44,9 @@ export default class TopographyEntity {
   }
 
   renderInitial(): void {
-    const ctx = this.canvasElement.getContext('2d')
+    const ctx = this.canvasElement.getContext("2d")
     if (!ctx) {
-      throw new Error('Could not get 2d context from canvas')
+      throw new Error("Could not get 2d context from canvas")
     }
     this.ctx = ctx
   }

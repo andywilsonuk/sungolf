@@ -1,5 +1,5 @@
-import { Stage } from './stage'
-import orchestration from '../orchestration'
+import { Stage } from "./stage"
+import orchestration from "../orchestration"
 
 interface TerrainResult {
   commands: {
@@ -24,7 +24,7 @@ export default (stageId: number): TerrainResult => {
   stage.layoutSegments()
 
   const commands = stage.commands
-  const path = commands.map(({ command }) => command).join(' ')
+  const path = commands.map(({ command }) => command).join(" ")
 
   return { commands, path, startY: parameters.initialDepth, distance: stage.distance, special: stage.specialFeaturePlacement }
 }

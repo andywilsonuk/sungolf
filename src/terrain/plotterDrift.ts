@@ -1,7 +1,7 @@
-import debugLog from '../gameEngine/debugLog'
-import { randomInt, randomShuffle, randomTernary, type RandomGenerator } from '../shared/random'
-import { sequence } from '../shared/utils'
-import type { Plotter } from './plotter'
+import debugLog from "../gameEngine/debugLog"
+import { randomInt, randomShuffle, randomTernary, type RandomGenerator } from "../shared/random"
+import { sequence } from "../shared/utils"
+import type { Plotter } from "./plotter"
 
 export default (plotter: Plotter, delta: number, rand: RandomGenerator): void => {
   let remaining = Math.abs(delta)
@@ -13,7 +13,9 @@ export default (plotter: Plotter, delta: number, rand: RandomGenerator): void =>
 
     for (const index of indexes) {
       const point = plotter.getByIndex(index)
-      if (point.segment?.isSpecial) { continue }
+      if (point.segment?.isSpecial) {
+        continue
+      }
 
       let sign = randomTernary(rand, -1, 1)
       let pointRemainingY = plotter.availableYDistance(point, sign === 1)
@@ -22,7 +24,9 @@ export default (plotter: Plotter, delta: number, rand: RandomGenerator): void =>
         pointRemainingY = plotter.availableYDistance(point, sign === 1)
       }
 
-      if (pointRemainingY === 0) { continue }
+      if (pointRemainingY === 0) {
+        continue
+      }
 
       let value = randomInt(rand, 1, Math.min(remaining, pointRemainingY)) * sign
       const next = point.next
@@ -40,7 +44,9 @@ export default (plotter: Plotter, delta: number, rand: RandomGenerator): void =>
       }
 
       remaining -= Math.abs(value)
-      if (remaining === 0) { break }
+      if (remaining === 0) {
+        break
+      }
     }
 
     if (remaining === loopRemaining) {

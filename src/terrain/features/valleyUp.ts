@@ -1,6 +1,6 @@
-import { randomInt } from '../../shared/random'
-import { valleyUpName } from './names'
-import type { TerrainFeature } from './types'
+import { randomInt } from "../../shared/random"
+import { valleyUpName } from "./names"
+import type { TerrainFeature } from "./types"
 
 const valleyUp: TerrainFeature = {
   get name() {

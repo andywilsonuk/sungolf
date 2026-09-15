@@ -1,4 +1,4 @@
-import MainLoop from 'mainloop.js'
+import MainLoop from "mainloop.js"
 
 interface Services {
   init(): void
@@ -58,9 +58,5 @@ export const resume = (): void => {
 
 export default (services: Services): void => {
   servicesRef = services
-  MainLoop
-    .setBegin(beginFrame)
-    .setUpdate(update)
-    .setDraw(render)
-    .setEnd(endFrame)
+  MainLoop.setBegin(beginFrame).setUpdate(update).setDraw(render).setEnd(endFrame)
 }

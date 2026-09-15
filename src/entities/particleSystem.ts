@@ -1,12 +1,12 @@
-import type { Vec2 } from 'planck'
-import { Vec2 as Vec2Ctor } from 'planck'
-import { randomGenerator, randomRange } from '../shared/random'
+import type { Vec2 } from "planck"
+import { Vec2 as Vec2Ctor } from "planck"
+import { randomGenerator, randomRange } from "../shared/random"
 
 interface RandomGenerator {
   next(): number
 }
 
-const rand: RandomGenerator = randomGenerator('particles')
+const rand: RandomGenerator = randomGenerator("particles")
 
 interface Particle {
   next?: Particle | null
@@ -43,7 +43,9 @@ export default class ParticleSystem {
     let remaining = count
     while (remaining > 0) {
       const particle = this.inactiveHead
-      if (particle === null) { return }
+      if (particle === null) {
+        return
+      }
       this.inactiveHead = particle.next ?? null
 
       const x = randomRange(rand, this.initialMinMaxX[0], this.initialMinMaxX[1]) * velocityUnit.x
@@ -62,7 +64,9 @@ export default class ParticleSystem {
     }
   }
 
-  get dirty(): boolean { return this.activeHead !== null }
+  get dirty(): boolean {
+    return this.activeHead !== null
+  }
 
   private onDone(particle: Particle): void {
     if (this.activeHead === particle) {

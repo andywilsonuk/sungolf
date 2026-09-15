@@ -1,5 +1,5 @@
-import * as mouse from './mouseInput'
-import * as touch from './touchInput'
+import { bindListeners as bindMouseListeners, current as currentMouse, unbindListeners as unbindMouseListeners } from "./mouseInput"
+import { bindListeners as bindTouchListeners, current as currentTouch, unbindListeners as unbindTouchListeners } from "./touchInput"
 
 interface InputState {
   position: [number, number] | null
@@ -14,21 +14,21 @@ const current: InputState = {
 }
 
 const init = (): void => {
-  mouse.bindListeners()
-  touch.bindListeners()
+  bindMouseListeners()
+  bindTouchListeners()
 }
 
 const beginFrame = (): void => {
   current.position = null
   current.held = false
   current.cancelled = false
-  mouse.current(current)
-  touch.current(current)
+  currentMouse(current)
+  currentTouch(current)
 }
 
 const clear = (): void => {
-  mouse.unbindListeners()
-  touch.unbindListeners()
+  unbindMouseListeners()
+  unbindTouchListeners()
 }
 
 export const inputState = (): InputState => current

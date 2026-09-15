@@ -1,4 +1,4 @@
-import { clearArray } from '../shared/utils'
+import { clearArray } from "../shared/utils"
 
 type DelayedItem = [number | undefined, (() => void) | undefined]
 
@@ -11,7 +11,9 @@ let previousTimestamp: number | undefined
 
 export const delay = (fn: () => void, time: number): void => {
   for (const d of delayed) {
-    if (d[0] !== undefined) { continue }
+    if (d[0] !== undefined) {
+      continue
+    }
     d[0] = nowOffset + time
     d[1] = fn
     break
@@ -27,10 +29,14 @@ const beginFrame = (timestamp: number): void => {
     nowOffset = nowOffset + timestamp - previousTimestamp
   }
   previousTimestamp = timestamp
-  if (delayedLength === 0) { return }
+  if (delayedLength === 0) {
+    return
+  }
   for (const d of delayed) {
     const time = d[0]
-    if (time === undefined) { continue }
+    if (time === undefined) {
+      continue
+    }
     if (time <= nowOffset) {
       d[1]?.()
       d[0] = undefined

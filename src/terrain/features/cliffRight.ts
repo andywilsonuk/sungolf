@@ -1,18 +1,26 @@
-import { randomInt } from '../../shared/random'
-import { clamp } from '../../shared/utils'
-import { ceilingDepth, floorDepth } from '../constants'
-import { cliffRightName, holeName, spurRightName } from './names'
-import type { TerrainFeature, PlotterPoint } from './types'
+import { randomInt } from "../../shared/random"
+import { clamp } from "../../shared/utils"
+import { ceilingDepth, floorDepth } from "../constants"
+import { cliffRightName, holeName, spurRightName } from "./names"
+import type { TerrainFeature, PlotterPoint } from "./types"
 
 const cliffRight: TerrainFeature = {
   get name() {
     return cliffRightName
   },
   allowed({ previous, relativeX, relativeY, y }: PlotterPoint) {
-    if (previous?.isFirst) { return false }
-    if (previous?.segment?.name === spurRightName) { return false }
-    if (previous?.segment?.name === cliffRightName) { return false }
-    if (relativeX < 80) { return false }
+    if (previous?.isFirst) {
+      return false
+    }
+    if (previous?.segment?.name === spurRightName) {
+      return false
+    }
+    if (previous?.segment?.name === cliffRightName) {
+      return false
+    }
+    if (relativeX < 80) {
+      return false
+    }
     return relativeY > 30 && y + 50 < floorDepth
   },
   apply(layout, { relativeX, relativeY, startY, next }, rand) {

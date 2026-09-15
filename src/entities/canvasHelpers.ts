@@ -1,29 +1,25 @@
-import type { Body, Fixture, Shape, Circle, Polygon } from 'planck'
-import { physicsScale } from '../gameEngine/physics'
-import { applyPixelScale, applyRatioScale, heightPadding } from '../gameEngine/renderCanvas'
-import Hsl from '../shared/hsl'
+import type { Body, Fixture, Shape, Circle, Polygon } from "planck"
+import { physicsScale } from "../gameEngine/physics"
+import { applyPixelScale, applyRatioScale, heightPadding } from "../gameEngine/renderCanvas"
+import Hsl from "../shared/hsl"
 
 const lineWidth = 0.01
 const fixtureAlpha = 0.5
 export const physicsScaleInverse = 1 / physicsScale
 
 const colorMap = new Map<Body, string>()
-const colors = [
-  new Hsl(4, 84, 57),
-  new Hsl(198, 97, 41),
-  new Hsl(29, 96, 49),
-  new Hsl(58, 99, 50),
-  new Hsl(82, 94, 39),
-].map((color) => color.asString(fixtureAlpha))
+const colors = [new Hsl(4, 84, 57), new Hsl(198, 97, 41), new Hsl(29, 96, 49), new Hsl(58, 99, 50), new Hsl(82, 94, 39)].map((color) => color.asString(fixtureAlpha))
 let colorNext = 0
 const getColor = (body: Body): string => {
   const existing = colorMap.get(body)
-  if (existing !== undefined) { return existing }
+  if (existing !== undefined) {
+    return existing
+  }
   colorMap.set(body, colors[colorNext])
   colorNext = (colorNext + 1) % colors.length
   const result = colorMap.get(body)
   if (!result) {
-    throw new Error('Failed to get color for body')
+    throw new Error("Failed to get color for body")
   }
   return result
 }
@@ -69,11 +65,7 @@ const drawCircle = (ctx: CanvasRenderingContext2D, body: Body, shape: Shape): vo
 export const debugBodyRender = (ctx: CanvasRenderingContext2D, body: Body, applyOffsetY = false): void => {
   const debugRenderStrokeColor = new Hsl(0, 0, 0)
 
-  for (
-    let fixture: Fixture | null = body.getFixtureList();
-    fixture;
-    fixture = fixture.getNext()
-  ) {
+  for (let fixture: Fixture | null = body.getFixtureList(); fixture; fixture = fixture.getNext()) {
     const type = fixture.getType()
     const shape = fixture.getShape()
     const isActive = body.isActive()
@@ -96,7 +88,7 @@ export const debugBodyRender = (ctx: CanvasRenderingContext2D, body: Body, apply
     }
     ctx.lineWidth = lineWidth
 
-    if (type === 'circle') {
+    if (type === "circle") {
       drawCircle(ctx, body, shape)
     } else {
       drawPolygon(ctx, body, shape)
@@ -107,7 +99,7 @@ export const debugBodyRender = (ctx: CanvasRenderingContext2D, body: Body, apply
 
 export const debugHorizontalLine = (ctx: CanvasRenderingContext2D, y: number): void => {
   ctx.save()
-  ctx.fillStyle = '#000000'
+  ctx.fillStyle = "#000000"
   ctx.fillRect(0, y, 1000, 1)
   ctx.restore()
 }

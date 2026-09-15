@@ -1,4 +1,4 @@
-import { referenceHeight, referenceWidth } from '../gameEngine/renderCanvas'
+import { referenceHeight, referenceWidth } from "../gameEngine/renderCanvas"
 
 export const holeDepth = 18
 

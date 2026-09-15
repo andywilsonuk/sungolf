@@ -1,5 +1,5 @@
-import { pause, resume } from '../audioSystem/audioContext'
-import { playAudio } from '../audioSystem'
+import { pause, resume } from "../audioSystem/audioContext"
+import { playAudio } from "../audioSystem"
 
 const maxQueue = 10
 const queue: string[] = Array.from({ length: maxQueue })
@@ -22,14 +22,18 @@ const isPlayedThisFrame = (id: string): boolean => {
 }
 
 const endFrame = (panic: boolean): void => {
-  if (queueLength === 0) { return }
+  if (queueLength === 0) {
+    return
+  }
   if (queueLength >= maxQueue) {
-    throw new Error('Maxed queue: audio')
+    throw new Error("Maxed queue: audio")
   }
   if (!panic) {
     for (let i = 0; i < queueLength; i++) {
       const id = queue[i]
-      if (isPlayedThisFrame(id)) { continue }
+      if (isPlayedThisFrame(id)) {
+        continue
+      }
       playAudio(id)
       framePlayed[framePlayedLength] = id
       framePlayedLength += 1

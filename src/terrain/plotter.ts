@@ -1,5 +1,5 @@
-import { PlotterPoint } from './plotterPoint'
-import type { TerrainFeature } from './features/types'
+import { PlotterPoint } from "./plotterPoint"
+import type { TerrainFeature } from "./features/types"
 
 export class Plotter {
   points: PlotterPoint[]
@@ -40,7 +40,9 @@ export class Plotter {
 
   addRelativePoint(dx: number, dy: number): PlotterPoint {
     const previous = this.last
-    if (previous === null) { throw new Error('No points') }
+    if (previous === null) {
+      throw new Error("No points")
+    }
     const x = previous.x + dx
     const y = previous.y + dy
     const point = new PlotterPoint(x, y)
@@ -67,10 +69,7 @@ export class Plotter {
     const previousPointY = point.previous?.y ?? 0
     const nextPointY = point.next?.y ?? 0
     const deltaAdjacent = downwards && previousPointY - nextPointY < 0 ? point.relativeY : (point.next?.relativeY ?? 0)
-    const pointRemainingY = Math.min(
-      downwards ? this.maximumY - point.y : point.y - this.minimumY,
-      this.maximumYRelative - Math.min(0, deltaAdjacent),
-    )
+    const pointRemainingY = Math.min(downwards ? this.maximumY - point.y : point.y - this.minimumY, this.maximumYRelative - Math.min(0, deltaAdjacent))
     return pointRemainingY
   }
 

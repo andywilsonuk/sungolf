@@ -1,5 +1,5 @@
-import type { Body, BodyDef, Contact, Fixture, World as WorldType } from 'planck'
-import { Settings, World, Vec2 } from 'planck'
+import type { Body, BodyDef, Contact, Fixture, World as WorldType } from "planck"
+import { Settings, World, Vec2 } from "planck"
 
 export const physicsScale = 0.01
 const maxPolygonVertices = 40
@@ -7,7 +7,9 @@ const maxPolygonVertices = 40
 let world: WorldType | undefined
 
 const worldOrThrow = () => {
-  if (!world) { throw new Error('World not created') }
+  if (!world) {
+    throw new Error("World not created")
+  }
   return world
 }
 
@@ -15,16 +17,16 @@ export const createBody = (props: BodyDef): Body => worldOrThrow().createBody(pr
 
 // Adding back the missing export
 export const createDynamicBody = (props: BodyDef): Body => {
-  const body = worldOrThrow().createBody({ type: 'dynamic', ...props })
+  const body = worldOrThrow().createBody({ type: "dynamic", ...props })
   return body
 }
 
 export const registerBeginContact = (callback: (contact: Contact) => void): void => {
-  worldOrThrow().on('begin-contact', callback)
+  worldOrThrow().on("begin-contact", callback)
 }
 
 export const registerEndContact = (callback: (contact: Contact) => void): void => {
-  worldOrThrow().on('end-contact', callback)
+  worldOrThrow().on("end-contact", callback)
 }
 
 export const rayCast = (p1: Vec2, p2: Vec2, callback: (fixture: Fixture, point: Vec2, normal: Vec2, fraction: number) => number): void => {

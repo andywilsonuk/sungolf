@@ -1,14 +1,14 @@
-import { Vec2 } from 'planck'
-import { subscribe } from '../gameEngine/signalling'
-import { getOneEntityByTag } from '../gameEngine/world'
-import { clamp, normalize } from '../shared/utils'
-import { ballTag, stageCompleteSignal, stageReadySignal } from './constants'
-import type { StageReadyPayload } from '../types/stageReady'
-import { inputState } from '../gameEngine/inputManager'
-import { subscribeResize, type ResizePayload } from '../gameEngine/renderCanvas'
-import { scalePixelRatio } from './canvasHelpers'
-import Hsl from '../shared/hsl'
-import type { BallPhysics } from './ballEntity'
+import { Vec2 } from "planck"
+import { subscribe } from "../gameEngine/signalling"
+import { getOneEntityByTag } from "../gameEngine/world"
+import { clamp, normalize } from "../shared/utils"
+import { ballTag, stageCompleteSignal, stageReadySignal } from "./constants"
+import type { StageReadyPayload } from "../types/stageReady"
+import { inputState } from "../gameEngine/inputManager"
+import { subscribeResize, type ResizePayload } from "../gameEngine/renderCanvas"
+import { scalePixelRatio } from "./canvasHelpers"
+import Hsl from "../shared/hsl"
+import type { BallPhysics } from "./ballEntity"
 
 const minPullback = 10
 const maxPullback = 600 * 0.5
@@ -64,7 +64,9 @@ export default class PullbackEntity {
   }
 
   beginFrame(_timestamp: number): void {
-    if (!this.allowed) { return }
+    if (!this.allowed) {
+      return
+    }
     const { position, held, cancelled } = inputState()
     const isAlreadyDown = this.isDown
 
@@ -95,7 +97,7 @@ export default class PullbackEntity {
   }
 
   onResize({ renderWidth, renderHeight }: ResizePayload): void {
-    const canvasElement = document.getElementById('pullback')
+    const canvasElement = document.getElementById("pullback")
     if (!canvasElement) {
       throw new Error('Canvas element with id "pullback" not found')
     }
@@ -105,19 +107,23 @@ export default class PullbackEntity {
   }
 
   renderInitial(): void {
-    const ctx = this.canvasElement.getContext('2d')
+    const ctx = this.canvasElement.getContext("2d")
     if (!ctx) {
-      throw new Error('Could not get 2d context from canvas')
+      throw new Error("Could not get 2d context from canvas")
     }
     this.ctx = ctx
   }
 
   render(): void {
-    if (!this.dirty) { return }
+    if (!this.dirty) {
+      return
+    }
     const { ctx } = this
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 
-    if (!this.isDown) { return }
+    if (!this.isDown) {
+      return
+    }
 
     const delta = this.upPosition.sub(this.downPosition)
     const normalizedLength = normalize(delta.length(), minPullback, maxPullback)
@@ -156,10 +162,14 @@ export default class PullbackEntity {
   }
 
   project(): void {
-    if (!this.ballEntity || this.ballEntity.isMoving) { return }
+    if (!this.ballEntity || this.ballEntity.isMoving) {
+      return
+    }
     const delta = this.downPosition.sub(this.upPosition)
     const currentLength = delta.length()
-    if (currentLength < minLengthForProject) { return }
+    if (currentLength < minLengthForProject) {
+      return
+    }
     const difference = Math.min(0.25, currentLength / maxPullback) * stiffnessMultiplier
     const force = delta.mul(difference * stiffness)
 

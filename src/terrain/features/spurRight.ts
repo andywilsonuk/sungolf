@@ -1,14 +1,18 @@
-import { randomInt } from '../../shared/random'
-import { mesaName, spurRightName } from './names'
-import type { TerrainFeature } from './types'
+import { randomInt } from "../../shared/random"
+import { mesaName, spurRightName } from "./names"
+import type { TerrainFeature } from "./types"
 
 const spurRight: TerrainFeature = {
   get name() {
     return spurRightName
   },
   allowed({ previous, next, relativeY }) {
-    if (previous?.segment?.name === spurRightName) { return false }
-    if (next?.segment?.name === mesaName) { return false }
+    if (previous?.segment?.name === spurRightName) {
+      return false
+    }
+    if (next?.segment?.name === mesaName) {
+      return false
+    }
     return relativeY > 30
   },
   apply(layout, { relativeX, relativeY }, rand) {
