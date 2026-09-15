@@ -49,14 +49,17 @@ export default class HorizonEntity {
     if (this.terrain.terrainColor === null) { throw new Error('Terrain not set') }
 
     const color = this.terrain.terrainColor.asString()
-    const isBlurredHorizon = this.expandedWidth > 1300
-    const minWidthMultiplier = 1.1
-    const maxWidthMultiplier = 1.2
+
+    // Thresholds based on expandedWidth (not gameAreaWidth)
+    const blurStartThreshold = 1300  // No blur below this
+    const blurFullThreshold = 1580   // Full blur (20vw) at this point
+    const minBlurVw = 6
+    const maxBlurVw = 20
     const curveExponent = 2
-    const ratio = this.width / referenceWidth
-    const normalized = (ratio - minWidthMultiplier) / (maxWidthMultiplier - minWidthMultiplier)
-    const progress = clamp(0, 1, normalized)
-    const clampedWidth = 6 + (20 - 6) * Math.pow(progress, curveExponent)
+
+    const isBlurredHorizon = this.expandedWidth > blurStartThreshold
+    const progress = clamp(0, 1, (this.expandedWidth - blurStartThreshold) / (blurFullThreshold - blurStartThreshold))
+    const clampedWidth = minBlurVw + (maxBlurVw - minBlurVw) * Math.pow(progress, curveExponent)
 
     this.horizonElement.style.display = isBlurredHorizon ? 'block' : 'none'
     this.horizonElement.style.left = `calc(${this.width ?? 0}px - ${clampedWidth}vw)`
@@ -64,7 +67,7 @@ export default class HorizonEntity {
     this.horizonBlurElement.style.backgroundColor = color
 
     this.dirty = false
-  }
+  } 
 
   stageReady(_payload: StageReadyPayload): void {
     this.dirty = true
