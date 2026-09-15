@@ -94,3 +94,7 @@ a,a:link,a:visited,a:active {
   opacity: 0.5;
   cursor: inherit;
 }
+.toggleLabel {
+  cursor: pointer;
+  user-select: none;
+}

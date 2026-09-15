@@ -17,7 +17,7 @@ const assignToggleState = (element: HTMLElement, toggledOn: boolean): void => {
   svgElement.setAttribute("d", toggledOn ? checkedIcon : uncheckedIcon)
 }
 
-const bindToggleButton = (id: string, onClick: () => void): HTMLElement => {
+const bindToggleButton = (id: string, onClick: () => void, labelId: string): HTMLElement => {
   const element = document.getElementById(id)
   if (!element) {
     throw new Error(`Element with id "${id}" not found`)
@@ -25,6 +25,12 @@ const bindToggleButton = (id: string, onClick: () => void): HTMLElement => {
   element.appendChild(svgIcon(checkedIcon))
   element.addEventListener("click", onClick)
   addClass(element, "iconContainer")
+  
+  const labelElement = document.getElementById(labelId)
+  if (labelElement != null) {
+    labelElement.addEventListener("click", onClick)
+  }
+  
   return element
 }
 
@@ -86,10 +92,10 @@ export default class OptionsEntity implements FullscreenOptions {
       throw new Error("Options element not found")
     }
     this.optionsElement = optionsElement
-    this.soundToggleElement = bindToggleButton("soundToggle", this.toggleSound.bind(this, undefined))
+    this.soundToggleElement = bindToggleButton("soundToggle", this.toggleSound.bind(this, undefined), "soundLabel")
     this.fullscreenToggleElement = bindToggleButton("fullscreenToggle", () => {
       this.toggleFullscreen(undefined).catch(() => {})
-    })
+    }, "fullscreenLabel")
     this.startOverElement = bindButton("startOver", this.showStartOverConfirm.bind(this))
     this.startOverConfirmElement = bindButton("startOverConfirm", this.startOverConfirmed.bind(this))
 
