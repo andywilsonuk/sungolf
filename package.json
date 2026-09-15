@@ -23,18 +23,18 @@
     },
     "author": "andywilsonuk",
     "devDependencies": {
-        "@biomejs/biome": "^2.5.4",
-        "@playwright/test": "^1.55.1",
+        "@biomejs/biome": "^2.5.13",
+        "@playwright/test": "^1.63.0",
         "@types/mainloop.js": "^1.0.7",
-        "@types/node": "^24.5.2",
-        "typescript": "^5.9.2",
-        "vite": "^7.1.7",
-        "wrangler": "^4.40.2"
+        "@types/node": "^26.5.1",
+        "typescript": "^7.0.2",
+        "vite": "^8.3.0",
+        "wrangler": "^4.131.2"
     },
     "dependencies": {
         "alea": "^1.0.1",
         "mainloop.js": "^1.0.4",
-        "planck": "^1.4.2",
+        "planck": "^1.5.0",
         "poly-decomp": "^0.3.0"
     }
 }
